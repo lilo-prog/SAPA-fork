@@ -9,11 +9,10 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
-
 @Entity
 @Table(name = "answers")
 public class AnswerEntity {
-
+    // Respuesta a cada pregunta individual del formulario.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

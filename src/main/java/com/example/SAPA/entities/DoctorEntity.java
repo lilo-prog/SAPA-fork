@@ -10,11 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
-
 @Entity
 @Table(name = "doctors")
 public class DoctorEntity {
-
+    // Entidad doctor.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,4 +37,6 @@ public class DoctorEntity {
     private String hospitalUrl;
 
     private String phoneNumber;
+
+    
 }

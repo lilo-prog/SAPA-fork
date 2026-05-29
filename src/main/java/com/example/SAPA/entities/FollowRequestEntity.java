@@ -12,11 +12,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Builder
-
 @Entity
 @Table(name = "follow_requests")
 public class FollowRequestEntity {
-
+    //
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -11,11 +11,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Builder
-
 @Entity
 @Table(name = "conversations")
 public class ConversationEntity {
-
+    // Vinculación de chat entre paciente y médico.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
