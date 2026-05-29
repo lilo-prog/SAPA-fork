@@ -11,11 +11,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Builder
-
 @Entity
 @Table(name = "questionnaire_assignments")
 public class QuestionnaireAssignmentEntity {
-
+    // Registra a qué paciente se le adjunta el cuestionario.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

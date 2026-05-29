@@ -38,5 +38,5 @@ public class DoctorEntity {
 
     private String phoneNumber;
 
-    
+
 }

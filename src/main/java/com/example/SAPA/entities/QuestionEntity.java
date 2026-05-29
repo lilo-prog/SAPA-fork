@@ -10,11 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
-
 @Entity
 @Table(name = "questions")
 public class QuestionEntity {
-
+    //Entidad de pregunta para el cuestionario.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

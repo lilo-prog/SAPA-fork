@@ -12,11 +12,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 @Builder
-
 @Entity
 @Table(name = "patients")
 public class PatientEntity {
-
+    // Entidad paciente.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

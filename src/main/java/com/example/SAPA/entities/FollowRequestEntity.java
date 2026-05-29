@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "follow_requests")
 public class FollowRequestEntity {
-    //
+    // Petición de vinculación entre paciente y médico.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

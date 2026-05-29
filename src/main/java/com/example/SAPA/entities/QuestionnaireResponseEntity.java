@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "questionnaire_responses")
 
 public class QuestionnaireResponseEntity {
-
+    // Entidad de la respuesta total del cuestionario.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

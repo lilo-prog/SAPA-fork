@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "saved_posts")
 public class SavedPostEntity {
-
+    // Guardado de un posteo.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -11,11 +11,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 @Builder
-
 @Entity
 @Table(name = "health_tips")
 public class HealthTipEntity {
-
+    //Entidad de consejo de salud.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

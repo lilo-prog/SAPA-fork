@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "posts")
 public class PostEntity {
-
+    // Entidad de post.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
