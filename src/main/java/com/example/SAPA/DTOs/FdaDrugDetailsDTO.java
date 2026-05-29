@@ -1,0 +1,20 @@
+package com.example.SAPA.DTOs;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+@NoArgsConstructor
+public class FdaDrugDetailsDTO {
+
+    @JsonProperty("brand_name")
+    private List<String> brandName;
+
+    @JsonProperty("generic_name")
+    private List<String> genericName;
+}
