@@ -4,8 +4,7 @@ import com.example.SAPA.security.enums.Permit;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
