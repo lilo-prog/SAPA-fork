@@ -1,4 +1,4 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models.Chat;
 
 import com.example.SAPA.enums.AttachmentType;
 import jakarta.persistence.*;

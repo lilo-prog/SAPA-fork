@@ -1,5 +1,6 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models.Forum;
 
+import com.example.SAPA.Models.Entities.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,27 +11,30 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "forums")
-public class ForumEntity {
-    // Entidad del foro;
+@Table(name = "posts")
+public class PostEntity {
+    // Entidad de post.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "created_by", nullable = false)
-    private UserEntity createdBy;
+    @JoinColumn(name = "forum_id", nullable = false)
+    private ForumEntity forum;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private UserEntity author;
 
     @Column(nullable = false)
     private String title;
 
-    @Column(length = 1000)
-    private String description;
+    @Column(nullable = false, length = 5000)
+    private String content;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // False if deleted (we never hard delete)
     @Column(nullable = false)
     private boolean active;
 

@@ -2,12 +2,10 @@ package com.example.SAPA.service;
 
 import com.example.SAPA.DTOs.QuestionnaireDTO;
 import com.example.SAPA.Repositories.QuestionnaireRepository;
-import com.example.SAPA.entities.QuestionnaireEntity;
+import com.example.SAPA.Models.Questionnaire.QuestionnaireEntity;
 import com.example.SAPA.exceptions.EmptyCollectionException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class QuestionnaireService {

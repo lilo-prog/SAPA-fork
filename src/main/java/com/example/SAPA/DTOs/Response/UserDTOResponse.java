@@ -1,6 +1,6 @@
 package com.example.SAPA.DTOs.Response;
 
-import com.example.SAPA.entities.UserEntity;
+import com.example.SAPA.Models.Entities.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

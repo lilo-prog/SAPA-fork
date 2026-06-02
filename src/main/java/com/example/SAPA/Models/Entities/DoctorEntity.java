@@ -1,4 +1,4 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models.Entities;
 
 
 import jakarta.persistence.*;

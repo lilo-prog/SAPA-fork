@@ -1,4 +1,4 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models.Entities;
 
 import com.example.SAPA.enums.AccountStatus;
 import com.example.SAPA.enums.UserCategory;

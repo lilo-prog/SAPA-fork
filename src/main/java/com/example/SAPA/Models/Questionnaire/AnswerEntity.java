@@ -1,4 +1,4 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models.Questionnaire;
 
 import jakarta.persistence.*;
 import lombok.*;

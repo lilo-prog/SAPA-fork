@@ -1,8 +1,7 @@
 package com.example.SAPA.service;
 
-import com.example.SAPA.entities.HealthTipEntity;
+import com.example.SAPA.Models.HealthTipEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;

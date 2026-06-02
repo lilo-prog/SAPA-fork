@@ -1,5 +1,6 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models.Chat;
 
+import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.enums.MessageType;
 import jakarta.persistence.*;
 import lombok.*;

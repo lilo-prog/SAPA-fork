@@ -1,6 +1,6 @@
 package com.example.SAPA.controller;
 
-import com.example.SAPA.entities.HealthTipEntity;
+import com.example.SAPA.Models.HealthTipEntity;
 import com.example.SAPA.service.HealthTipService;
 import org.springframework.web.bind.annotation.*;
 

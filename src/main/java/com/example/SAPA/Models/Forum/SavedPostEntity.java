@@ -1,5 +1,6 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models.Forum;
 
+import com.example.SAPA.Models.Entities.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,8 +20,8 @@ public class SavedPostEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_id", nullable = false)
-    private DoctorEntity doctor;
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity userEntity;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)

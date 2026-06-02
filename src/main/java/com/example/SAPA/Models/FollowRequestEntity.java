@@ -1,5 +1,7 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models;
 
+import com.example.SAPA.Models.Entities.DoctorEntity;
+import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.enums.FollowRequestStatus;
 import jakarta.persistence.*;
 import lombok.*;

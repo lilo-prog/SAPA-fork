@@ -1,4 +1,4 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models.Questionnaire;
 
 import com.example.SAPA.enums.QuestionType;
 import jakarta.persistence.*;

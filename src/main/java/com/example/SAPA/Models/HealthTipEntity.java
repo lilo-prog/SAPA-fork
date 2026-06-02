@@ -1,5 +1,6 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models;
 
+import com.example.SAPA.Models.Entities.DoctorEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,20 +11,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "posts")
-public class PostEntity {
-    // Entidad de post.
+@Table(name = "health_tips")
+public class HealthTipEntity {
+    //Entidad de consejo de salud.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "forum_id", nullable = false)
-    private ForumEntity forum;
-
-    @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
-    private UserEntity author;
+    @JoinColumn(name = "doctor_id", nullable = false)
+    private DoctorEntity doctor;
 
     @Column(nullable = false)
     private String title;
@@ -32,14 +29,10 @@ public class PostEntity {
     private String content;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private boolean active;
+    private LocalDateTime publishedAt;
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.active = true;
+        this.publishedAt = LocalDateTime.now();
     }
 }

@@ -1,6 +1,6 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models.Forum;
 
-import com.example.SAPA.enums.SendFrequency;
+import com.example.SAPA.Models.Entities.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,18 +10,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 @Entity
-@Table(name = "questionnaires")
-public class QuestionnaireEntity {
-    // Entidad cuestionario.
+@Table(name = "forums")
+public class ForumEntity {
+    // Entidad del foro;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_id", nullable = false)
-    private DoctorEntity doctor;
+    @JoinColumn(name = "created_by", nullable = false)
+    private UserEntity createdBy;
 
     @Column(nullable = false)
     private String title;
@@ -29,15 +28,16 @@ public class QuestionnaireEntity {
     @Column(length = 1000)
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private SendFrequency frequency;
-
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    // False if deleted (we never hard delete)
+    @Column(nullable = false)
+    private boolean active;
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+        this.active = true;
     }
 }

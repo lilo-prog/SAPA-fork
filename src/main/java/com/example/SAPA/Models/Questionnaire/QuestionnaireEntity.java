@@ -1,5 +1,7 @@
-package com.example.SAPA.entities;
+package com.example.SAPA.Models.Questionnaire;
 
+import com.example.SAPA.Models.Entities.DoctorEntity;
+import com.example.SAPA.enums.SendFrequency;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,10 +11,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+
 @Entity
-@Table(name = "health_tips")
-public class HealthTipEntity {
-    //Entidad de consejo de salud.
+@Table(name = "questionnaires")
+public class QuestionnaireEntity {
+    // Entidad cuestionario.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,14 +27,18 @@ public class HealthTipEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, length = 5000)
-    private String content;
+    @Column(length = 1000)
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SendFrequency frequency;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime publishedAt;
+    private LocalDateTime createdAt;
 
     @PrePersist
     public void prePersist() {
-        this.publishedAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 }

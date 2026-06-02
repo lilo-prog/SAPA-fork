@@ -1,6 +1,6 @@
 package com.example.SAPA.DTOs.Request;
 
-import com.example.SAPA.entities.UserEntity;
+import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.enums.AccountStatus;
 import com.example.SAPA.enums.UserCategory;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.example.SAPA.controller;
 
 import com.example.SAPA.DTOs.QuestionnaireDTO;
-import com.example.SAPA.entities.QuestionnaireEntity;
+import com.example.SAPA.Models.Questionnaire.QuestionnaireEntity;
 import com.example.SAPA.service.QuestionnaireService;
 import org.springframework.web.bind.annotation.*;
 
