@@ -1,6 +1,7 @@
 package com.example.SAPA.Models.Entities;
 
 
+import com.example.SAPA.Models.SpecialityEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,5 +37,8 @@ public class DoctorEntity {
 
     private String phoneNumber;
 
+    @ManyToOne
+    @JoinColumn(name="speciality_id",nullable = false)
+    private SpecialityEntity speciality;
 
 }
