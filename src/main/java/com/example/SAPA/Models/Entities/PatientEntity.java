@@ -1,6 +1,7 @@
 package com.example.SAPA.Models.Entities;
 
 
+import com.example.SAPA.Models.MedicalRecord.MedicalRecordEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,4 +32,8 @@ public class PatientEntity {
     private LocalDate birthDate;
 
     private String phoneNumber;
+
+    @ManyToOne
+    @JoinColumn(name="medical_record_id")
+    private MedicalRecordEntity medicalRecord;
 }
