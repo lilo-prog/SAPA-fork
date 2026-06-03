@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ForumRepository extends JpaRepository<ForumEntity, Long> {
-    List<ForumEntity> findByForumName(String forumName);
+    List<ForumEntity> findByTitleContainingIgnoreCase(String title);
 }

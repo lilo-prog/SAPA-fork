@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -41,4 +42,12 @@ public class QuestionnaireEntity {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
+
+    //Anotacion de jpa para relacion entre questionnaireEntity y questionEntity para cuestionarios personalizados
+    @OneToMany(
+            mappedBy = "questionnaire",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<QuestionEntity> questions;
 }

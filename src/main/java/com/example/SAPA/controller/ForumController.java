@@ -17,8 +17,13 @@ public class ForumController {
         return forumService.create(forum);
     }
 
-    @GetMapping("/{id}")
-    public  ForumEntity updateForum(@PathVariable Long id, @RequestBody ForumEntity forum){
+    @GetMapping
+    public List<ForumEntity> getAll(){
+        return forumService.getAll();
+    }
+
+    @PutMapping("/{id}")
+    public ForumEntity updateForum(@PathVariable Long id, @RequestBody ForumEntity forum){
         return forumService.update(id, forum);
     }
 

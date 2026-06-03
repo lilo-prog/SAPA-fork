@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface QuestionnaireResponseRepository extends JpaRepository<QuestionnaireResponseEntity, Long> {
-    List<QuestionnaireResponseEntity> findByPatientId(Long patientId);
+    List<QuestionnaireResponseEntity> findByAssignmentPatientId(Long patientId);
 }

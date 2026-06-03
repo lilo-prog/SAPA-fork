@@ -34,7 +34,8 @@ public class ForumService {
          forumRepository.deleteById(id);
      }
 
-     public List<ForumEntity> search(String forumName){
-         return forumRepository.findByForumName(forumName);
-     }
+    public List<ForumEntity> search(String title){
+
+        return forumRepository.findByTitleContainingIgnoreCase(title);
+    }
 }
