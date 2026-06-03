@@ -8,13 +8,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/health-tips")
 public class HealthTipController {
-
+    //Atributos.
     private final HealthTipService healthTipService;
 
+    //Constructor
     public HealthTipController(HealthTipService healthTipService) {
         this.healthTipService = healthTipService;
     }
 
+    //Metodos
     @PostMapping
     public HealthTipEntity create(@RequestBody HealthTipEntity healthTip) {
         return healthTipService.create(healthTip);

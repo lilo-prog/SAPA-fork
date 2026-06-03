@@ -12,12 +12,15 @@ import java.util.List;
 @RestController
 @RequestMapping("questionnaires")
 public class QuestionnaireController {
+    //Atributos
     private final QuestionnaireService questionnaireService;
 
+    //Constructor
     public QuestionnaireController(QuestionnaireService questionnaireService) {
         this.questionnaireService = questionnaireService;
     }
 
+    //Metodos
     @PostMapping
     public QuestionnaireEntity createQuestionnaire(@RequestBody QuestionnaireDTO dto){
         return questionnaireService.createQuestionnaire(dto);

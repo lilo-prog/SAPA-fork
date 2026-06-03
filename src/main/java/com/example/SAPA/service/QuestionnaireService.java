@@ -17,11 +17,13 @@ import java.util.List;
 
 @Service
 public class QuestionnaireService {
+    //Atributos.
     public final QuestionnaireRepository questionnaireRepository;
     private final DoctorRepository doctorRepository;
     private final QuestionnaireResponseRepository responseRepository;
     private final CredentialRepository credentialRepository;
 
+    //Constructor.
     public QuestionnaireService(QuestionnaireRepository questionnaireRepository, DoctorRepository doctorRepository, QuestionnaireResponseRepository responseRepository, CredentialRepository credentialRepository) {
         this.questionnaireRepository = questionnaireRepository;
         this.doctorRepository = doctorRepository;
@@ -29,6 +31,7 @@ public class QuestionnaireService {
         this.credentialRepository = credentialRepository;
     }
 
+    //Métodos.
     public QuestionnaireEntity createQuestionnaire(QuestionnaireDTO dto){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 

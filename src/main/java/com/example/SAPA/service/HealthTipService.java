@@ -10,14 +10,17 @@ import java.util.List;
 
 @Service
 public class HealthTipService {
+    //Atributos.
     private final HealthTipRepository healthTipRepository;
     private final FollowRequestRepository followRequestRepository;
 
+    //Constructor.
     public HealthTipService(HealthTipRepository healthTipRepository, FollowRequestRepository followRequestRepository) {
         this.healthTipRepository = healthTipRepository;
         this.followRequestRepository = followRequestRepository;
     }
 
+    //Métodos.
     public HealthTipEntity create(HealthTipEntity healthTip){
         return healthTipRepository.save(healthTip);
     }

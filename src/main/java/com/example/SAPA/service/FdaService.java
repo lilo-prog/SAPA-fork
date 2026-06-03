@@ -6,9 +6,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class FdaService {
-
+    //Atributos.
     private final RestTemplate restTemplate = new RestTemplate();
 
+    //Métodos
     public FdaResponseDTO searchForMedicationByName(String name){
         String url = "https://api.fda.gov/drug/label.json?search=openfda.brand_name:\"" +name+ "\"&limit=5";
 

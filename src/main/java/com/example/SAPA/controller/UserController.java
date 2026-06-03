@@ -12,13 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
+    //Atributos.
     private final UserService userService;
 
+    //Constructor.
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+    //Metodos.
     @PostMapping
     public ResponseEntity<?> register(@RequestBody RegisterRequestDTO request) {
         try {

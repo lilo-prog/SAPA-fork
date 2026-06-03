@@ -8,11 +8,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/follow-requests")
 public class FollowRequestController {
+    //Atributos.
     private final FollowRequestService followRequestService;
 
+    //Constructor.
     public FollowRequestController(FollowRequestService followRequestService) {
         this.followRequestService = followRequestService;
     }
+
+    //Metodos.
     @PostMapping
     public FollowRequestEntity create(@RequestBody FollowRequestEntity request){
         return followRequestService.create(request);

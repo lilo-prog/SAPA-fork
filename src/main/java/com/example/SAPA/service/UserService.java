@@ -22,7 +22,7 @@ import java.util.Set;
 
 @Service
 public class UserService {
-
+    //Atributos.
     private final UserRepository userRepository;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
@@ -31,6 +31,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
 
+    //Constructor.
     public UserService(UserRepository userRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, CredentialRepository credentialRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTService jwtService){
         this.userRepository = userRepository;
         this.patientRepository = patientRepository;
@@ -41,6 +42,7 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
+    //Métodos.
     @Transactional
     public AuthResponse registerUser(RegisterRequestDTO request) {
 

@@ -9,8 +9,10 @@ import java.util.List;
 
 @Service
 public class FollowRequestService {
+    //Atributos.
     private final FollowRequestRepository followRequestRepository;
 
+    //Métodos.
     public FollowRequestService(FollowRequestRepository followRequestRepository) {
         this.followRequestRepository = followRequestRepository;
     }

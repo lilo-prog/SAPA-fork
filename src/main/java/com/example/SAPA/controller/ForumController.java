@@ -8,9 +8,12 @@ import java.util.List;
 @RestController
 @RequestMapping("forums")
 public class ForumController {
+
+    //Atributos.
     @Autowired
     private ForumService forumService;
 
+    //Metodos.
     @PostMapping
     public ForumEntity createForum(@RequestBody ForumEntity forum){
         return forumService.create(forum);

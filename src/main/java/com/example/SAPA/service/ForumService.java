@@ -8,10 +8,11 @@ import java.util.List;
 
 @Service
 public class ForumService {
-
+    //Atributos.
      @Autowired
     private ForumRepository forumRepository;
 
+     //Métodos
      public ForumEntity create(ForumEntity forum){
          return forumRepository.save(forum);
      }
