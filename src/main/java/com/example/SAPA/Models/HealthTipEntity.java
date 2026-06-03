@@ -3,7 +3,6 @@ package com.example.SAPA.Models;
 import com.example.SAPA.Models.Entities.DoctorEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Data

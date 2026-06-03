@@ -4,7 +4,6 @@ import com.example.SAPA.enums.AccountStatus;
 import com.example.SAPA.enums.UserCategory;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Data

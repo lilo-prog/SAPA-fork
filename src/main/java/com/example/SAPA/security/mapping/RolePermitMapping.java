@@ -3,7 +3,6 @@ package com.example.SAPA.security.mapping;
 import com.example.SAPA.security.enums.Permit;
 import com.example.SAPA.security.enums.Role;
 import org.springframework.stereotype.Component;
-
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;

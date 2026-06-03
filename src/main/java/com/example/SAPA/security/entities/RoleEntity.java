@@ -3,7 +3,6 @@ package com.example.SAPA.security.entities;
 import com.example.SAPA.security.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.HashSet;
 import java.util.Set;
 

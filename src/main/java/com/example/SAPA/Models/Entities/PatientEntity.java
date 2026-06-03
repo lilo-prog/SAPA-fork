@@ -1,10 +1,8 @@
 package com.example.SAPA.Models.Entities;
 
-
 import com.example.SAPA.Models.MedicalRecord.MedicalRecordEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
 
 @Data

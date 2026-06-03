@@ -2,10 +2,7 @@ package com.example.SAPA.controller;
 
 import com.example.SAPA.Models.HealthTipEntity;
 import com.example.SAPA.service.HealthTipService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController

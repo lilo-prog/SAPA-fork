@@ -4,7 +4,6 @@ import com.example.SAPA.Models.Forum.ForumEntity;
 import com.example.SAPA.Repositories.ForumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service

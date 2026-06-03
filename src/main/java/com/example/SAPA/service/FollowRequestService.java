@@ -4,7 +4,6 @@ import com.example.SAPA.Models.FollowRequestEntity;
 import com.example.SAPA.Repositories.FollowRequestRepository;
 import com.example.SAPA.enums.FollowRequestStatus;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +27,6 @@ public class FollowRequestService {
         FollowRequestEntity request = followRequestRepository.findById(id).orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
         request.setStatus(FollowRequestStatus.APPROVED);
-
         request.setRespondedAt(LocalDateTime.now());
 
         return followRequestRepository.save(request);
@@ -38,7 +36,6 @@ public class FollowRequestService {
         FollowRequestEntity request = followRequestRepository.findById(id).orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
         request.setStatus(FollowRequestStatus.REJECTED);
-
         request.setRespondedAt(LocalDateTime.now());
 
         return followRequestRepository.save(request);
@@ -48,7 +45,6 @@ public class FollowRequestService {
         FollowRequestEntity request = followRequestRepository.findById(id).orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
         request.setStatus(FollowRequestStatus.DISOLVED);
-
         request.setRespondedAt(LocalDateTime.now());
 
         return followRequestRepository.save(request);

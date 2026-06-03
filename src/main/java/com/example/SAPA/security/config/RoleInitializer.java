@@ -10,7 +10,6 @@ import com.example.SAPA.security.repositories.RoleRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-
 import java.util.Set;
 import java.util.stream.Collectors;
 

@@ -7,7 +7,6 @@ import com.example.SAPA.enums.SendFrequency;
 import com.example.SAPA.service.QuestionnaireService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -21,13 +20,11 @@ public class QuestionnaireController {
 
     @PostMapping
     public QuestionnaireEntity createQuestionnaire(@RequestBody QuestionnaireDTO dto){
-
         return questionnaireService.createQuestionnaire(dto);
     }
 
     @PutMapping("/{id}/frequency")
     public ResponseEntity<String> updateFrequency(@PathVariable Long id, @RequestParam SendFrequency frequency){
-
         questionnaireService.updateFrequency(id, frequency);
 
         return ResponseEntity.ok("Frecuencia actualizada");
@@ -35,7 +32,6 @@ public class QuestionnaireController {
 
     @GetMapping("/{patientId}/responses")
     public List<QuestionnaireResponseEntity> getResponses(@PathVariable Long patientId){
-
         return questionnaireService.getResponses(patientId);
     }
 }

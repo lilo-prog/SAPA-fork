@@ -5,7 +5,6 @@ import com.example.SAPA.Repositories.FollowRequestRepository;
 import com.example.SAPA.Repositories.HealthTipRepository;
 import com.example.SAPA.enums.FollowRequestStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.List;
 

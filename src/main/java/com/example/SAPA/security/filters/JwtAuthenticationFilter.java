@@ -1,6 +1,5 @@
 package com.example.SAPA.security.filters;
 
-
 import com.example.SAPA.security.service.JWTService;
 import com.example.SAPA.security.service.TokenBlacklistService;
 import com.example.SAPA.security.service.UserDetailsService;
@@ -14,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.util.stream.Collectors;
 

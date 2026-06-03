@@ -3,7 +3,6 @@ package com.example.SAPA.controller;
 import com.example.SAPA.Models.FollowRequestEntity;
 import com.example.SAPA.service.FollowRequestService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController

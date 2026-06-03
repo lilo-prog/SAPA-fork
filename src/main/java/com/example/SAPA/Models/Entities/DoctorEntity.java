@@ -1,6 +1,5 @@
 package com.example.SAPA.Models.Entities;
 
-
 import com.example.SAPA.Models.SpecialityEntity;
 import jakarta.persistence.*;
 import lombok.*;

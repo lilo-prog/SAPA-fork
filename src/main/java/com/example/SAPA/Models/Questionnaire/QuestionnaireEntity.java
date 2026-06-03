@@ -4,7 +4,6 @@ import com.example.SAPA.Models.Entities.DoctorEntity;
 import com.example.SAPA.enums.SendFrequency;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -47,7 +46,6 @@ public class QuestionnaireEntity {
     @OneToMany(
             mappedBy = "questionnaire",
             cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+            orphanRemoval = true)
     private List<QuestionEntity> questions;
 }

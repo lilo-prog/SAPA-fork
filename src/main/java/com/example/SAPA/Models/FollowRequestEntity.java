@@ -5,7 +5,6 @@ import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.enums.FollowRequestStatus;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Data

@@ -3,7 +3,6 @@ import com.example.SAPA.Models.Forum.ForumEntity;
 import com.example.SAPA.service.ForumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController

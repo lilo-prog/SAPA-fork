@@ -4,7 +4,6 @@ import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.enums.MessageType;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Data

@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -82,7 +81,6 @@ public class AuthService {
         // emailService.sendResetPasswordEmail(credential.getEmail(), token);
         System.out.println("Enlace enviado: https://sapa.com/reset-password?token=" + token);
     }
-
 
     public void resetPassword(String token, String newPassword) {
 
