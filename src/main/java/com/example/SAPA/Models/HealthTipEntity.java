@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "health_tips")
+@Table(name = "health_tip")
 public class HealthTipEntity {
     //Entidad de consejo de salud.
     @Id

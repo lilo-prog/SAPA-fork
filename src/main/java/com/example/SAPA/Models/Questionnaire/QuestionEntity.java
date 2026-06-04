@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "questions")
+@Table(name = "question")
 public class QuestionEntity {
     //Entidad de pregunta para el cuestionario.
     @Id

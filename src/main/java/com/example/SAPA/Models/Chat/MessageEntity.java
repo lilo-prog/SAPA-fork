@@ -5,13 +5,15 @@ import com.example.SAPA.enums.MessageType;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "messages")
+@Table(name = "message")
 public class MessageEntity {
     //Entidad de mensaje.
     @Id
@@ -26,12 +28,15 @@ public class MessageEntity {
     @JoinColumn(name = "sender_id", nullable = false)
     private UserEntity sender;
 
-    @Column(length = 2000)
+    @Column(nullable = false, length = 2000)
     private String content;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private MessageType type;
+
+    @OneToMany(mappedBy = "message")
+    private List<AttachmentEntity> attatchments = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime sentAt;

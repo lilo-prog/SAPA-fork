@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 
 @Entity
-@Table(name = "reports")
+@Table(name = "report")
 public class ReportEntity {
     // Entidad de reporte.
     @Id

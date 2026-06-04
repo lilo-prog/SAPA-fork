@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "answers")
+@Table(name = "answer")
 public class AnswerEntity {
     // Respuesta a cada pregunta individual del formulario.
     @Id

@@ -6,13 +6,24 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "conversations")
+@Table(name = "conversation",
+            // Restricción para que no existan
+            // dos conversaciones entre el mismo médico y paciente.
+            uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_patient_doctor",
+                        columnNames = {"patient_id", "doctor_id"}
+                )
+            }
+        )
 public class ConversationEntity {
     // Vinculación de chat entre paciente y médico.
     @Id
@@ -26,6 +37,9 @@ public class ConversationEntity {
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
     private DoctorEntity doctor;
+
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MessageEntity> messages = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

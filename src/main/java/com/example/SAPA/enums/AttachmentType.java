@@ -2,5 +2,7 @@ package com.example.SAPA.enums;
 
 public enum AttachmentType {
     IMAGE,
-    PDF;
+    PDF,
+    VIDEO,
+    AUDIO;
 }

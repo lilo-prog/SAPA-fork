@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "questionnaire_assignments")
+@Table(name = "questionnaire_assignment")
 public class QuestionnaireAssignmentEntity {
     // Registra a qué paciente se le adjunta el cuestionario.
     @Id

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "follow_requests")
+@Table(name = "follow_request")
 public class FollowRequestEntity {
     // Petición de vinculación entre paciente y médico.
     @Id

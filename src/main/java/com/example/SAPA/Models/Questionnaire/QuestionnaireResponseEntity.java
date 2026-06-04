@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 
 @Entity
-@Table(name = "questionnaire_responses")
+@Table(name = "questionnaire_response")
 
 public class QuestionnaireResponseEntity {
     // Entidad de la respuesta total del cuestionario.

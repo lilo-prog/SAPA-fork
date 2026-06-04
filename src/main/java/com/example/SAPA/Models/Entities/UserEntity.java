@@ -1,5 +1,6 @@
 package com.example.SAPA.Models.Entities;
 
+import com.example.SAPA.Models.LocationEntity;
 import com.example.SAPA.enums.AccountStatus;
 import com.example.SAPA.enums.UserCategory;
 import jakarta.persistence.*;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class UserEntity {
     // Entidad de usuario.
     @Id
@@ -32,6 +33,10 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AccountStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "location_id")
+    private LocationEntity location;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

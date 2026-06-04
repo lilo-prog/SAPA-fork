@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 
 @Entity
-@Table(name = "saved_posts")
+@Table(name = "saved_post")
 public class SavedPostEntity {
     // Guardado de un posteo.
     @Id

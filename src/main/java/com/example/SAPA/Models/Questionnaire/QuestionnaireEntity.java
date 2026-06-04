@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 
 @Entity
-@Table(name = "questionnaires")
+@Table(name = "questionnaire")
 public class QuestionnaireEntity {
     // Entidad cuestionario.
     @Id

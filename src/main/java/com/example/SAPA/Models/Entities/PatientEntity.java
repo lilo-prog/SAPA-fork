@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "patients")
+@Table(name = "patient")
 public class PatientEntity {
     // Entidad paciente.
     @Id
@@ -32,6 +32,6 @@ public class PatientEntity {
     private String phoneNumber;
 
     @ManyToOne
-    @JoinColumn(name="medical_record_id")
+    @JoinColumn(name = "medical_record_id")
     private MedicalRecordEntity medicalRecord;
 }

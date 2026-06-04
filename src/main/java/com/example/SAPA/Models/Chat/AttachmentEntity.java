@@ -11,16 +11,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "attachments")
+@Table(name = "attachment")
 public class AttachmentEntity {
     // Archivo adjunto de mensaje.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "message_id", nullable = false)
-    private MessageEntity message;
+    @Column(nullable = false)
+    private String fileName;
 
     @Column(nullable = false)
     private String fileUrl;
@@ -28,6 +27,10 @@ public class AttachmentEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AttachmentType type;
+
+    @ManyToOne
+    @JoinColumn(name = "message_id", nullable = false)
+    private MessageEntity message;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime uploadedAt;
