@@ -15,6 +15,7 @@ public class HealthTipEntity {
     //Entidad de consejo de salud.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="health_tip_id")
     private Long id;
 
     @ManyToOne

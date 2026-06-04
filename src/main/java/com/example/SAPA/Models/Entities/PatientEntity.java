@@ -15,6 +15,7 @@ public class PatientEntity {
     // Entidad paciente.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="patient_id")
     private Long id;
 
     @OneToOne

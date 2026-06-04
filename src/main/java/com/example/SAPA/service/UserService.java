@@ -1,12 +1,15 @@
 package com.example.SAPA.service;
 
 import com.example.SAPA.DTOs.RegisterRequestDTO;
+import com.example.SAPA.DTOs.Response.UserDTOResponse;
+import com.example.SAPA.DTOs.UserMapper;
 import com.example.SAPA.Models.Entities.DoctorEntity;
 import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Repositories.DoctorRepository;
 import com.example.SAPA.Repositories.PatientRepository;
 import com.example.SAPA.Repositories.UserRepository;
+import com.example.SAPA.exceptions.EmptyCollectionException;
 import com.example.SAPA.security.DTO.AuthResponse;
 import com.example.SAPA.security.entities.CredentialEntity;
 import com.example.SAPA.security.entities.RoleEntity;
@@ -18,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -102,5 +106,10 @@ public class UserService {
         credentialRepository.save(securityCredentials);
 
         return new AuthResponse(accessToken, refreshToken);
+    }
+
+    public List<UserDTOResponse> getAllUsers() throws  EmptyCollectionException{
+        if(userRepository.count() == 0) throw new EmptyCollectionException("No hay usuarios registrados");
+        return userRepository.findAll().stream().map(UserMapper::fromEntity).toList();
     }
 }

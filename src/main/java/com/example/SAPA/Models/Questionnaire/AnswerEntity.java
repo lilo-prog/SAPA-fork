@@ -13,6 +13,7 @@ public class AnswerEntity {
     // Respuesta a cada pregunta individual del formulario.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="answer_id")
     private Long id;
 
     @ManyToOne
