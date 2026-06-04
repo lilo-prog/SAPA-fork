@@ -17,6 +17,7 @@ public class ConversationEntity {
     // Vinculación de chat entre paciente y médico.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="conversation_id")
     private Long id;
 
     @ManyToOne

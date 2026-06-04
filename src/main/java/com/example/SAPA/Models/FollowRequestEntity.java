@@ -17,6 +17,7 @@ public class FollowRequestEntity {
     // Petición de vinculación entre paciente y médico.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="follow_request_id")
     private Long id;
 
     @ManyToOne

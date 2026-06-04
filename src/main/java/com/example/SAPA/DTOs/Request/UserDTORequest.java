@@ -16,12 +16,5 @@ public class UserDTORequest {
     private String status;
     private String role;
 
-    public UserEntity toEntity(UserDTORequest userDTORequest){
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail(userDTORequest.getEmail());
-        userEntity.setPassword(userDTORequest.getPassword());
-        userEntity.setStatus(AccountStatus.valueOf(userDTORequest.getStatus()));
-        userEntity.setRole(UserCategory.valueOf(userDTORequest.getRole()));
-        return userEntity;
-    }
+
 }

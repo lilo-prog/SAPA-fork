@@ -16,6 +16,7 @@ public class ForumEntity {
     // Entidad del foro;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="forum_id")
     private Long id;
 
     @ManyToOne

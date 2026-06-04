@@ -16,6 +16,7 @@ public class QuestionnaireAssignmentEntity {
     // Registra a qué paciente se le adjunta el cuestionario.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="questionnaire_assignment_id")
     private Long id;
 
     @ManyToOne

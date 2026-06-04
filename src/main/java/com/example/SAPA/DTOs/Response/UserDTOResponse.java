@@ -16,14 +16,6 @@ public class UserDTOResponse {
     private String status;
     private LocalDateTime createdAt;
 
-    public UserDTOResponse roResponseDTO(UserEntity user){
-        UserDTOResponse userDTOResponse = new UserDTOResponse();
-        userDTOResponse.setId(user.getId());
-        userDTOResponse.setEmail(user.getEmail());
-        userDTOResponse.setRole(user.getRole().name());
-        userDTOResponse.setStatus(user.getStatus().name());
-        userDTOResponse.setCreatedAt(user.getCreatedAt());
-        return userDTOResponse;
-    }
+
 }
 

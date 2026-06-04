@@ -18,6 +18,7 @@ public class QuestionnaireEntity {
     // Entidad cuestionario.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="questionnaire_id")
     private Long id;
 
     @ManyToOne

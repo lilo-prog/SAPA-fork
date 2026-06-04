@@ -17,6 +17,7 @@ public class QuestionnaireResponseEntity {
     // Entidad de la respuesta total del cuestionario.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="questionnaire_response_id")
     private Long id;
 
     @ManyToOne

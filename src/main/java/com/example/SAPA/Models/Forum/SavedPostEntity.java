@@ -17,6 +17,7 @@ public class SavedPostEntity {
     // Guardado de un posteo.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="saved_post_id")
     private Long id;
 
     @ManyToOne

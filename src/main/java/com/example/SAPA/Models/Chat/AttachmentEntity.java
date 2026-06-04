@@ -16,6 +16,7 @@ public class AttachmentEntity {
     // Archivo adjunto de mensaje.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="attatchment_id")
     private Long id;
 
     @OneToOne

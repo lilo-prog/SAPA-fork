@@ -16,6 +16,7 @@ public class PostEntity {
     // Entidad de post.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="post_id")
     private Long id;
 
     @ManyToOne

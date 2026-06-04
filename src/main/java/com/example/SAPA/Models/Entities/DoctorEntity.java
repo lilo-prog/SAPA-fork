@@ -14,6 +14,7 @@ public class DoctorEntity {
     // Entidad doctor.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="doctor_id")
     private Long id;
 
     @OneToOne
