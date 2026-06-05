@@ -46,6 +46,7 @@ public class NotificationService {
         return "Notificacion eliminada correctamente";
     }
     public List<NotificationEntity> getNotificationsByUserId(Long id) throws EmptyCollectionException{
-        if(userService.getAllUsers())
+        validateNotifications();
+        return notificationRepository.getNotificationByUserId(id);
     }
 }
