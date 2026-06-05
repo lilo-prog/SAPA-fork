@@ -2,7 +2,7 @@ package com.example.SAPA.service;
 
 import com.example.SAPA.DTOs.RegisterRequestDTO;
 import com.example.SAPA.DTOs.Response.UserDTOResponse;
-import com.example.SAPA.DTOs.UserMapper;
+import com.example.SAPA.DTOs.Mappers.UserMapper;
 import com.example.SAPA.Models.Entities.DoctorEntity;
 import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.Entities.UserEntity;

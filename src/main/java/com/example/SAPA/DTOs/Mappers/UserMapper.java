@@ -1,4 +1,4 @@
-package com.example.SAPA.DTOs;
+package com.example.SAPA.DTOs.Mappers;
 
 import com.example.SAPA.DTOs.Request.UserDTORequest;
 import com.example.SAPA.DTOs.Response.UserDTOResponse;
