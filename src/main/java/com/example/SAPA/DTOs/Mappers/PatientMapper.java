@@ -23,13 +23,11 @@ public class PatientMapper {
     public static PatientEntity toEntity(PatientDTORequest patientDTORequest,UserEntity userEntity) throws EmptyCollectionException {
         PatientEntity patientEntity = new PatientEntity();
 
-        patientEntity.setId(patientDTORequest.getId());
         patientEntity.setFirstName(patientDTORequest.getFirstName());
         patientEntity.setLastName(patientDTORequest.getLastName());
         patientEntity.setBirthDate(patientDTORequest.getBirthDate());
         patientEntity.setPhoneNumber(patientDTORequest.getPhoneNumber());
 
-        // Seteas la relación del usuario que ya buscaste en la base de datos
         patientEntity.setUser(userEntity);
         return patientEntity;
     }

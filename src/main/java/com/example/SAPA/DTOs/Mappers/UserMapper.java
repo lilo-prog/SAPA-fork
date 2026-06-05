@@ -14,6 +14,7 @@ public class UserMapper {
         userEntity.setPassword(userDTORequest.getPassword());
         userEntity.setStatus(AccountStatus.valueOf(userDTORequest.getStatus()));
         userEntity.setRole(UserCategory.valueOf(userDTORequest.getRole()));
+        // AGREGAR UBICACION.
         return userEntity;
     }
 
@@ -24,6 +25,7 @@ public class UserMapper {
         userDTOResponse.setRole(user.getRole().name());
         userDTOResponse.setStatus(user.getStatus().name());
         userDTOResponse.setCreatedAt(user.getCreatedAt());
+        userDTOResponse.setLocation_id(user.getLocation().getId());
         return userDTOResponse;
     }
 }

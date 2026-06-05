@@ -2,6 +2,9 @@ package com.example.SAPA.Models.Entities;
 
 import com.example.SAPA.Models.MedicalRecord.MedicalRecordEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDate;
 
@@ -28,8 +31,12 @@ public class PatientEntity {
     @Column(nullable = false)
     private String lastName;
 
+    @Past(message = "La fecha de nacimiento debe ser una fecha pasada (no puede ser hoy ni el futuro)")
+    @NotNull
     private LocalDate birthDate;
 
+    @Size(min=8, max=15)
+    @NotNull
     private String phoneNumber;
 
     @ManyToOne

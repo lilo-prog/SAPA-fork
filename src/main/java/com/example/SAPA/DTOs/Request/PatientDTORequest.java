@@ -1,6 +1,7 @@
 package com.example.SAPA.DTOs.Request;
 
 import com.example.SAPA.Models.Entities.UserEntity;
+import com.example.SAPA.Models.LocationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +12,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatientDTORequest {
-    private Long id;
 
-    private UserEntity user;
+    private Long user_id;
 
     private String firstName;
 
@@ -24,4 +24,6 @@ public class PatientDTORequest {
     private String phoneNumber;
 
     private Long medical_record_id;
+
+    private Long location_id;
 }

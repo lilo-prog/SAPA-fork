@@ -1,6 +1,7 @@
 package com.example.SAPA.Models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @Data
@@ -12,9 +13,8 @@ public class LocationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String country;
-    private String province;
-    private String city;
+    @Column(nullable = false, unique = true)
+    private String googlePlaceId;
     private Double latitude;
     private Double longitude;
 
