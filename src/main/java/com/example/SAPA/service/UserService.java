@@ -17,11 +17,13 @@ import com.example.SAPA.security.enums.Role;
 import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.security.repositories.RoleRepository;
 import com.example.SAPA.security.service.JWTService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -107,9 +109,20 @@ public class UserService {
 
         return new AuthResponse(accessToken, refreshToken);
     }
+    public void validateUsers() throws EmptyCollectionException {
+        if(userRepository.count() == 0) throw new EmptyCollectionException("No hay usuarios registrados");
+    }
+    public void validateUserId(Long id) throws EmptyCollectionException {
+        validateUsers();
+        if(id<0||id>userRepository.count()) throw new IllegalArgumentException("ID Invalido");
+    }
 
     public List<UserDTOResponse> getAllUsers() throws  EmptyCollectionException{
-        if(userRepository.count() == 0) throw new EmptyCollectionException("No hay usuarios registrados");
+        validateUsers();
         return userRepository.findAll().stream().map(UserMapper::fromEntity).toList();
+    }
+    public Optional<UserDTOResponse> getUserById(Long id) throws EmptyCollectionException {
+        validateUserId(id);
+        return Optional.of(userRepository.findById(id).map(UserMapper::fromEntity).orElseThrow(()->new EntityNotFoundException("Usuario no encontrado")));
     }
 }
