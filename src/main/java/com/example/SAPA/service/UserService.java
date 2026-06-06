@@ -6,7 +6,9 @@ import com.example.SAPA.DTOs.Mappers.UserMapper;
 import com.example.SAPA.Models.Entities.DoctorEntity;
 import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.Entities.UserEntity;
+import com.example.SAPA.Models.LocationEntity;
 import com.example.SAPA.Repositories.DoctorRepository;
+import com.example.SAPA.Repositories.LocationRepository;
 import com.example.SAPA.Repositories.PatientRepository;
 import com.example.SAPA.Repositories.UserRepository;
 import com.example.SAPA.exceptions.EmptyCollectionException;
@@ -36,9 +38,10 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
+    private final LocationRepository locationRepository;
 
     //Constructor.
-    public UserService(UserRepository userRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, CredentialRepository credentialRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTService jwtService){
+    public UserService(UserRepository userRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, CredentialRepository credentialRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTService jwtService, LocationRepository locationRepository){
         this.userRepository = userRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
@@ -46,20 +49,35 @@ public class UserService {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.locationRepository = locationRepository;
     }
 
     //Métodos.
     @Transactional
     public AuthResponse registerUser(RegisterRequestDTO request) {
 
+            // Si es médico, se verifica que haya ingresado matrícula.
         if (request.getRole() == Role.ROLE_DOCTOR) {
             if (request.getLicenseNumber() == null || request.getLicenseNumber().isBlank()) {
                 throw new IllegalArgumentException("La matrícula es obligatoria para los médicos.");
             }
         }
 
+            // Se encripta la contraseña antes de almacenarla.
         String encryptedPassword = passwordEncoder.encode(request.getPassword());
 
+            // Se busca una ubicación existente mediante el googlePlaceID.
+            // Si no existe, se crea una nueva ubicación.
+            // Más adelante puede completarse con Latitud y Longitud obtenidas desde Google Maps.
+        LocationEntity locationEntity = locationRepository
+                .findByGooglePlaceId(request.getGooglePlaceId())
+                .orElseGet(() -> {
+                    LocationEntity newLocation = new LocationEntity();
+                    newLocation.setGooglePlaceId(request.getGooglePlaceId());
+                    return locationRepository.save(newLocation);
+                });
+
+            // Creeación del usuario.
         UserEntity userConnector = UserEntity.builder()
                 .email(request.getEmail())
                 .password(encryptedPassword)
@@ -69,6 +87,7 @@ public class UserService {
 
         userConnector = userRepository.save(userConnector);
 
+            // Creación del perfil según el rol.
         if (request.getRole() == Role.ROLE_DOCTOR) {
 
             DoctorEntity doctor = DoctorEntity.builder()
@@ -78,9 +97,7 @@ public class UserService {
                     .licenseNumber(request.getLicenseNumber())
                     .build();
             doctorRepository.save(doctor);
-
         } else if (request.getRole() == Role.ROLE_PATIENT) {
-
             PatientEntity patient = PatientEntity.builder()
                     .user(userConnector)
                     .firstName(request.getFirstName())
@@ -89,6 +106,7 @@ public class UserService {
             patientRepository.save(patient);
         }
 
+            // Configuración de credenciales y roles.
         RoleEntity assignedRole = roleRepository.findByRole(request.getRole())
                 .orElseThrow(() -> new RuntimeException("El rol no existe."));
 
@@ -101,17 +119,21 @@ public class UserService {
                 .refreshToken("")
                 .build();
 
+            // Generación de tokens JWT.
         String accessToken = jwtService.generateToken(securityCredentials);
         String refreshToken = jwtService.generateRefreshToken(securityCredentials);
 
         securityCredentials.setRefreshToken(refreshToken);
         credentialRepository.save(securityCredentials);
 
+            // Retorno los tokens generados.
         return new AuthResponse(accessToken, refreshToken);
     }
+
     public void validateUsers() throws EmptyCollectionException {
         if(userRepository.count() == 0) throw new EmptyCollectionException("No hay usuarios registrados");
     }
+
     public void validateUserId(Long id) throws EmptyCollectionException {
         validateUsers();
         if(id<0||id>userRepository.count()) throw new IllegalArgumentException("ID Invalido");
@@ -121,6 +143,7 @@ public class UserService {
         validateUsers();
         return userRepository.findAll().stream().map(UserMapper::fromEntity).toList();
     }
+
     public Optional<UserDTOResponse> getUserById(Long id) throws EmptyCollectionException {
         validateUserId(id);
         return Optional.of(userRepository.findById(id).map(UserMapper::fromEntity).orElseThrow(()->new EntityNotFoundException("Usuario no encontrado")));

@@ -16,4 +16,5 @@ public class RegisterRequestDTO {
     private String firstName;
     private String lastName;
     private String licenseNumber;
+    private String googlePlaceId;
 }

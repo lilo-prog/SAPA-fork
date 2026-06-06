@@ -10,22 +10,25 @@ public class UserMapper {
 
     public static UserEntity toEntity(UserDTORequest userDTORequest){
         UserEntity userEntity = new UserEntity();
+
         userEntity.setEmail(userDTORequest.getEmail());
         userEntity.setPassword(userDTORequest.getPassword());
         userEntity.setStatus(AccountStatus.valueOf(userDTORequest.getStatus()));
         userEntity.setRole(UserCategory.valueOf(userDTORequest.getRole()));
-        // AGREGAR UBICACION.
+
         return userEntity;
     }
 
     public static UserDTOResponse fromEntity(UserEntity user){
         UserDTOResponse userDTOResponse = new UserDTOResponse();
+
         userDTOResponse.setId(user.getId());
         userDTOResponse.setEmail(user.getEmail());
         userDTOResponse.setRole(user.getRole().name());
         userDTOResponse.setStatus(user.getStatus().name());
         userDTOResponse.setCreatedAt(user.getCreatedAt());
         userDTOResponse.setLocation_id(user.getLocation().getId());
+
         return userDTOResponse;
     }
 }
