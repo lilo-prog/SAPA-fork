@@ -1,12 +1,17 @@
 package com.example.SAPA.service;
 
-import com.example.SAPA.DTOs.RegisterRequestDTO;
-import com.example.SAPA.entities.DoctorEntity;
-import com.example.SAPA.entities.PatientEntity;
-import com.example.SAPA.entities.UserEntity;
-import com.example.SAPA.repositories.DoctorRepository;
-import com.example.SAPA.repositories.PatientRepository;
-import com.example.SAPA.repositories.UserRepository;
+import com.example.SAPA.DTOs.RegisterRequest;
+import com.example.SAPA.DTOs.Response.UserResponseDTO;
+import com.example.SAPA.Models.Entities.DoctorEntity;
+import com.example.SAPA.Models.Entities.PatientEntity;
+import com.example.SAPA.Models.Entities.UserEntity;
+import com.example.SAPA.Repositories.DoctorRepository;
+import com.example.SAPA.Repositories.PatientRepository;
+import com.example.SAPA.Repositories.SpecialityRepository;
+import com.example.SAPA.Repositories.UserRepository;
+import com.example.SAPA.enums.AccountStatus;
+import com.example.SAPA.enums.UserCategory;
+import com.example.SAPA.mappers.UserMapper;
 import com.example.SAPA.security.DTO.AuthResponse;
 import com.example.SAPA.security.entities.CredentialEntity;
 import com.example.SAPA.security.entities.RoleEntity;
@@ -14,10 +19,13 @@ import com.example.SAPA.security.enums.Role;
 import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.security.repositories.RoleRepository;
 import com.example.SAPA.security.service.JWTService;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -30,9 +38,13 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
+    private final UserMapper userMapper;
+    private final SpecialityRepository specialityRepository;
 
-    public UserService(UserRepository userRepository, PatientRepository patientRepository, DoctorRepository doctorRepository,
-                       CredentialRepository credentialRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTService jwtService) {
+    public UserService(UserRepository userRepository, PatientRepository patientRepository,
+                       DoctorRepository doctorRepository, CredentialRepository credentialRepository,
+                       RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTService jwtService,
+                       UserMapper userMapper, SpecialityRepository specialityRepository) {
         this.userRepository = userRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
@@ -40,14 +52,20 @@ public class UserService {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.userMapper = userMapper;
+        this.specialityRepository = specialityRepository;
     }
 
     @Transactional
-    public AuthResponse registerUser(RegisterRequestDTO request) {
+    public AuthResponse registerUser(RegisterRequest request) {
 
         if (request.getRole() == Role.ROLE_DOCTOR) {
             if (request.getLicenseNumber() == null || request.getLicenseNumber().isBlank()) {
                 throw new IllegalArgumentException("La matrícula es obligatoria para los médicos.");
+            }
+
+            if (request.getSpecialities() == null || request.getSpecialities().isEmpty()) {
+                throw new IllegalArgumentException("El médico debe tener al menos una especialidad.");
             }
         }
 
@@ -56,8 +74,8 @@ public class UserService {
         UserEntity userConnector = UserEntity.builder()
                 .email(request.getEmail())
                 .password(encryptedPassword)
-                .status(com.example.SAPA.enums.AccountStatus.ACTIVE)
-                .role(com.example.SAPA.enums.UserCategory.valueOf(request.getRole().name().replace("ROLE_", "")))
+                .status(AccountStatus.ACTIVE)
+                .role(UserCategory.valueOf(request.getRole().name().replace("ROLE_", "")))
                 .build();
 
         userConnector = userRepository.save(userConnector);
@@ -69,6 +87,7 @@ public class UserService {
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
                     .licenseNumber(request.getLicenseNumber())
+                    .specialities((specialityRepository.findAllById(request.getSpecialities())))
                     .build();
             doctorRepository.save(doctor);
 
@@ -101,5 +120,30 @@ public class UserService {
         credentialRepository.save(securityCredentials);
 
         return new AuthResponse(accessToken, refreshToken);
+    }
+
+    public UserResponseDTO getMyProfile(String email) {
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Perfil de usuario no encontrado"));
+
+        return userMapper.toUserResponseDTO(user);
+    }
+
+    public List<UserResponseDTO> getAllUsers(){
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toUserResponseDTO)
+                .toList();
+    }
+
+    public void deleteUser(String email, String password) {
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Perfil de usuario no encontrado"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new BadCredentialsException("Contraseña incorrecta");
+        }
+
+        userRepository.delete(user);
     }
 }

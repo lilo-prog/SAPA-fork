@@ -1,15 +1,13 @@
 package com.example.SAPA.DTOs;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class FdaResponseDTO {
-
     private List<FdaResultDTO> results;
+
 }

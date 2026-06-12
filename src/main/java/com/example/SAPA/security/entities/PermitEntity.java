@@ -21,3 +21,4 @@ public class PermitEntity {
     @Column(nullable = false, unique = true)
     private Permit permit;
 }
+

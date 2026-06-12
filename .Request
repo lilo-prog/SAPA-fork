@@ -1,0 +1,648 @@
+[1mdiff --git a/src/main/java/com/example/SAPA/DTOs/Request/ReportDTORequest.java b/src/main/java/com/example/SAPA/DTOs/Request/ReportDTORequest.java[m
+[1mdeleted file mode 100644[m
+[1mindex a038c5c..0000000[m
+[1m--- a/src/main/java/com/example/SAPA/DTOs/Request/ReportDTORequest.java[m
+[1m+++ /dev/null[m
+[36m@@ -1,12 +0,0 @@[m
+[31m-package com.example.SAPA.DTOs.Request;[m
+[31m-[m
+[31m-import lombok.AllArgsConstructor;[m
+[31m-import lombok.Data;[m
+[31m-import lombok.NoArgsConstructor;[m
+[31m-[m
+[31m-@Data[m
+[31m-@AllArgsConstructor[m
+[31m-@NoArgsConstructor[m
+[31m-public class ReportDTORequest {[m
+[31m-    [m
+[31m-}[m
+[1mdiff --git a/src/main/java/com/example/SAPA/DTOs/Request/UserDTORequest.java b/src/main/java/com/example/SAPA/DTOs/Request/UserDTORequest.java[m
+[1mindex ee3d26d..2c82c62 100644[m
+[1m--- a/src/main/java/com/example/SAPA/DTOs/Request/UserDTORequest.java[m
+[1m+++ b/src/main/java/com/example/SAPA/DTOs/Request/UserDTORequest.java[m
+[36m@@ -1,6 +1,6 @@[m
+ package com.example.SAPA.DTOs.Request;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.UserEntity;[m
+[32m+[m[32mimport com.example.SAPA.entities.UserEntity;[m
+ import com.example.SAPA.enums.AccountStatus;[m
+ import com.example.SAPA.enums.UserCategory;[m
+ import lombok.AllArgsConstructor;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/DTOs/Response/UserDTOResponse.java b/src/main/java/com/example/SAPA/DTOs/Response/UserDTOResponse.java[m
+[1mindex 24f7fa9..4331947 100644[m
+[1m--- a/src/main/java/com/example/SAPA/DTOs/Response/UserDTOResponse.java[m
+[1m+++ b/src/main/java/com/example/SAPA/DTOs/Response/UserDTOResponse.java[m
+[36m@@ -1,6 +1,6 @@[m
+ package com.example.SAPA.DTOs.Response;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.UserEntity;[m
+[32m+[m[32mimport com.example.SAPA.entities.UserEntity;[m
+ import lombok.AllArgsConstructor;[m
+ import lombok.Data;[m
+ import lombok.NoArgsConstructor;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Repositories/DoctorRepository.java b/src/main/java/com/example/SAPA/Repositories/DoctorRepository.java[m
+[1mindex 05a816e..909fc25 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Repositories/DoctorRepository.java[m
+[1m+++ b/src/main/java/com/example/SAPA/Repositories/DoctorRepository.java[m
+[36m@@ -1,6 +1,6 @@[m
+ package com.example.SAPA.Repositories;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.DoctorEntity;[m
+[32m+[m[32mimport com.example.SAPA.entities.DoctorEntity;[m
+ import org.springframework.data.jpa.repository.JpaRepository;[m
+ [m
+ public interface DoctorRepository extends JpaRepository<DoctorEntity, Long>{[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Repositories/ForumRepository.java b/src/main/java/com/example/SAPA/Repositories/ForumRepository.java[m
+[1mdeleted file mode 100644[m
+[1mindex f264fdf..0000000[m
+[1m--- a/src/main/java/com/example/SAPA/Repositories/ForumRepository.java[m
+[1m+++ /dev/null[m
+[36m@@ -1,12 +0,0 @@[m
+[31m-package com.example.SAPA.Repositories;[m
+[31m-[m
+[31m-import com.example.SAPA.Models.Forum.ForumEntity;[m
+[31m-import org.springframework.data.jpa.repository.JpaRepository;[m
+[31m-import org.springframework.stereotype.Repository;[m
+[31m-[m
+[31m-import java.util.List;[m
+[31m-[m
+[31m-@Repository[m
+[31m-public interface ForumRepository extends JpaRepository<ForumEntity, Long> {[m
+[31m-    List<ForumEntity> findByForumName(String forumName);[m
+[31m-}[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Repositories/HealthTipRepository.java b/src/main/java/com/example/SAPA/Repositories/HealthTipRepository.java[m
+[1mdeleted file mode 100644[m
+[1mindex d7229c7..0000000[m
+[1m--- a/src/main/java/com/example/SAPA/Repositories/HealthTipRepository.java[m
+[1m+++ /dev/null[m
+[36m@@ -1,12 +0,0 @@[m
+[31m-package com.example.SAPA.Repositories;[m
+[31m-[m
+[31m-import com.example.SAPA.Models.HealthTipEntity;[m
+[31m-import org.springframework.data.jpa.repository.JpaRepository;[m
+[31m-import org.springframework.stereotype.Repository;[m
+[31m-[m
+[31m-import java.util.List;[m
+[31m-[m
+[31m-@Repository[m
+[31m-public interface HealthTipRepository extends JpaRepository<HealthTipEntity, Long> {[m
+[31m-    List<HealthTipEntity> findByDoctorId(Long doctorId);[m
+[31m-}[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Repositories/PatientRepository.java b/src/main/java/com/example/SAPA/Repositories/PatientRepository.java[m
+[1mindex 1554d84..c005a5e 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Repositories/PatientRepository.java[m
+[1m+++ b/src/main/java/com/example/SAPA/Repositories/PatientRepository.java[m
+[36m@@ -1,6 +1,6 @@[m
+ package com.example.SAPA.Repositories;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.PatientEntity;[m
+[32m+[m[32mimport com.example.SAPA.entities.PatientEntity;[m
+ import org.springframework.data.jpa.repository.JpaRepository;[m
+ [m
+ public interface PatientRepository extends JpaRepository<PatientEntity, Long> {[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Repositories/QuestionnaireRepository.java b/src/main/java/com/example/SAPA/Repositories/QuestionnaireRepository.java[m
+[1mindex bd2cf29..5b2684e 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Repositories/QuestionnaireRepository.java[m
+[1m+++ b/src/main/java/com/example/SAPA/Repositories/QuestionnaireRepository.java[m
+[36m@@ -1,9 +1,7 @@[m
+ package com.example.SAPA.Repositories;[m
+ [m
+[31m-import com.example.SAPA.Models.Questionnaire.QuestionnaireEntity;[m
+[32m+[m[32mimport com.example.SAPA.entities.QuestionnaireEntity;[m
+ import org.springframework.data.jpa.repository.JpaRepository;[m
+[31m-import org.springframework.stereotype.Repository;[m
+ [m
+[31m-@Repository[m
+ public interface QuestionnaireRepository extends JpaRepository<QuestionnaireEntity, Long> {[m
+ }[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Repositories/QuestionnaireResponseRepository.java b/src/main/java/com/example/SAPA/Repositories/QuestionnaireResponseRepository.java[m
+[1mdeleted file mode 100644[m
+[1mindex 019e795..0000000[m
+[1m--- a/src/main/java/com/example/SAPA/Repositories/QuestionnaireResponseRepository.java[m
+[1m+++ /dev/null[m
+[36m@@ -1,12 +0,0 @@[m
+[31m-package com.example.SAPA.Repositories;[m
+[31m-[m
+[31m-import com.example.SAPA.Models.Questionnaire.QuestionnaireResponseEntity;[m
+[31m-import org.springframework.data.jpa.repository.JpaRepository;[m
+[31m-import org.springframework.stereotype.Repository;[m
+[31m-[m
+[31m-import java.util.List;[m
+[31m-[m
+[31m-@Repository[m
+[31m-public interface QuestionnaireResponseRepository extends JpaRepository<QuestionnaireResponseEntity, Long> {[m
+[31m-    List<QuestionnaireResponseEntity> findByPatientId(Long patientId);[m
+[31m-}[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Repositories/UserRepository.java b/src/main/java/com/example/SAPA/Repositories/UserRepository.java[m
+[1mindex e6f833a..09ece6c 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Repositories/UserRepository.java[m
+[1m+++ b/src/main/java/com/example/SAPA/Repositories/UserRepository.java[m
+[36m@@ -1,6 +1,6 @@[m
+ package com.example.SAPA.Repositories;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.UserEntity;[m
+[32m+[m[32mimport com.example.SAPA.entities.UserEntity;[m
+ import org.springframework.data.jpa.repository.JpaRepository;[m
+ [m
+ import java.util.Optional;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/controller/ForumController.java b/src/main/java/com/example/SAPA/controller/ForumController.java[m
+[1mdeleted file mode 100644[m
+[1mindex 5364c3e..0000000[m
+[1m--- a/src/main/java/com/example/SAPA/controller/ForumController.java[m
+[1m+++ /dev/null[m
+[36m@@ -1,34 +0,0 @@[m
+[31m-package com.example.SAPA.controller;[m
+[31m-import com.example.SAPA.Models.Forum.ForumEntity;[m
+[31m-import com.example.SAPA.service.ForumService;[m
+[31m-import org.springframework.beans.factory.annotation.Autowired;[m
+[31m-import org.springframework.web.bind.annotation.*;[m
+[31m-[m
+[31m-import java.util.List;[m
+[31m-[m
+[31m-@RestController[m
+[31m-@RequestMapping("forums")[m
+[31m-public class ForumController {[m
+[31m-    @Autowired[m
+[31m-    private ForumService forumService;[m
+[31m-[m
+[31m-    @PostMapping[m
+[31m-    public ForumEntity createForum(@RequestBody ForumEntity forum){[m
+[31m-        return forumService.create(forum);[m
+[31m-    }[m
+[31m-[m
+[31m-    @GetMapping("/{id}")[m
+[31m-    public  ForumEntity updateForum(@PathVariable Long id, @RequestBody ForumEntity forum){[m
+[31m-        return forumService.update(id, forum);[m
+[31m-    }[m
+[31m-[m
+[31m-    @DeleteMapping("/{id}")[m
+[31m-    public void deleteForum(@PathVariable Long id){[m
+[31m-        forumService.delete(id);[m
+[31m-    }[m
+[31m-[m
+[31m-    @GetMapping("/search")[m
+[31m-    public List<ForumEntity> search(@RequestParam String forumName){[m
+[31m-        return forumService.search(forumName);[m
+[31m-    }[m
+[31m-}[m
+[1mdiff --git a/src/main/java/com/example/SAPA/controller/HealthTipController.java b/src/main/java/com/example/SAPA/controller/HealthTipController.java[m
+[1mindex e8843db..7ec4c1e 100644[m
+[1m--- a/src/main/java/com/example/SAPA/controller/HealthTipController.java[m
+[1m+++ b/src/main/java/com/example/SAPA/controller/HealthTipController.java[m
+[36m@@ -1,9 +1,7 @@[m
+ package com.example.SAPA.controller;[m
+ [m
+[31m-import com.example.SAPA.Models.HealthTipEntity;[m
+[32m+[m[32mimport com.example.SAPA.entities.HealthTipEntity;[m
+ import com.example.SAPA.service.HealthTipService;[m
+[31m-import org.springframework.beans.factory.annotation.Autowired;[m
+[31m-import org.springframework.security.core.parameters.P;[m
+ import org.springframework.web.bind.annotation.*;[m
+ [m
+ import java.util.List;[m
+[36m@@ -12,30 +10,20 @@[m [mimport java.util.List;[m
+ @RequestMapping("/health-tips")[m
+ public class HealthTipController {[m
+ [m
+[31m-    @Autowired[m
+[31m-    private HealthTipService healthTipService;[m
+[32m+[m[32m    private final HealthTipService healthTipService;[m
+ [m
+[31m-    @PostMapping[m
+[31m-    public HealthTipEntity create(@RequestBody HealthTipEntity healthTip) {[m
+[31m-        return healthTipService.create(healthTip);[m
+[31m-    }[m
+[31m-[m
+[31m-    @GetMapping[m
+[31m-    public List<HealthTipEntity> getAll() {[m
+[31m-        return healthTipService.getAll();[m
+[32m+[m[32m    public HealthTipController(HealthTipService healthTipService) {[m
+[32m+[m[32m        this.healthTipService = healthTipService;[m
+     }[m
+ [m
+[31m-    @PutMapping("/{id}")[m
+[31m-    public HealthTipEntity update([m
+[31m-            @PathVariable Long id,[m
+[31m-            @RequestBody HealthTipEntity healthTip) {[m
+[31m-[m
+[31m-        return healthTipService.update(id, healthTip);[m
+[32m+[m[32m    @PostMapping[m
+[32m+[m[32m    public HealthTipEntity createHealthTip(@RequestBody HealthTipEntity healthTip) {[m
+[32m+[m[32m        return healthTipService.createHealthTip(healthTip);[m
+     }[m
+ [m
+[31m-    @DeleteMapping("/{id}")[m
+[31m-    public void delete(@PathVariable Long id) {[m
+[31m-        healthTipService.delete(id);[m
+[32m+[m[32m    @GetMapping("/doctor/{doctorId}")[m
+[32m+[m[32m    public List<HealthTipEntity> getHealthTipByDoctor(@PathVariable Long doctorId) {[m
+[32m+[m[32m        return healthTipService.getHealthTipsByDoctor(doctorId);[m
+     }[m
+ [m
+     @GetMapping("/can-view")[m
+[1mdiff --git a/src/main/java/com/example/SAPA/controller/QuestionnaireController.java b/src/main/java/com/example/SAPA/controller/QuestionnaireController.java[m
+[1mindex 34999b1..c84b65e 100644[m
+[1m--- a/src/main/java/com/example/SAPA/controller/QuestionnaireController.java[m
+[1m+++ b/src/main/java/com/example/SAPA/controller/QuestionnaireController.java[m
+[36m@@ -1,7 +1,7 @@[m
+ package com.example.SAPA.controller;[m
+ [m
+ import com.example.SAPA.DTOs.QuestionnaireDTO;[m
+[31m-import com.example.SAPA.Models.Questionnaire.QuestionnaireEntity;[m
+[32m+[m[32mimport com.example.SAPA.entities.QuestionnaireEntity;[m
+ import com.example.SAPA.service.QuestionnaireService;[m
+ import org.springframework.web.bind.annotation.*;[m
+ [m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Questionnaire/AnswerEntity.java b/src/main/java/com/example/SAPA/entities/AnswerEntity.java[m
+[1msimilarity index 92%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Questionnaire/AnswerEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/AnswerEntity.java[m
+[1mindex 3ccc0b3..db8a4bb 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Questionnaire/AnswerEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/AnswerEntity.java[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-package com.example.SAPA.Models.Questionnaire;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Chat/AttachmentEntity.java b/src/main/java/com/example/SAPA/entities/AttachmentEntity.java[m
+[1msimilarity index 95%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Chat/AttachmentEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/AttachmentEntity.java[m
+[1mindex f3c63a9..b97e8fc 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Chat/AttachmentEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/AttachmentEntity.java[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-package com.example.SAPA.Models.Chat;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+ import com.example.SAPA.enums.AttachmentType;[m
+ import jakarta.persistence.*;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Chat/ConversationEntity.java b/src/main/java/com/example/SAPA/entities/ConversationEntity.java[m
+[1msimilarity index 83%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Chat/ConversationEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/ConversationEntity.java[m
+[1mindex 6e1d4c5..9216435 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Chat/ConversationEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/ConversationEntity.java[m
+[36m@@ -1,7 +1,5 @@[m
+[31m-package com.example.SAPA.Models.Chat;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.DoctorEntity;[m
+[31m-import com.example.SAPA.Models.Entities.PatientEntity;[m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+ [m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Entities/DoctorEntity.java b/src/main/java/com/example/SAPA/entities/DoctorEntity.java[m
+[1msimilarity index 94%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Entities/DoctorEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/DoctorEntity.java[m
+[1mindex a008481..531e8da 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Entities/DoctorEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/DoctorEntity.java[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-package com.example.SAPA.Models.Entities;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+ [m
+ import jakarta.persistence.*;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/FollowRequestEntity.java b/src/main/java/com/example/SAPA/entities/FollowRequestEntity.java[m
+[1msimilarity index 87%[m
+[1mrename from src/main/java/com/example/SAPA/Models/FollowRequestEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/FollowRequestEntity.java[m
+[1mindex 54cb6bb..30df5d6 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/FollowRequestEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/FollowRequestEntity.java[m
+[36m@@ -1,7 +1,5 @@[m
+[31m-package com.example.SAPA.Models;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.DoctorEntity;[m
+[31m-import com.example.SAPA.Models.Entities.PatientEntity;[m
+ import com.example.SAPA.enums.FollowRequestStatus;[m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Forum/ForumEntity.java b/src/main/java/com/example/SAPA/entities/ForumEntity.java[m
+[1msimilarity index 90%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Forum/ForumEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/ForumEntity.java[m
+[1mindex a853bbe..99d4288 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Forum/ForumEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/ForumEntity.java[m
+[36m@@ -1,6 +1,5 @@[m
+[31m-package com.example.SAPA.Models.Forum;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.UserEntity;[m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+ [m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/HealthTipEntity.java b/src/main/java/com/example/SAPA/entities/HealthTipEntity.java[m
+[1msimilarity index 89%[m
+[1mrename from src/main/java/com/example/SAPA/Models/HealthTipEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/HealthTipEntity.java[m
+[1mindex 87d399b..64fc88a 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/HealthTipEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/HealthTipEntity.java[m
+[36m@@ -1,6 +1,5 @@[m
+[31m-package com.example.SAPA.Models;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.DoctorEntity;[m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+ [m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Chat/MessageEntity.java b/src/main/java/com/example/SAPA/entities/MessageEntity.java[m
+[1msimilarity index 90%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Chat/MessageEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/MessageEntity.java[m
+[1mindex 3a9b643..b5f5205 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Chat/MessageEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/MessageEntity.java[m
+[36m@@ -1,6 +1,5 @@[m
+[31m-package com.example.SAPA.Models.Chat;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.UserEntity;[m
+ import com.example.SAPA.enums.MessageType;[m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Entities/PatientEntity.java b/src/main/java/com/example/SAPA/entities/PatientEntity.java[m
+[1msimilarity index 93%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Entities/PatientEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/PatientEntity.java[m
+[1mindex 8f7cfac..32db199 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Entities/PatientEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/PatientEntity.java[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-package com.example.SAPA.Models.Entities;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+ [m
+ import jakarta.persistence.*;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Forum/PostEntity.java b/src/main/java/com/example/SAPA/entities/PostEntity.java[m
+[1msimilarity index 90%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Forum/PostEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/PostEntity.java[m
+[1mindex 06cea1e..d5ed673 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Forum/PostEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/PostEntity.java[m
+[36m@@ -1,6 +1,5 @@[m
+[31m-package com.example.SAPA.Models.Forum;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.UserEntity;[m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+ [m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Questionnaire/QuestionEntity.java b/src/main/java/com/example/SAPA/entities/QuestionEntity.java[m
+[1msimilarity index 93%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Questionnaire/QuestionEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/QuestionEntity.java[m
+[1mindex b2a1c9f..54a6d3c 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Questionnaire/QuestionEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/QuestionEntity.java[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-package com.example.SAPA.Models.Questionnaire;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+ import com.example.SAPA.enums.QuestionType;[m
+ import jakarta.persistence.*;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Questionnaire/QuestionnaireAssignmentEntity.java b/src/main/java/com/example/SAPA/entities/QuestionnaireAssignmentEntity.java[m
+[1msimilarity index 89%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Questionnaire/QuestionnaireAssignmentEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/QuestionnaireAssignmentEntity.java[m
+[1mindex ea2ba7a..710e786 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Questionnaire/QuestionnaireAssignmentEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/QuestionnaireAssignmentEntity.java[m
+[36m@@ -1,6 +1,5 @@[m
+[31m-package com.example.SAPA.Models.Questionnaire;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.PatientEntity;[m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+ [m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Questionnaire/QuestionnaireEntity.java b/src/main/java/com/example/SAPA/entities/QuestionnaireEntity.java[m
+[1msimilarity index 89%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Questionnaire/QuestionnaireEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/QuestionnaireEntity.java[m
+[1mindex 7a2e1b2..fdbafd6 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Questionnaire/QuestionnaireEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/QuestionnaireEntity.java[m
+[36m@@ -1,6 +1,5 @@[m
+[31m-package com.example.SAPA.Models.Questionnaire;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.DoctorEntity;[m
+ import com.example.SAPA.enums.SendFrequency;[m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Questionnaire/QuestionnaireResponseEntity.java b/src/main/java/com/example/SAPA/entities/QuestionnaireResponseEntity.java[m
+[1msimilarity index 93%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Questionnaire/QuestionnaireResponseEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/QuestionnaireResponseEntity.java[m
+[1mindex ac4301a..afc4259 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Questionnaire/QuestionnaireResponseEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/QuestionnaireResponseEntity.java[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-package com.example.SAPA.Models.Questionnaire;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/ReportEntity.java b/src/main/java/com/example/SAPA/entities/ReportEntity.java[m
+[1msimilarity index 92%[m
+[1mrename from src/main/java/com/example/SAPA/Models/ReportEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/ReportEntity.java[m
+[1mindex 220d32c..8a0a4e7 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/ReportEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/ReportEntity.java[m
+[36m@@ -1,6 +1,5 @@[m
+[31m-package com.example.SAPA.Models;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.UserEntity;[m
+ import com.example.SAPA.enums.ReportedContentType;[m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Forum/SavedPostEntity.java b/src/main/java/com/example/SAPA/entities/SavedPostEntity.java[m
+[1msimilarity index 77%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Forum/SavedPostEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/SavedPostEntity.java[m
+[1mindex 14dfa94..89873c1 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Forum/SavedPostEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/SavedPostEntity.java[m
+[36m@@ -1,6 +1,5 @@[m
+[31m-package com.example.SAPA.Models.Forum;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+[31m-import com.example.SAPA.Models.Entities.UserEntity;[m
+ import jakarta.persistence.*;[m
+ import lombok.*;[m
+ [m
+[36m@@ -20,8 +19,8 @@[m [mpublic class SavedPostEntity {[m
+     private Long id;[m
+ [m
+     @ManyToOne[m
+[31m-    @JoinColumn(name = "user_id", nullable = false)[m
+[31m-    private UserEntity userEntity;[m
+[32m+[m[32m    @JoinColumn(name = "doctor_id", nullable = false)[m
+[32m+[m[32m    private DoctorEntity doctor;[m
+ [m
+     @ManyToOne[m
+     @JoinColumn(name = "post_id", nullable = false)[m
+[1mdiff --git a/src/main/java/com/example/SAPA/Models/Entities/UserEntity.java b/src/main/java/com/example/SAPA/entities/UserEntity.java[m
+[1msimilarity index 95%[m
+[1mrename from src/main/java/com/example/SAPA/Models/Entities/UserEntity.java[m
+[1mrename to src/main/java/com/example/SAPA/entities/UserEntity.java[m
+[1mindex 9e55d38..f1f8326 100644[m
+[1m--- a/src/main/java/com/example/SAPA/Models/Entities/UserEntity.java[m
+[1m+++ b/src/main/java/com/example/SAPA/entities/UserEntity.java[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-package com.example.SAPA.Models.Entities;[m
+[32m+[m[32mpackage com.example.SAPA.entities;[m
+ [m
+ import com.example.SAPA.enums.AccountStatus;[m
+ import com.example.SAPA.enums.UserCategory;[m
+[1mdiff --git a/src/main/java/com/example/SAPA/service/ForumService.java b/src/main/java/com/example/SAPA/service/ForumService.java[m
+[1mdeleted file mode 100644[m
+[1mindex 523a60f..0000000[m
+[1m--- a/src/main/java/com/example/SAPA/service/ForumService.java[m
+[1m+++ /dev/null[m
+[36m@@ -1,40 +0,0 @@[m
+[31m-package com.example.SAPA.service;[m
+[31m-[m
+[31m-import com.example.SAPA.Models.Forum.ForumEntity;[m
+[31m-import com.example.SAPA.Repositories.ForumRepository;[m
+[31m-import org.springframework.beans.factory.annotation.Autowired;[m
+[31m-import org.springframework.stereotype.Service;[m
+[31m-[m
+[31m-import java.util.List;[m
+[31m-[m
+[31m-@Service[m
+[31m-public class ForumService {[m
+[31m-[m
+[31m-     @Autowired[m
+[31m-    private ForumRepository forumRepository;[m
+[31m-[m
+[31m-     public ForumEntity create(ForumEntity forum){[m
+[31m-         return forumRepository.save(forum);[m
+[31m-     }[m
+[31m-[m
+[31m-     public List<ForumEntity> getAll(){[m
+[31m-         return forumRepository.findAll();[m
+[31m-     }[m
+[31m-[m
+[31m-     public ForumEntity update(Long id, ForumEntity forum){[m
+[31m-         ForumEntity existing = forumRepository.findById(id).orElseThrow(() -> new RuntimeException("Foro no encontrado."));[m
+[31m-[m
+[31m-         existing.setTitle(forum.getTitle());[m
+[31m-         existing.setDescription(forum.getDescription());[m
+[31m-[m
+[31m-         return forumRepository.save(existing);[m
+[31m-     }[m
+[31m-[m
+[31m-     public void delete(Long id){[m
+[31m-         forumRepository.deleteById(id);[m
+[31m-     }[m
+[31m-[m
+[31m-     public List<ForumEntity> search(String forumName){[m
+[31m-         return forumRepository.findByForumName(forumName);[m
+[31m-     }[m
+[31m-}[m
+[1mdiff --git a/src/main/java/com/example/SAPA/service/HealthTipService.java b/src/main/java/com/example/SAPA/service/HealthTipService.java[m
+[1mindex 53aa16e..59b3daa 100644[m
+[1m--- a/src/main/java/com/example/SAPA/service/HealthTipService.java[m
+[1m+++ b/src/main/java/com/example/SAPA/service/HealthTipService.java[m
+[36m@@ -1,8 +1,6 @@[m
+ package com.example.SAPA.service;[m
+ [m
+[31m-import com.example.SAPA.Models.HealthTipEntity;[m
+[31m-import com.example.SAPA.Repositories.HealthTipRepository;[m
+[31m-import org.springframework.beans.factory.annotation.Autowired;[m
+[32m+[m[32mimport com.example.SAPA.entities.HealthTipEntity;[m
+ import org.springframework.stereotype.Service;[m
+ import org.springframework.web.bind.annotation.PathVariable;[m
+ [m
+[36m@@ -11,31 +9,14 @@[m [mimport java.util.List;[m
+ [m
+ @Service[m
+ public class HealthTipService {[m
+[31m-[m
+[31m-    @Autowired[m
+[31m-    private HealthTipRepository healthTipRepository;[m
+[31m-[m
+[31m-    public HealthTipEntity create(HealthTipEntity healthTip){[m
+[32m+[m[32m    public HealthTipEntity createHealthTip(HealthTipEntity healthTip){[m
+         System.out.println("Health Tip created" + healthTip.getTitle());[m
+ [m
+         return healthTip;[m
+     }[m
+ [m
+[31m-    public List<HealthTipEntity> getAll(){[m
+[31m-        return healthTipRepository.findAll();[m
+[31m-    }[m
+[31m-[m
+[31m-    public HealthTipEntity update(Long id, HealthTipEntity healthTip){[m
+[31m-        HealthTipEntity existing = healthTipRepository.findById(id).orElseThrow(() -> new RuntimeException("Consejo no encontrado"));[m
+[31m-[m
+[31m-        existing.setTitle(healthTip.getTitle());[m
+[31m-        existing.setContent(healthTip.getContent());[m
+[31m-[m
+[31m-        return healthTipRepository.save(existing);[m
+[31m-    }[m
+[31m-[m
+[31m-    public void delete(Long id){[m
+[31m-        healthTipRepository.deleteById(id);[m
+[32m+[m[32m    public List<HealthTipEntity> getHealthTipsByDoctor(Long doctorId){[m
+[32m+[m[32m        return new ArrayList<>();[m
+     }[m
+ [m
+     public boolean canPatientViewHealthTips(Long patientId, Long doctorId){[m
+[1mdiff --git a/src/main/java/com/example/SAPA/service/QuestionnaireService.java b/src/main/java/com/example/SAPA/service/QuestionnaireService.java[m
+[1mindex b364d7e..4bfd456 100644[m
+[1m--- a/src/main/java/com/example/SAPA/service/QuestionnaireService.java[m
+[1m+++ b/src/main/java/com/example/SAPA/service/QuestionnaireService.java[m
+[36m@@ -1,10 +1,14 @@[m
+ package com.example.SAPA.service;[m
+ [m
+ import com.example.SAPA.DTOs.QuestionnaireDTO;[m
+[31m-import com.example.SAPA.Models.Questionnaire.QuestionnaireEntity;[m
+ import com.example.SAPA.Repositories.QuestionnaireRepository;[m
+[32m+[m[32mimport com.example.SAPA.entities.QuestionnaireEntity;[m
+[32m+[m[32mimport com.example.SAPA.exceptions.EmptyCollectionException;[m
+[32m+[m[32mimport jakarta.persistence.EntityNotFoundException;[m
+ import org.springframework.stereotype.Service;[m
+ [m
+[32m+[m[32mimport java.util.Optional;[m
+[32m+[m
+ @Service[m
+ public class QuestionnaireService {[m
+     public final QuestionnaireRepository questionnaireRepository;[m
+[36m@@ -12,6 +16,12 @@[m [mpublic class QuestionnaireService {[m
+     public QuestionnaireService(QuestionnaireRepository questionnaireRepository) {[m
+         this.questionnaireRepository = questionnaireRepository;[m
+     }[m
+[32m+[m[41m    [m
+[32m+[m[32m    public boolean validateQuestionaries(){[m
+[32m+[m[32m        if(questionnaireRepository.count()==0) return false;[m
+[32m+[m[32m        return true;[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+ [m
+     public QuestionnaireEntity createQuestionnaire(QuestionnaireDTO dto){[m
+         QuestionnaireEntity questionnaire = new QuestionnaireEntity();[m
+[36m@@ -29,5 +39,10 @@[m [mpublic class QuestionnaireService {[m
+     public String getResponses(Long patientId){[m
+         return "Respuestas del paciente" + patientId;[m
+     }[m
+[32m+[m[41m    [m
+[32m+[m[32m    public QuestionnaireEntity getQuestionnaireById(Long QuestionnaireId) throws EmptyCollectionException,  EntityNotFoundException {[m
+[32m+[m[32m        if(validateQuestionaries()) throw new  EmptyCollectionException("No hay cuestionarios");[m
+[32m+[m[32m        return questionnaireRepository.findById(QuestionnaireId).orElseThrow( ()-> new EntityNotFoundException("No se encontro el cuestionario"));[m
+[32m+[m[32m    }[m
+ }[m
+ [m

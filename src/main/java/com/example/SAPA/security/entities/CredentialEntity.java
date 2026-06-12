@@ -1,6 +1,8 @@
 package com.example.SAPA.security.entities;
 
-import com.example.SAPA.entities.UserEntity;
+
+import com.example.SAPA.Models.Entities.UserEntity;
+import com.example.SAPA.security.mapping.RolePermitMapping;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -62,9 +64,15 @@ public class CredentialEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
 
-        roles.forEach(rol ->
-                authorities.add(new SimpleGrantedAuthority(rol.getRole().name()))
-        );
+        RolePermitMapping permitMapping = new RolePermitMapping();
+
+        roles.forEach(rol -> {
+            authorities.add(new SimpleGrantedAuthority(rol.getRole().name()));
+
+            permitMapping.getPermitsForRole(rol.getRole()).forEach(permit -> {
+                authorities.add(new SimpleGrantedAuthority(permit.name()));
+            });
+        });
 
         return authorities;
     }
