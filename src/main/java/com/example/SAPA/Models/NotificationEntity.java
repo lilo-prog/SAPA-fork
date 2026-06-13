@@ -3,15 +3,14 @@ package com.example.SAPA.Models;
 import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.enums.NotificationType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name="notifications")
 public class NotificationEntity {

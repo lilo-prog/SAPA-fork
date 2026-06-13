@@ -2,13 +2,12 @@ package com.example.SAPA.Models.MedicalRecord;
 
 import com.example.SAPA.enums.TimeLapse;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter @Setter @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "duration")
 public class DurationEntity {

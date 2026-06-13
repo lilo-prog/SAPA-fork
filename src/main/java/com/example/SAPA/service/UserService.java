@@ -112,17 +112,13 @@ public class UserService {
     public void validateUsers() throws EmptyCollectionException {
         if(userRepository.count() == 0) throw new EmptyCollectionException("No hay usuarios registrados");
     }
-    public void validateUserId(Long id) throws EmptyCollectionException {
-        validateUsers();
-        if(id<0||id>userRepository.count()) throw new IllegalArgumentException("ID Invalido");
-    }
 
     public List<UserDTOResponse> getAllUsers() throws  EmptyCollectionException{
         validateUsers();
         return userRepository.findAll().stream().map(UserMapper::fromEntity).toList();
     }
     public Optional<UserDTOResponse> getUserById(Long id) throws EmptyCollectionException {
-        validateUserId(id);
+        validateUsers();
         return Optional.of(userRepository.findById(id).map(UserMapper::fromEntity).orElseThrow(()->new EntityNotFoundException("Usuario no encontrado")));
     }
 }

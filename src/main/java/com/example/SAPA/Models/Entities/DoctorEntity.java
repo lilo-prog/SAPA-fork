@@ -4,7 +4,7 @@ import com.example.SAPA.Models.SpecialityEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
+@Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

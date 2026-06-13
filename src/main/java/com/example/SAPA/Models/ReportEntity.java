@@ -6,11 +6,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 @Entity
 @Table(name = "reports")
 public class ReportEntity {
@@ -21,7 +20,7 @@ public class ReportEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "reported_by", nullable = false)
+    @JoinColumn(name = "reported_by_id", nullable = false)
     private UserEntity reportedBy;
 
     @Enumerated(EnumType.STRING)
