@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDate;
 
-@Data
+@Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

@@ -3,18 +3,18 @@ package com.example.SAPA.Models;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Getter @Setter
+@Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Builder
 @Entity
-@Table(name="speciality")
-public class SpecialityEntity {
+@Table(name = "medicines")
+public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name =  "speciality_id")
+    @Column(name="medicine_id")
     private Long id;
     private String name;
-    private String description;
+    private String brand;
+
 }
