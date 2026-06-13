@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

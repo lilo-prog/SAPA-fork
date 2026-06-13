@@ -6,11 +6,10 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 @Entity
 @Table(name = "saved_post")
 public class SavedPostEntity {

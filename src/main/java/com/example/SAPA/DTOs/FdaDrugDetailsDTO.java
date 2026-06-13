@@ -5,7 +5,7 @@ import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class FdaDrugDetailsDTO {
@@ -13,6 +13,4 @@ public class FdaDrugDetailsDTO {
     private List<String> brandName;
     @JsonProperty("generic_name")
     private List<String> genericName;
-
-
 }
