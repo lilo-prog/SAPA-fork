@@ -144,8 +144,8 @@ public class UserService {
         return userRepository.findAll().stream().map(UserMapper::fromEntity).toList();
     }
 
-    public Optional<UserDTOResponse> getUserById(Long id) throws EmptyCollectionException {
+    public Optional<UserEntity> getUserById(Long id) throws EmptyCollectionException {
         validateUserId(id);
-        return Optional.of(userRepository.findById(id).map(UserMapper::fromEntity).orElseThrow(()->new EntityNotFoundException("Usuario no encontrado")));
+        return userRepository.findById(id);
     }
 }

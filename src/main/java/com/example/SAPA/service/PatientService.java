@@ -7,6 +7,7 @@ import com.example.SAPA.DTOs.Mappers.UserMapper;
 import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Repositories.PatientRepository;
+import com.example.SAPA.Repositories.UserRepository;
 import com.example.SAPA.exceptions.EmptyCollectionException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,12 @@ import java.util.Optional;
 public class PatientService {
     //Atributos
     private final PatientRepository patientRepository;
+    private final UserRepository userRepository;
 
     //Constructor
-    public PatientService(PatientRepository patientRepository){
+    public PatientService(PatientRepository patientRepository, UserRepository userRepository){
         this.patientRepository = patientRepository;
+        this.userRepository = userRepository;
     }
 
     //Metodos
@@ -42,11 +45,15 @@ public class PatientService {
 
     public Optional<PatientDTOResponse> getPatientById(Long id) throws EmptyCollectionException {
         validatePatientId(id);
-        return Optional.of(patientRepository.findById(id).map(PatientMapper::fromEntity).orElseThrow(()-> new EntityNotFoundException("Paciente no encontrado")));
+        return Optional.of(patientRepository.findById(id).map(PatientMapper::fromEntity).orElseThrow(()-> new EntityNotFoundException("Paciente no encontrado.")));
     }
 
-    public String savePatient(PatientDTORequest patientDTORequest, UserEntity userEntity) throws EmptyCollectionException {
-        patientRepository.save(PatientMapper.toEntity(patientDTORequest, userEntity));
+    public String savePatient(PatientDTORequest patientDTORequest) throws EmptyCollectionException {
+        UserEntity user = userRepository.findById(patientDTORequest.getUser_id())
+                        .orElseThrow(() -> new EmptyCollectionException("Usuario no encontrado."));
+
+        patientRepository.save(
+                PatientMapper.toEntity(patientDTORequest, user));
         return "Paciente agregado correctamente!";
     }
 

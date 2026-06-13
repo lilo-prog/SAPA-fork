@@ -37,7 +37,7 @@ public class CredentialEntity implements UserDetails {
     private boolean active = true;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true)
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
     private UserEntity user;
 
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
