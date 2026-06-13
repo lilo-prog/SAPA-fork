@@ -24,7 +24,7 @@ public class NotificationController {
     }
     @GetMapping("/{id}")
     public List<NotificationEntity> getNotificationByUserId(@PathVariable Long user_id) throws EmptyCollectionException{
-        return notificationService.getNotificationsByUserId(user_id);
+        return notificationService.getAllNotifications().stream().filter()
     }
 
 }

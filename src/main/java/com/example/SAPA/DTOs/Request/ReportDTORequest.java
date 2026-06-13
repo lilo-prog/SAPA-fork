@@ -1,10 +1,5 @@
 package com.example.SAPA.DTOs.Request;
 
-import com.example.SAPA.Models.Entities.UserEntity;
-import com.example.SAPA.enums.ReportedContentType;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,16 +10,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReportDTORequest {
-    private Long user_id;
-
-    private ReportedContentType contentType;
-
-    private Long contentId;
-
+    private Long id;
+    private Long user_reporter_id;
+    private Long content_id;
+    private String contentType;
     private String reason;
-
-    private LocalDateTime createdAt;
-
+    private LocalDateTime created_at;
     private boolean reviewed;
-
 }
