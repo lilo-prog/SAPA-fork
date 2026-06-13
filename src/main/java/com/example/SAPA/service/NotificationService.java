@@ -23,16 +23,13 @@ public class NotificationService {
     public void validateNotifications() throws EmptyCollectionException {
         if(notificationRepository.count() < 0) throw new EmptyCollectionException("No hay notificaciones");
     }
-    public void validateId(Long id) throws EmptyCollectionException{
-        validateNotifications();
-        if(id<0 || id>notificationRepository.count()) throw new IllegalArgumentException("ID invalido");
-    }
+
     public List<NotificationEntity> getAllNotifications() throws EmptyCollectionException{
         validateNotifications();
         return notificationRepository.findAll();
     }
     public Optional<NotificationEntity> getNotificationById(Long id) throws EmptyCollectionException{
-        validateId(id);
+        validateNotifications();
         return Optional.of(notificationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Notificacion no encontrada")));
     }
     public String saveNotification(NotificationEntity notificationEntity) throws EmptyCollectionException{
