@@ -37,6 +37,7 @@ public class MessageEntity {
     private MessageType type;
 
     @OneToMany(mappedBy = "message")
+    @Builder.Default
     private List<AttachmentEntity> attatchments = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)

@@ -1,7 +1,7 @@
 package com.example.SAPA.controller;
 
-import com.example.SAPA.DTOs.DeleteAccountRequest;
-import com.example.SAPA.DTOs.RegisterRequest;
+import com.example.SAPA.DTOs.Request.DeleteAccountRequest;
+import com.example.SAPA.DTOs.Request.RegisterRequest;
 import com.example.SAPA.DTOs.Response.UserResponseDTO;
 import com.example.SAPA.security.DTO.AuthResponse;
 import com.example.SAPA.service.UserService;

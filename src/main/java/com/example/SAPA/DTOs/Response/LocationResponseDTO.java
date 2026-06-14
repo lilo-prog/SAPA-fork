@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class LocationDTOResponse {
+public class LocationResponseDTO {
     private Long id;
     private String googlePlaceId;
     private String country;

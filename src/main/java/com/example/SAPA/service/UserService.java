@@ -1,6 +1,6 @@
 package com.example.SAPA.service;
 
-import com.example.SAPA.DTOs.RegisterRequest;
+import com.example.SAPA.DTOs.Request.RegisterRequest;
 import com.example.SAPA.DTOs.Response.UserResponseDTO;
 import com.example.SAPA.Models.Entities.DoctorEntity;
 import com.example.SAPA.Models.Entities.PatientEntity;

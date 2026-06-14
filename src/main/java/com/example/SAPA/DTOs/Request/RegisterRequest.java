@@ -1,4 +1,4 @@
-package com.example.SAPA.DTOs;
+package com.example.SAPA.DTOs.Request;
 
 import com.example.SAPA.security.enums.Role;
 import lombok.AllArgsConstructor;

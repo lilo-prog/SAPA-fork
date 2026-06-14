@@ -57,7 +57,10 @@ public class SecurityConfig {
 
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/specialities").permitAll() //cambiar acceso
-                //ABM de usuarios
+                //WebSockets
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/uploads/chat/**").permitAll()
+                        //ABM de usuarios
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/users").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/users/update").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")

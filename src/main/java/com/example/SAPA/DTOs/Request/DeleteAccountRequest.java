@@ -1,4 +1,4 @@
-package com.example.SAPA.DTOs;
+package com.example.SAPA.DTOs.Request;
 
 public record DeleteAccountRequest(String password) {}
 

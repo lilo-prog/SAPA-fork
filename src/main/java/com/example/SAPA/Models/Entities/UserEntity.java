@@ -18,7 +18,6 @@ public class UserEntity {
     // Entidad de usuario.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -41,6 +40,7 @@ public class UserEntity {
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
 
     @PrePersist
     public void prePersist() {

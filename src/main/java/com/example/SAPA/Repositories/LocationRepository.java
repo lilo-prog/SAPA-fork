@@ -1,6 +1,5 @@
 package com.example.SAPA.Repositories;
 
-import com.example.SAPA.DTOs.Response.UserDTOResponse;
 import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Models.LocationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

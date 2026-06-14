@@ -1,0 +1,84 @@
+package com.example.SAPA.service;
+
+import com.example.SAPA.DTOs.ChatDTO;
+import com.example.SAPA.Models.Chat.ConversationEntity;
+import com.example.SAPA.Models.Chat.MessageEntity;
+import com.example.SAPA.Models.Entities.UserEntity;
+import com.example.SAPA.Repositories.ConversationRepository;
+import com.example.SAPA.Repositories.MessageRepository;
+import com.example.SAPA.enums.MessageType;
+import com.example.SAPA.mappers.MessageMapper;
+import com.example.SAPA.security.entities.CredentialEntity;
+import com.example.SAPA.security.repositories.CredentialRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+
+import java.security.Principal;
+
+@Service
+@RequiredArgsConstructor
+public class MessageService {
+
+    private final MessageRepository messageRepository;
+    private final ConversationRepository conversationRepository;
+    private final CredentialRepository credentialRepository;
+    private final ConversationService conversationService;
+    private final MessageMapper messageMapper;
+    private final SimpMessagingTemplate messagingTemplate;
+
+
+    private UserEntity getUserFromPrincipal(Principal principal) {
+        CredentialEntity credential = credentialRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+        return credential.getUser();
+    }
+
+    public void sendMessage(Long conversationId, ChatDTO.SendMessageRequest request, Principal principal) {
+        UserEntity sender = getUserFromPrincipal(principal);
+
+        ConversationEntity conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new EntityNotFoundException("Conversación no encontrada con id: " + conversationId));
+
+        conversationService.validateParticipant(sender, conversation);
+
+        MessageEntity message = MessageEntity.builder()
+                .conversation(conversation)
+                .sender(sender)
+                .content(request.content())
+                .type(request.type() != null ? request.type() : MessageType.TEXT)
+                .build();
+
+        MessageEntity saved = messageRepository.save(message);
+
+        String senderName = conversationService.resolveSenderName(sender);
+        ChatDTO.MessageResponse response = messageMapper.toResponse(saved, senderName);
+
+        messagingTemplate.convertAndSend(
+                "/queue/conversation/" + conversationId,
+                response
+        );
+    }
+
+    public void sendSystemMessage(ConversationEntity conversation, String content) {
+        UserEntity systemSender = conversation.getPatient().getUser();
+
+        MessageEntity systemMessage = MessageEntity.builder()
+                .conversation(conversation)
+                .sender(systemSender)
+                .content(content)
+                .type(MessageType.SYSTEM)
+                .build();
+
+        MessageEntity saved = messageRepository.save(systemMessage);
+
+        String senderName = conversationService.resolveSenderName(systemSender);
+        ChatDTO.MessageResponse response = messageMapper.toResponse(saved, senderName);
+
+        messagingTemplate.convertAndSend(
+                "/queue/conversation/" + conversation.getId(),
+                response
+        );
+    }
+}

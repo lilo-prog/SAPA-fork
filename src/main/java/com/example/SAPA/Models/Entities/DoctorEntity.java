@@ -4,6 +4,8 @@ import com.example.SAPA.Models.SpecialityEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,8 +39,11 @@ public class DoctorEntity {
 
     private String phoneNumber;
 
-    @ManyToOne
-    @JoinColumn(name="speciality_id",nullable = false)
-    private SpecialityEntity speciality;
-
+    @ManyToMany
+    @JoinTable(
+            name = "doctor_speciality",
+            joinColumns = @JoinColumn(name = "doctor_id"),
+            inverseJoinColumns = @JoinColumn(name = "speciality_id")
+    )
+    private List<SpecialityEntity> specialities;
 }

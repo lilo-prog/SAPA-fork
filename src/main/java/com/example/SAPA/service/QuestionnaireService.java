@@ -1,8 +1,8 @@
 package com.example.SAPA.service;
 
 import com.example.SAPA.DTOs.QuestionnaireDTO;
-import com.example.SAPA.repositories.QuestionnaireRepository;
-import com.example.SAPA.entities.QuestionnaireEntity;
+import com.example.SAPA.Models.Questionnaire.QuestionnaireEntity;
+import com.example.SAPA.Repositories.QuestionnaireRepository;
 import org.springframework.stereotype.Service;
 
 @Service
