@@ -1,14 +1,10 @@
 package com.example.SAPA.controller;
 
-import com.example.SAPA.DTOs.Mappers.UserMapper;
 import com.example.SAPA.DTOs.Request.PatientDTORequest;
 import com.example.SAPA.DTOs.Response.PatientDTOResponse;
-import com.example.SAPA.DTOs.Response.UserDTOResponse;
 import com.example.SAPA.Models.Entities.PatientEntity;
-import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.exceptions.EmptyCollectionException;
 import com.example.SAPA.service.PatientService;
-import com.example.SAPA.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

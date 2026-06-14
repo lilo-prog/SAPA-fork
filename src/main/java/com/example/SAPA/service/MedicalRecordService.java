@@ -1,5 +1,6 @@
 package com.example.SAPA.service;
 
+import com.example.SAPA.DTOs.Response.PatientDTOResponse;
 import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.MedicalRecord.MedicalRecordEntity;
 import com.example.SAPA.Models.Medicine;
@@ -18,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MedicalRecordService {
     private final MedicalRecordRepository medicalRecordRepository;
-    private final PatientRepository patientRepository;
+    private final PatientService patientService;
     private final MedicineService medicineService;
 
     public void validateMedicalRecords() throws EmptyCollectionException {
@@ -50,10 +51,10 @@ public class MedicalRecordService {
             Long patientId,
             Long medicineId) throws EmptyCollectionException {
 
-        PatientEntity patient = patientRepository.findById(patientId)
-                .orElseThrow(()-> new EntityNotFoundException("Paciente no encontrado"));
+        PatientDTOResponse patient = patientService.getPatientById(patientId).get();
 
-        MedicalRecordEntity record = patient.getMedicalRecord();
+        MedicalRecordEntity record = medicalRecordRepository.findById(patient.getMedical_record_id())
+                .orElseThrow(()->new EntityNotFoundException("Ficha medica no encontrada."));
 
         Medicine medicine = medicineService.findById(medicineId);
 
@@ -66,10 +67,9 @@ public class MedicalRecordService {
             Long patientId,
             Long medicineId) throws EmptyCollectionException {
 
-        PatientEntity patient = patientRepository.findById(patientId)
-                .orElseThrow(()-> new EntityNotFoundException("Paciente no encontrado"));
-
-        MedicalRecordEntity record = patient.getMedicalRecord();
+        PatientDTOResponse patient = patientService.getPatientById(patientId).get();
+        MedicalRecordEntity record = medicalRecordRepository.findById(patient.getMedical_record_id())
+                .orElseThrow(()->new EntityNotFoundException("Ficha medica no encontrada."));
 
         Medicine medicine = medicineService.findById(medicineId);
 
