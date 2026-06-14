@@ -1,6 +1,6 @@
 package com.example.SAPA.Models.MedicalRecord;
 
-import com.example.SAPA.DTOs.FdaResponseDTO;
+import com.example.SAPA.Models.Medicine;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +17,7 @@ public class MedicalRecordEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="medical_record_id")
     private Long id;
-    private List<FdaResponseDTO> medications;
+    private List<Medicine> medicines;
     private List<TreatmentEntity> treatements;
 
 }

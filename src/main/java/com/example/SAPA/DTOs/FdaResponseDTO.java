@@ -9,5 +9,4 @@ import java.util.List;
 @NoArgsConstructor
 public class FdaResponseDTO {
     private List<FdaResultDTO> results;
-
 }
