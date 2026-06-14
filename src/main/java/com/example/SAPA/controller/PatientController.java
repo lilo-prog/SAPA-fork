@@ -40,6 +40,6 @@ public class PatientController {
     }
     @PutMapping("/{id}")
     public String updatePatient(@PathVariable Long id,@RequestBody PatientEntity patientEntity) throws EmptyCollectionException {
-        return patientService.updatePatient(id,patientEntity);
+        return patientService.updatePatient(patientEntity);
     }
 }

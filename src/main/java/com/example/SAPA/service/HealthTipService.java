@@ -4,21 +4,17 @@ import com.example.SAPA.Models.HealthTipEntity;
 import com.example.SAPA.Repositories.FollowRequestRepository;
 import com.example.SAPA.Repositories.HealthTipRepository;
 import com.example.SAPA.enums.FollowRequestStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class HealthTipService {
     //Atributos.
     private final HealthTipRepository healthTipRepository;
     private final FollowRequestRepository followRequestRepository;
-
-    //Constructor.
-    public HealthTipService(HealthTipRepository healthTipRepository, FollowRequestRepository followRequestRepository) {
-        this.healthTipRepository = healthTipRepository;
-        this.followRequestRepository = followRequestRepository;
-    }
 
     //Métodos.
     public HealthTipEntity create(HealthTipEntity healthTip){

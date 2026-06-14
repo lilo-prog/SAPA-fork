@@ -20,6 +20,8 @@ import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.security.repositories.RoleRepository;
 import com.example.SAPA.security.service.JWTService;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     //Atributos.
     private final UserRepository userRepository;
@@ -39,18 +42,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
     private final LocationRepository locationRepository;
-
-    //Constructor.
-    public UserService(UserRepository userRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, CredentialRepository credentialRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTService jwtService, LocationRepository locationRepository){
-        this.userRepository = userRepository;
-        this.patientRepository = patientRepository;
-        this.doctorRepository = doctorRepository;
-        this.credentialRepository = credentialRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.locationRepository = locationRepository;
-    }
 
     //Métodos.
     @Transactional

@@ -10,6 +10,7 @@ import com.example.SAPA.Repositories.PatientRepository;
 import com.example.SAPA.Repositories.UserRepository;
 import com.example.SAPA.exceptions.EmptyCollectionException;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,25 +18,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PatientService {
     //Atributos
     private final PatientRepository patientRepository;
     private final UserRepository userRepository;
 
-    //Constructor
-    public PatientService(PatientRepository patientRepository, UserRepository userRepository){
-        this.patientRepository = patientRepository;
-        this.userRepository = userRepository;
-    }
-
     //Metodos
     public void validatePatients() throws EmptyCollectionException {
         if(patientRepository.findAll().isEmpty()) throw new EmptyCollectionException("No hay pacientes registrados");
-    }
-
-    public void validatePatientId(Long id) throws EmptyCollectionException{
-        validatePatients();
-        if(id<0||id>patientRepository.count()) throw new IllegalArgumentException("ID invalido");
     }
 
     public List<PatientDTOResponse> getAllPatients() throws EmptyCollectionException{
@@ -44,7 +35,7 @@ public class PatientService {
     }
 
     public Optional<PatientDTOResponse> getPatientById(Long id) throws EmptyCollectionException {
-        validatePatientId(id);
+        validatePatients();
         return Optional.of(patientRepository.findById(id).map(PatientMapper::fromEntity).orElseThrow(()-> new EntityNotFoundException("Paciente no encontrado.")));
     }
 
@@ -57,8 +48,8 @@ public class PatientService {
         return "Paciente agregado correctamente!";
     }
 
-    public String updatePatient(Long id,PatientEntity patientEntity) throws EmptyCollectionException {
-        validatePatientId(id);
+    public String updatePatient(PatientEntity patientEntity) throws EmptyCollectionException {
+        validatePatients();
         patientRepository.save(patientEntity);
         return "Paciente actualizado correctamente!";
     }

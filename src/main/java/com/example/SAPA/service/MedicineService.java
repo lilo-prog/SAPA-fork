@@ -9,22 +9,19 @@ import com.example.SAPA.Repositories.PatientRepository;
 import com.example.SAPA.exceptions.EmptyCollectionException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class MedicineService {
-    @Autowired
-    private MedicineRepository medicineRepository;
-    @Autowired
-    private PatientRepository patientRepository;
-    @Autowired
-    private MedicalRecordRepository medicalRecordRepository;
-    @Autowired
-    private FdaService fdaService;
+    private final MedicineRepository medicineRepository;
+    private final PatientRepository patientRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
+    private final FdaService fdaService;
 
     public void validateMedicines() throws EmptyCollectionException {
         if(medicineRepository.count()==0) throw new EmptyCollectionException("No hay medicinas registradas");

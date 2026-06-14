@@ -2,15 +2,16 @@ package com.example.SAPA.service;
 
 import com.example.SAPA.Models.Forum.ForumEntity;
 import com.example.SAPA.Repositories.ForumRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ForumService {
     //Atributos.
-     @Autowired
-    private ForumRepository forumRepository;
+    private final ForumRepository forumRepository;
 
      //Métodos
      public ForumEntity create(ForumEntity forum){

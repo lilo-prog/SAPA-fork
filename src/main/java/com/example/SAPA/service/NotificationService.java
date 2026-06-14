@@ -4,21 +4,18 @@ import com.example.SAPA.Models.NotificationEntity;
 import com.example.SAPA.Repositories.NotificationRepository;
 import com.example.SAPA.exceptions.EmptyCollectionException;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class NotificationService {
     //Atributos
     private final NotificationRepository notificationRepository;
     private final UserService userService ;
-    //Constructor
-    public NotificationService(NotificationRepository notificationRepository,UserService userService) {
-        this.notificationRepository = notificationRepository;
-        this.userService = userService;
-    }
     //Metodos
     public void validateNotifications() throws EmptyCollectionException {
         if(notificationRepository.count() < 0) throw new EmptyCollectionException("No hay notificaciones");

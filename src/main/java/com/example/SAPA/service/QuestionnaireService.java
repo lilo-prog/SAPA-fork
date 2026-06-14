@@ -11,11 +11,13 @@ import com.example.SAPA.Repositories.QuestionnaireResponseRepository;
 import com.example.SAPA.enums.SendFrequency;
 import com.example.SAPA.security.entities.CredentialEntity;
 import com.example.SAPA.security.repositories.CredentialRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionnaireService {
     //Atributos.
     public final QuestionnaireRepository questionnaireRepository;
@@ -23,13 +25,6 @@ public class QuestionnaireService {
     private final QuestionnaireResponseRepository responseRepository;
     private final CredentialRepository credentialRepository;
 
-    //Constructor.
-    public QuestionnaireService(QuestionnaireRepository questionnaireRepository, DoctorRepository doctorRepository, QuestionnaireResponseRepository responseRepository, CredentialRepository credentialRepository) {
-        this.questionnaireRepository = questionnaireRepository;
-        this.doctorRepository = doctorRepository;
-        this.responseRepository = responseRepository;
-        this.credentialRepository = credentialRepository;
-    }
 
     //Métodos.
     public QuestionnaireEntity createQuestionnaire(QuestionnaireDTO dto){

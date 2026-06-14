@@ -3,20 +3,18 @@ package com.example.SAPA.service;
 import com.example.SAPA.Models.FollowRequestEntity;
 import com.example.SAPA.Repositories.FollowRequestRepository;
 import com.example.SAPA.enums.FollowRequestStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FollowRequestService {
     //Atributos.
     private final FollowRequestRepository followRequestRepository;
 
     //Métodos.
-    public FollowRequestService(FollowRequestRepository followRequestRepository) {
-        this.followRequestRepository = followRequestRepository;
-    }
-
     public FollowRequestEntity create (FollowRequestEntity request){
         return followRequestRepository.save(request);
     }
