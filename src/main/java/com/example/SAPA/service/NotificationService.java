@@ -12,8 +12,8 @@ import java.util.Optional;
 @Service
 public class NotificationService {
     //Atributos
-    private NotificationRepository notificationRepository;
-    private UserService userService ;
+    private final NotificationRepository notificationRepository;
+    private final UserService userService ;
     //Constructor
     public NotificationService(NotificationRepository notificationRepository,UserService userService) {
         this.notificationRepository = notificationRepository;

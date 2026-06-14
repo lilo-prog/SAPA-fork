@@ -35,7 +35,7 @@ public class UserEntity {
     @Column(nullable = false)
     private AccountStatus status;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "location_id")
     private LocationEntity location;
 

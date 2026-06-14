@@ -15,6 +15,5 @@ public class UserDTORequest {
     private String password;
     private String status;
     private String role;
-
-
+    private String googlePlaceId;
 }

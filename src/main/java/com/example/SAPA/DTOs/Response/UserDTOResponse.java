@@ -1,6 +1,7 @@
 package com.example.SAPA.DTOs.Response;
 
 import com.example.SAPA.Models.Entities.UserEntity;
+import com.example.SAPA.Models.LocationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class UserDTOResponse {
     private String role;
     private String status;
     private LocalDateTime createdAt;
-
+    private Long location_id;
 
 }
 
