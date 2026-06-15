@@ -7,22 +7,18 @@ import com.example.SAPA.Repositories.DoctorRepository;
 import com.example.SAPA.Repositories.SpecialityRepository;
 import com.example.SAPA.Repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class DoctorService {
 
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
     private final SpecialityRepository specialityRepository;
 
-    public DoctorService(DoctorRepository doctorRepository, UserRepository userRepository,
-                         SpecialityRepository specialityRepository) {
-        this.doctorRepository = doctorRepository;
-        this.userRepository = userRepository;
-        this.specialityRepository = specialityRepository;
-    }
 
     @Transactional
     public void updateDoctor(String email, UpdateDoctorRequestDTO request) {

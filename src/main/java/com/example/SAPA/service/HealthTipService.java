@@ -32,7 +32,6 @@ public class HealthTipService {
         this.healthTipMapper = healthTipMapper;
     }
 
-    //Métodos.
     public HealthTipEntity createHealthTip(HealthTipEntity healthTip, String doctorEmail){
 
         CredentialEntity credentials = credentialRepository.findByEmail(doctorEmail)

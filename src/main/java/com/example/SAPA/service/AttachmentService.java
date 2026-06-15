@@ -11,12 +11,9 @@ import com.example.SAPA.Repositories.MessageRepository;
 import com.example.SAPA.enums.AttachmentType;
 import com.example.SAPA.enums.MessageType;
 import com.example.SAPA.mappers.MessageMapper;
-import com.example.SAPA.security.entities.CredentialEntity;
-import com.example.SAPA.security.repositories.CredentialRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,26 +29,16 @@ public class AttachmentService {
     private final AttachmentRepository attachmentRepository;
     private final MessageRepository messageRepository;
     private final ConversationRepository conversationRepository;
-    private final CredentialRepository credentialRepository;
     private final ConversationService conversationService;
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageMapper messageMapper;
+    private final UserContextService userContextService;
 
     private static final String UPLOAD_DIR = "uploads/chat/";
 
-    private UserEntity getAuthenticatedUser() {
-        String email = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
-
-        CredentialEntity credential = credentialRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario autenticado no encontrado"));
-
-        return credential.getUser();
-    }
 
     public ChatDTO.MessageResponse uploadAttachment(Long conversationId, MultipartFile file) throws IOException {
-        UserEntity sender = getAuthenticatedUser();
+        UserEntity sender = userContextService.getAuthenticatedUser();
 
         ConversationEntity conversation = conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new EntityNotFoundException("Conversación no encontrada con id: " + conversationId));
@@ -93,7 +80,7 @@ public class AttachmentService {
 
         savedMessage.setAttatchments(List.of(attachment));
 
-        String senderName = conversationService.resolveSenderName(sender);
+        String senderName = userContextService.resolveName(sender); //puede que este mal esta linea y no haga la relacion correctamente
         ChatDTO.MessageResponse response = messageMapper.toResponse(savedMessage, senderName);
 
         messagingTemplate.convertAndSend(

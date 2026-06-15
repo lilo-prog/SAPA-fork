@@ -57,7 +57,6 @@ public class QuestionnaireDTO {
             Integer orderIndex
     ) {}
 
-    // Asignación de cuestionario a paciente
     public record AssignmentResponse(
             Long assignmentId,
             Long questionnaireId,
@@ -67,7 +66,6 @@ public class QuestionnaireDTO {
             LocalDateTime assignedAt
     ) {}
 
-    // Respuesta completa de un paciente a un cuestionario
     public record QuestionnaireResponseDTO(
             Long responseId,
             Long assignmentId,
@@ -75,7 +73,6 @@ public class QuestionnaireDTO {
             LocalDateTime answeredAt
     ) {}
 
-    // Una respuesta individual
     public record AnswerResponse(
             Long answerId,
             Long questionId,

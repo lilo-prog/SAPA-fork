@@ -11,11 +11,8 @@ import com.example.SAPA.Repositories.DoctorRepository;
 import com.example.SAPA.Repositories.MessageRepository;
 import com.example.SAPA.Repositories.PatientRepository;
 import com.example.SAPA.mappers.MessageMapper;
-import com.example.SAPA.security.entities.CredentialEntity;
-import com.example.SAPA.security.repositories.CredentialRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,29 +25,8 @@ public class ConversationService {
     private final MessageRepository messageRepository;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
-    private final CredentialRepository credentialRepository;
     private final MessageMapper messageMapper;
-
-
-    private UserEntity getAuthenticatedUser() {
-        String email = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
-
-        CredentialEntity credential = credentialRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario autenticado no encontrado"));
-
-        return credential.getUser();
-    }
-
-    public String resolveSenderName(UserEntity sender) {
-        return patientRepository.findByUser(sender)
-                .map(p -> p.getFirstName() + " " + p.getLastName())
-
-                .orElseGet(() -> doctorRepository.findByUser(sender)
-                        .map(d -> "Dr. " + d.getFirstName() + " " + d.getLastName())
-                        .orElse(sender.getEmail()));
-    }
+    private final UserContextService userContextService;
 
     public ConversationEntity createConversation(PatientEntity patient, DoctorEntity doctor) {
         return conversationRepository.findByPatientAndDoctor(patient, doctor)
@@ -64,7 +40,7 @@ public class ConversationService {
     }
 
     public List<ChatDTO.ConversationSummary> getMyConversations() {
-        UserEntity user = getAuthenticatedUser();
+        UserEntity user = userContextService.getAuthenticatedUser();
 
         boolean isPatient = patientRepository.findByUser(user).isPresent();
 
@@ -82,7 +58,6 @@ public class ConversationService {
             List<MessageEntity> messages = messageRepository
                     .findByConversationOrderBySentAtAsc(conv);
 
-            // Nombre del otro participante según quién es el autenticado
             String otherName = isPatient
                     ? "Dr. " + conv.getDoctor().getFirstName() + " " + conv.getDoctor().getLastName()
                     : conv.getPatient().getFirstName() + " " + conv.getPatient().getLastName();
@@ -106,7 +81,7 @@ public class ConversationService {
     }
 
     public List<ChatDTO.MessageResponse> getConversationHistory(Long conversationId) {
-        UserEntity user = getAuthenticatedUser();
+        UserEntity user = userContextService.getAuthenticatedUser();
 
         ConversationEntity conversation = conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new EntityNotFoundException("Conversación no encontrada con id: " + conversationId));
@@ -116,7 +91,7 @@ public class ConversationService {
         return messageRepository.findByConversationOrderBySentAtAsc(conversation)
                 .stream()
                 .map(message -> {
-                    String senderName = resolveSenderName(message.getSender());
+                    String senderName = userContextService.resolveName(message.getSender());
                     return messageMapper.toResponse(message, senderName);
                 })
                 .toList();

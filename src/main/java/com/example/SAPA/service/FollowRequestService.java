@@ -7,13 +7,9 @@ import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Models.FollowRequestEntity;
 import com.example.SAPA.Repositories.DoctorRepository;
 import com.example.SAPA.Repositories.FollowRequestRepository;
-import com.example.SAPA.Repositories.PatientRepository;
 import com.example.SAPA.enums.FollowRequestStatus;
-import com.example.SAPA.security.entities.CredentialEntity;
-import com.example.SAPA.security.repositories.CredentialRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,38 +19,19 @@ import java.util.List;
 public class FollowRequestService {
 
     private final FollowRequestRepository followRequestRepository;
-    private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
-    private final CredentialRepository credentialRepository;
     private final ConversationService conversationService;
     private final MessageService messageService;
-
-
-    private UserEntity getAuthenticatedUser() {
-        String email = SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getName();
-
-        CredentialEntity credential = credentialRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario autenticado no encontrado"));
-
-        return credential.getUser();
-    }
-
-    private PatientEntity getAuthenticatedPatient() {
-        UserEntity user = getAuthenticatedUser();
-        return patientRepository.findByUser(user)
-                .orElseThrow(() -> new EntityNotFoundException("No se encontró el paciente asociado al usuario autenticado"));
-    }
+    private final UserContextService userContextService;
 
     private DoctorEntity getAuthenticatedDoctor() {
-        UserEntity user = getAuthenticatedUser();
+        UserEntity user = userContextService.getAuthenticatedUser();
         return doctorRepository.findByUser(user)
                 .orElseThrow(() -> new EntityNotFoundException("No se encontró el médico asociado al usuario autenticado"));
     }
 
     public FollowRequestEntity create(Long doctorId) {
-        PatientEntity patient = getAuthenticatedPatient();
+        PatientEntity patient = userContextService.getAuthenticatedPatient();
 
         DoctorEntity doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new EntityNotFoundException("No se encontró el médico con id: " + doctorId));
@@ -117,7 +94,7 @@ public class FollowRequestService {
     }
 
     public FollowRequestEntity dissolve(Long id) {
-        UserEntity authenticatedUser = getAuthenticatedUser();
+        UserEntity authenticatedUser = userContextService.getAuthenticatedUser();
 
         FollowRequestEntity request = followRequestRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Solicitud no encontrada con id: " + id));
@@ -144,7 +121,7 @@ public class FollowRequestService {
     }
 
     public List<FollowRequestEntity> getSentRequests() {
-        PatientEntity patient = getAuthenticatedPatient();
+        PatientEntity patient = userContextService.getAuthenticatedPatient();
         return followRequestRepository.findByPatient(patient);
     }
 }

@@ -20,6 +20,7 @@ import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.security.repositories.RoleRepository;
 import com.example.SAPA.security.service.JWTService;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
@@ -41,20 +43,6 @@ public class UserService {
     private final UserMapper userMapper;
     private final SpecialityRepository specialityRepository;
 
-    public UserService(UserRepository userRepository, PatientRepository patientRepository,
-                       DoctorRepository doctorRepository, CredentialRepository credentialRepository,
-                       RoleRepository roleRepository, PasswordEncoder passwordEncoder, JWTService jwtService,
-                       UserMapper userMapper, SpecialityRepository specialityRepository) {
-        this.userRepository = userRepository;
-        this.patientRepository = patientRepository;
-        this.doctorRepository = doctorRepository;
-        this.credentialRepository = credentialRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.userMapper = userMapper;
-        this.specialityRepository = specialityRepository;
-    }
 
     @Transactional
     public AuthResponse registerUser(RegisterRequest request) {
