@@ -53,28 +53,57 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(auth -> auth
-                //ACCESO PUBLICO (sin token)
 
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/specialities").permitAll() //cambiar acceso
-                        .requestMatchers("/api/medications/search/**").permitAll()
-                //WebSockets
+                        .requestMatchers(HttpMethod.GET, "/specialities").permitAll()
+
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/uploads/chat/**").permitAll()
-                        //ABM de usuarios
-                        .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/users").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/users/update").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/users/profile").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
-                //Explorar la comunidad/foros/posts sin estar registrado
+
                         .requestMatchers(HttpMethod.GET, "/forums/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
-                //Ver medicamentos
+                        .requestMatchers("/forums/**").hasAnyRole("PATIENT", "DOCTOR")
+                        .requestMatchers("/posts/**").hasAnyRole("PATIENT", "DOCTOR")
+
+                        .requestMatchers("/medications/search/**").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/health-tips/**").permitAll()
+                        .requestMatchers("/health-tips/**").hasAnyRole("PATIENT", "DOCTOR")
+
+                        .requestMatchers("/follow-requests/**").hasAnyRole("PATIENT", "DOCTOR")
+
+                        .requestMatchers("/conversations/**").hasAnyRole("PATIENT", "DOCTOR")
+                        .requestMatchers("/medications/patient/**").hasAnyRole("PATIENT", "DOCTOR")
+
+                        .requestMatchers("/questionnaires/**").hasAnyRole("PATIENT", "DOCTOR")
+                        .requestMatchers("/assignments/**").hasAnyRole("PATIENT", "DOCTOR")
+
+                        .requestMatchers("/medical-records/**").hasAnyRole("PATIENT", "DOCTOR")
+                        .requestMatchers("/treatments/**").hasAnyRole("PATIENT", "DOCTOR")
+
+                        .requestMatchers("/notifications/**").hasAnyRole("PATIENT", "DOCTOR")
+
+                        .requestMatchers(HttpMethod.POST, "/reports").hasAnyRole("PATIENT", "DOCTOR")
+                        .requestMatchers("/reports/**").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/medications/patient/**").hasRole("DOCTOR")
+                        .requestMatchers(HttpMethod.PUT, "/medications/**").hasRole("DOCTOR")
+                        .requestMatchers(HttpMethod.DELETE, "/medications/**").hasRole("DOCTOR")
+
+                        .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
+                        .requestMatchers("/users/**").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+
                         .requestMatchers(HttpMethod.GET, "/fda/search-medication").permitAll()
-                //Visualizar perfil publico de medicos
-                        .requestMatchers(HttpMethod.GET, "/doctors/public/**").permitAll()
-                //Documentacion de Swagger
+
+                        .requestMatchers("/doctors/**").hasRole("DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/doctors/**").permitAll()
+
+                        .requestMatchers("/patients/**").hasRole("PATIENT")
+
+                        .requestMatchers("/health-tips/**").hasRole("DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/health-tips/*/hospital-url").permitAll()
+
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
@@ -82,48 +111,6 @@ public class SecurityConfig {
                                 "/webjars/**"
                         ).permitAll()
 
-                //ACCESO RESTRINGIDO POR PERMISOS (hasAuthority)
-
-                //RF14, RF15: Solo el medico diseña y configura cuestionarios
-                        .requestMatchers(HttpMethod.POST, "/questionnaires/**").hasAuthority("CUESTIONARIO_CREAR")
-                        .requestMatchers(HttpMethod.PUT, "/questionnaires/**").hasAuthority("CUESTIONARIO_EDITAR")
-                        .requestMatchers(HttpMethod.DELETE, "/questionnaires/**").hasAuthority("CUESTIONARIO_ELIMINAR")
-                //RF16: Solo el medico lee respuestas de cuestionariosde sus pacientes
-                        .requestMatchers(HttpMethod.GET, "/questionnaires/responses/**").hasAuthority("CUESTIONARIO_LEER")
-                //RF13: El medico consulta el historial de cuestionarios
-                        .requestMatchers(HttpMethod.GET, "/patients/*/questionnaires-history").hasAuthority("CUESTIONARIO_LEER")
-                //RF17: Solo el medico publica consejos de salud
-                        .requestMatchers(HttpMethod.POST, "/health-tips/create").hasAuthority("CONSEJO_PUBLICAR")
-                        .requestMatchers(HttpMethod.PUT, "/health-tips/update/**").hasAuthority("CONSEJO_EDITAR")
-                        .requestMatchers(HttpMethod.DELETE, "/health-tips/delete/**").hasAuthority("CONSEJO_ELIMINAR")
-                        .requestMatchers(HttpMethod.GET, "/health-tips").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/health-tips/my-tips").hasRole("DOCTOR")
-                //RF09: El medico aprueba o rechaza solicitudes de seguimiento
-                        .requestMatchers(HttpMethod.PUT, "/follow-ups/**").hasAuthority("SEGUIMIENTO_GESTIONAR")
-                //RF08: El paciente solicita seguimiento
-                        .requestMatchers(HttpMethod.POST, "/follow-ups/request").hasAuthority("SEGUIMIENTO_SOLICITAR")
-
-                //ACCESO GENERAL COMPARTIDO (Cualquier usuario registrado)
-
-                //RF11, RF12, RF27: Chat, historial de mensajes y subida de archivos (Analisis clinicos)
-                //Requiere que el usuario este logueado (hasAnyRole) porque se controla el vinculo por codigo
-                        .requestMatchers("/chats/**").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
-                //RF19, RF22: ABM de foros y publicaciones
-                        .requestMatchers(HttpMethod.POST, "/forums").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/posts").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/posts/**").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/posts/**").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
-                //RF10: Disolver seguimiento
-                        .requestMatchers(HttpMethod.DELETE, "/follow-ups/**").hasAnyRole("DOCTOR", "PATIENT")
-                //RF18: Ver consejos de salud
-                        .requestMatchers(HttpMethod.GET, "/tips/**").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
-                //RF25: Reportar contenido inapropiado (Cualquier registrado)
-                        .requestMatchers(HttpMethod.POST, "/reports").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
-                //RF26: Redireccion a turnos del hospital (Solo registrados)
-                        .requestMatchers(HttpMethod.GET, "/doctors/*/appointment-link").hasAnyRole("DOCTOR", "PATIENT")
-                        //RF28: Guardar articulos del foro como favoritos
-                        .requestMatchers(HttpMethod.POST, "/forums/*/favorite").hasAnyRole("DOCTOR", "PATIENT")
-                //Cualquier otra ruta no especificada arriba requiere inicio de sesion obligatorio
                         .anyRequest().authenticated())
 
                 .cors(Customizer.withDefaults())

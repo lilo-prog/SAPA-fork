@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/treatments")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class TreatmentController {
 
     private final TreatmentService treatmentService;

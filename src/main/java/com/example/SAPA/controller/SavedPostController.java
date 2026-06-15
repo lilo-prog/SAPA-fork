@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/savedposts")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class SavedPostController {
 

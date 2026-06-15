@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/follow-requests")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class FollowRequestController {
 

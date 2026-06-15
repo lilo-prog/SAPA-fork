@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/questionnaires")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class QuestionnaireController {
 

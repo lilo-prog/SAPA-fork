@@ -5,6 +5,7 @@ import com.example.SAPA.DTOs.Request.RegisterRequest;
 import com.example.SAPA.DTOs.Response.UserResponseDTO;
 import com.example.SAPA.security.DTO.AuthResponse;
 import com.example.SAPA.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +14,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {

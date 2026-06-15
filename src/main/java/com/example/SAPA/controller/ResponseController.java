@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/responses")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class ResponseController {
 

@@ -4,13 +4,11 @@ import com.example.SAPA.DTOs.Response.fda.FdaResponseDTO;
 import com.example.SAPA.service.FdaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/medications/search")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class MedicationSearchController {
 

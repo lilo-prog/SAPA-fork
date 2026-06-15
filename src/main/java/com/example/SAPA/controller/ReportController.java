@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/reports")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class ReportController {
 

@@ -16,8 +16,9 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/conversations")
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class ChatController {
 
     private final ConversationService conversationService;
