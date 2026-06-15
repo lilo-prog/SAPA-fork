@@ -1,16 +1,13 @@
 package com.example.SAPA.service;
 
 import com.example.SAPA.DTOs.Response.PatientDTOResponse;
-import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.MedicalRecord.MedicalRecordEntity;
 import com.example.SAPA.Models.Medicine;
 import com.example.SAPA.Repositories.MedicalRecordRepository;
-import com.example.SAPA.Repositories.PatientRepository;
 import com.example.SAPA.exceptions.EmptyCollectionException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

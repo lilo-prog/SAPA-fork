@@ -86,6 +86,7 @@ public class UserService {
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
                     .licenseNumber(request.getLicenseNumber())
+                    .speciality(request.getSpeciality())
                     .build();
             doctorRepository.save(doctor);
         } else if (request.getRole() == Role.ROLE_PATIENT) {
@@ -93,6 +94,8 @@ public class UserService {
                     .user(userConnector)
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
+                    .birthDate(request.getBirthDate())
+                    .phoneNumber(request.getPhoneNumber())
                     .build();
             patientRepository.save(patient);
         }

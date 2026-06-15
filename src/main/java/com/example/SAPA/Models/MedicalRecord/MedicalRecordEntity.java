@@ -17,7 +17,11 @@ public class MedicalRecordEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="medical_record_id")
     private Long id;
+    @OneToMany
+    @JoinColumn(name = "medical_record_id")
     private List<Medicine> medicines;
+    @OneToMany
+    @JoinColumn(name = "medical_record_id")
     private List<TreatmentEntity> treatements;
 
 }

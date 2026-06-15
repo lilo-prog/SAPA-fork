@@ -51,7 +51,7 @@ public class AuthController {
     })
     @PostMapping()
     public ResponseEntity<AuthResponse> authenticateUser(@RequestBody AuthRequest authRequest) {
-
+        System.out.println("ENTRE AL LOGIN");
         UserDetails user = authService.authenticate(authRequest);
 
         String token = jwtService.generateToken(user);

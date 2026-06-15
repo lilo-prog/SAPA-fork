@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
-    @Query("SELECT user_id,email,role,status,createdAt FROM usuarios WHERE user_id = :user_id")
+    @Query(value = "SELECT user_id,email,role,status,createdAt FROM user u WHERE u.user_id = :user_id",
+    nativeQuery = true)
     public Optional<UserDTOResponse> findByUserId(@Param("user_id") Long id);
 }

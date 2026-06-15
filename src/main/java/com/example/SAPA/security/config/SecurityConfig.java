@@ -49,7 +49,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 //ACCESO PUBLICO     (sin token)
 
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth", "/auth/**").permitAll()
                 //Registro de usuarios
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
                 //Explorar la comunidad/foros/posts sin estar registrado
