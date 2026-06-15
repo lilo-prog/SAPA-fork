@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "patient")
 public class PatientEntity {
-    // Entidad paciente.
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="patient_id")
@@ -35,11 +35,11 @@ public class PatientEntity {
     @NotNull
     private LocalDate birthDate;
 
-    @Size(min=8, max=15)
-    @NotNull
+    @Size(min=10, max=15)
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "medical_record_id")
     private MedicalRecordEntity medicalRecord;
 }

@@ -7,6 +7,7 @@ import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Repositories.ConversationRepository;
 import com.example.SAPA.Repositories.MessageRepository;
 import com.example.SAPA.enums.MessageType;
+import com.example.SAPA.enums.NotificationType;
 import com.example.SAPA.mappers.MessageMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class MessageService {
     private final MessageMapper messageMapper;
     private final SimpMessagingTemplate messagingTemplate;
     private final UserContextService userContextService;
+    private final NotificationService notificationService;
 
     public void sendMessage(Long conversationId, ChatDTO.SendMessageRequest request, Principal principal) {
         UserEntity sender = userContextService.getUserFromPrincipal(principal);
@@ -49,6 +51,17 @@ public class MessageService {
         messagingTemplate.convertAndSend(
                 "/queue/conversation/" + conversationId,
                 response
+        );
+
+        UserEntity receiver = conversation.getPatient().getUser().getId().equals(sender.getId())
+                ? conversation.getDoctor().getUser()
+                : conversation.getPatient().getUser();
+
+        notificationService.createNotification(
+                receiver,
+                "Nuevo mensaje",
+                userContextService.resolveName(sender) + " te envió un mensaje.",
+                NotificationType.MESSAGE
         );
     }
 

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user")
 public class UserEntity {
-    // Entidad de usuario.
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

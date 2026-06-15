@@ -25,6 +25,7 @@ public class UserContextService {
     public UserEntity getAuthenticatedUser() {
         String email = SecurityContextHolder.getContext()
                 .getAuthentication().getName();
+
         return credentialRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario autenticado no encontrado"))
                 .getUser();

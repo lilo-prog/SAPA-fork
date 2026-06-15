@@ -57,6 +57,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/specialities").permitAll() //cambiar acceso
+                        .requestMatchers("/api/medications/search/**").permitAll()
                 //WebSockets
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/uploads/chat/**").permitAll()

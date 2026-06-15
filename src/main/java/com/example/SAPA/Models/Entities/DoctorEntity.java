@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "doctor")
 public class DoctorEntity {
-    // Entidad doctor.
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="doctor_id")
@@ -37,6 +37,7 @@ public class DoctorEntity {
 
     private String hospitalUrl;
 
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
     @ManyToMany

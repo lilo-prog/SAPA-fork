@@ -8,6 +8,7 @@ import com.example.SAPA.Models.FollowRequestEntity;
 import com.example.SAPA.Repositories.DoctorRepository;
 import com.example.SAPA.Repositories.FollowRequestRepository;
 import com.example.SAPA.enums.FollowRequestStatus;
+import com.example.SAPA.enums.NotificationType;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class FollowRequestService {
     private final ConversationService conversationService;
     private final MessageService messageService;
     private final UserContextService userContextService;
+    private final NotificationService notificationService;
 
     private DoctorEntity getAuthenticatedDoctor() {
         UserEntity user = userContextService.getAuthenticatedUser();
@@ -75,6 +77,14 @@ public class FollowRequestService {
                 "¡La solicitud de seguimiento fue aprobada! Ya pueden comunicarse."
         );
 
+        notificationService.createNotification(
+                request.getPatient().getUser(),
+                "Solicitud aprobada",
+                "El Dr. " + authenticatedDoctor.getFirstName() + " " + authenticatedDoctor.getLastName()
+                        + " aprobó tu solicitud de seguimiento.",
+                NotificationType.FOLLOW
+        );
+
         return saved;
     }
 
@@ -90,6 +100,15 @@ public class FollowRequestService {
 
         request.setStatus(FollowRequestStatus.REJECTED);
         request.setRespondedAt(LocalDateTime.now());
+
+        notificationService.createNotification(
+                request.getPatient().getUser(),
+                "Solicitud rechazada",
+                "El Dr. " + authenticatedDoctor.getFirstName() + " " + authenticatedDoctor.getLastName()
+                        + " rechazó tu solicitud de seguimiento.",
+                NotificationType.FOLLOW
+        );
+
         return followRequestRepository.save(request);
     }
 

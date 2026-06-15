@@ -52,4 +52,16 @@ public class DoctorService {
 
         doctorRepository.save(doctor);
     }
+
+
+    public String getHospitalUrl(Long doctorId) {
+        DoctorEntity doctor = doctorRepository.findById(doctorId)
+                .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado con id: " + doctorId));
+
+        if (doctor.getHospitalUrl() == null || doctor.getHospitalUrl().isBlank()) {
+            throw new EntityNotFoundException("Este médico no tiene URL de hospital registrada");
+        }
+
+        return doctor.getHospitalUrl();
+    }
 }

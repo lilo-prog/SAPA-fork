@@ -85,6 +85,8 @@ public class UserService {
                     .user(userConnector)
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
+                    .birthDate(request.getBirthDate())
+                    .phoneNumber(request.getPhoneNumber())
                     .build();
             patientRepository.save(patient);
         }

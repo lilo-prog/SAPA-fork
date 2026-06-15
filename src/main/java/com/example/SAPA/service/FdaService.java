@@ -1,13 +1,15 @@
 package com.example.SAPA.service;
 
 import com.example.SAPA.DTOs.Response.fda.FdaResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@RequiredArgsConstructor
 public class FdaService {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     public FdaResponseDTO searchForMedicationByName(String name){
         String url = "https://api.fda.gov/drug/label.json?search=openfda.brand_name:\"" +name+ "\"&limit=1";

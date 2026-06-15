@@ -2,28 +2,29 @@ package com.example.SAPA.controller;
 
 import com.example.SAPA.DTOs.Request.UpdateDoctorRequestDTO;
 import com.example.SAPA.service.DoctorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/doctors")
+@RequiredArgsConstructor
 public class DoctorController {
 
     private final DoctorService doctorService;
-
-    public DoctorController(DoctorService doctorService) {
-        this.doctorService = doctorService;
-    }
 
     @PutMapping("/profile")
     public ResponseEntity<Void> updateProfile(@AuthenticationPrincipal UserDetails userDetails,
                                               @RequestBody UpdateDoctorRequestDTO request) {
         doctorService.updateDoctor(userDetails.getUsername(), request);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/{doctorId}/hospital-url")
+    public ResponseEntity<String> getHospitalUrl(@PathVariable Long doctorId) {
+        return ResponseEntity.ok(doctorService.getHospitalUrl(doctorId));
     }
 }

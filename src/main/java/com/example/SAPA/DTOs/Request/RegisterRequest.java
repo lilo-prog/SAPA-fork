@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -17,6 +18,8 @@ public class RegisterRequest {
     private Role role;
     private String firstName;
     private String lastName;
+    private LocalDate birthDate;
+    private String phoneNumber;
     private String licenseNumber;
     private List<Long> specialities;
 }

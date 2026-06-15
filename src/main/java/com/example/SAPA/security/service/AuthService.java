@@ -6,6 +6,7 @@ import com.example.SAPA.security.entities.CredentialEntity;
 import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.service.EmailService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final CredentialRepository credentialRepository;
@@ -24,14 +26,6 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
-    public AuthService(CredentialRepository credentialRepository, AuthenticationManager authenticationManager,
-                       JWTService jwtService, PasswordEncoder passwordEncoder, EmailService emailService) {
-        this.credentialRepository = credentialRepository;
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-        this.passwordEncoder = passwordEncoder;
-        this.emailService = emailService;
-    }
 
     public UserDetails authenticate(AuthRequest input) {
         authenticationManager.authenticate(

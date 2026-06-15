@@ -6,6 +6,7 @@ import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.Questionnaire.QuestionnaireAssignmentEntity;
 import com.example.SAPA.Models.Questionnaire.QuestionnaireEntity;
 import com.example.SAPA.Repositories.*;
+import com.example.SAPA.enums.NotificationType;
 import com.example.SAPA.mappers.QuestionnaireMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class AssignmentService {
     private final PatientRepository patientRepository;
     private final QuestionnaireMapper questionnaireMapper;
     private final UserContextService userContextService;
+    private final NotificationService notificationService;
 
 
     public QuestionnaireDTO.AssignmentResponse assignQuestionnaire(Long questionnaireId, QuestionnaireDTO.AssignQuestionnaireRequest request) {
@@ -52,6 +54,15 @@ public class AssignmentService {
                 .build();
 
         QuestionnaireAssignmentEntity saved = assignmentRepository.save(assignment);
+
+        notificationService.createNotification(
+                patient.getUser(),
+                "Nuevo cuestionario asignado",
+                "El Dr. " + doctor.getFirstName() + " " + doctor.getLastName()
+                        + " te asignó el cuestionario: " + questionnaire.getTitle(),
+                NotificationType.QUESTIONNAIRE
+        );
+
         return questionnaireMapper.toAssignmentResponse(saved, userContextService.resolvePatientName(patient));
     }
 

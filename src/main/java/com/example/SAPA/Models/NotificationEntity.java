@@ -4,6 +4,7 @@ import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name="notifications")
 public class NotificationEntity {
@@ -22,10 +24,12 @@ public class NotificationEntity {
     private Long id;
 
     private String title;
+
     private String msg;
 
     @Enumerated(EnumType.STRING)
     private NotificationType type;
+
     private LocalDateTime createdAt;
 
     private boolean readed;

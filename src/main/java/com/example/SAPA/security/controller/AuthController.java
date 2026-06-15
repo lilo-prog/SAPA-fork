@@ -15,12 +15,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 @Tag(name = "Autenticación", description = "Operaciones relacionadas con la autenticación, gestión de tokens y sesiones de usuario")
 public class AuthController {
 
@@ -29,13 +31,6 @@ public class AuthController {
     private final CredentialRepository credentialRepository;
     private final TokenBlacklistService tokenBlacklistService;
 
-    public AuthController(AuthService authService, JWTService jwtService,
-                          CredentialRepository credentialRepository, TokenBlacklistService tokenBlacklistService) {
-        this.authService = authService;
-        this.jwtService = jwtService;
-        this.credentialRepository = credentialRepository;
-        this.tokenBlacklistService = tokenBlacklistService;
-    }
 
     @Operation(
             summary = "Autenticar usuario",
