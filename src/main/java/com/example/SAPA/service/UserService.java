@@ -74,6 +74,7 @@ public class UserService {
                     .user(userConnector)
                     .firstName(request.getFirstName())
                     .lastName(request.getLastName())
+                    .phoneNumber(request.getPhoneNumber())
                     .licenseNumber(request.getLicenseNumber())
                     .specialities((specialityRepository.findAllById(request.getSpecialities())))
                     .build();
