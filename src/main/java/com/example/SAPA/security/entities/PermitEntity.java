@@ -10,7 +10,7 @@ import lombok.*;
 @Builder
 
 @Entity
-@Table(name = "permits")
+@Table(name = "permit")
 public class PermitEntity {
 
     @Id

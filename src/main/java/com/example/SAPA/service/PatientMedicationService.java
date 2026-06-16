@@ -51,13 +51,11 @@ public class PatientMedicationService {
         MedicalRecordEntity record = getOrCreateMedicalRecord(patient);
 
         PatientMedicationEntity medication = PatientMedicationEntity.builder()
-                .medicalRecord(record)
                 .fdaDrugName(request.fdaDrugName())
                 .notes(request.notes())
                 .startDate(request.startDate())
                 .endDate(request.endDate())
                 .build();
-
         return medicationMapper.toResponse(medicationRepository.save(medication));
     }
 
