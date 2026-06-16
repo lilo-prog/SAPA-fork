@@ -1,46 +1,86 @@
 package com.example.SAPA.service;
 
+import com.example.SAPA.DTOs.Response.NotificationResponseDTO;
+import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Models.NotificationEntity;
 import com.example.SAPA.Repositories.NotificationRepository;
-import com.example.SAPA.exceptions.EmptyCollectionException;
+import com.example.SAPA.enums.NotificationType;
+import com.example.SAPA.mappers.NotificationMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
-    //Atributos
+
     private final NotificationRepository notificationRepository;
-    private final UserService userService ;
-    //Metodos
-    public void validateNotifications() throws EmptyCollectionException {
-        if(notificationRepository.count() < 0) throw new EmptyCollectionException("No hay notificaciones");
+    private final NotificationMapper notificationMapper;
+    private final UserContextService userContext;
+
+
+    public void createNotification(UserEntity user, String title, String msg, NotificationType type) {
+        NotificationEntity notification = NotificationEntity.builder()
+                .user(user)
+                .title(title)
+                .msg(msg)
+                .type(type)
+                .readed(false)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        notificationRepository.save(notification);
     }
 
-    public List<NotificationEntity> getAllNotifications() throws EmptyCollectionException{
-        validateNotifications();
-        return notificationRepository.findAll();
+
+    public List<NotificationResponseDTO> getMyNotifications() {
+        UserEntity user = userContext.getAuthenticatedUser();
+
+        return notificationRepository.findByUserOrderByCreatedAtDesc(user)
+                .stream()
+                .map(notificationMapper::toResponse)
+                .toList();
     }
-    public Optional<NotificationEntity> getNotificationById(Long id) throws EmptyCollectionException{
-        validateNotifications();
-        return Optional.of(notificationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Notificacion no encontrada")));
+
+
+    public List<NotificationResponseDTO> getUnreadNotifications() {
+        UserEntity user = userContext.getAuthenticatedUser();
+
+        return notificationRepository.findByUserAndReadedFalse(user)
+                .stream()
+                .map(notificationMapper::toResponse)
+                .toList();
     }
-    public String saveNotification(NotificationEntity notificationEntity) throws EmptyCollectionException{
-        validateNotifications();
-        notificationRepository.save(notificationEntity);
-        return "Notificacion guardada correctamente";
+
+
+    public NotificationResponseDTO markAsRead(Long notificationId) {
+        UserEntity user = userContext.getAuthenticatedUser();
+
+        NotificationEntity notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new EntityNotFoundException("Notificación no encontrada con id: " + notificationId));
+
+        if (!notification.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("No tenés permiso para modificar esta notificación");
+        }
+
+        notification.setReaded(true);
+        return notificationMapper.toResponse(notificationRepository.save(notification));
     }
-    public String deleteNotificationById(Long id) throws EmptyCollectionException{
-        Optional<NotificationEntity> noti = getNotificationById(id);
-        noti.ifPresent(notificationEntity -> notificationRepository.delete(notificationEntity));
-        return "Notificacion eliminada correctamente";
-    }
-    public List<NotificationEntity> getNotificationsByUserId(Long id) throws EmptyCollectionException{
-        validateNotifications();
-        return notificationRepository.getNotificationByUserId(id);
+
+
+    public void deleteNotification(Long notificationId) {
+        UserEntity user = userContext.getAuthenticatedUser();
+
+        NotificationEntity notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new EntityNotFoundException("Notificación no encontrada con id: " + notificationId));
+
+        if (!notification.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("No tenés permiso para eliminar esta notificación");
+        }
+
+        notificationRepository.delete(notification);
     }
 }

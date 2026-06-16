@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter @ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -37,6 +37,7 @@ public class MessageEntity {
     private MessageType type;
 
     @OneToMany(mappedBy = "message")
+    @Builder.Default
     private List<AttachmentEntity> attatchments = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)

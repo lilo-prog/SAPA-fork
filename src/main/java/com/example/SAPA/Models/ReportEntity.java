@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "report")
 public class ReportEntity {
-    // Entidad de reporte.
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="report_id")

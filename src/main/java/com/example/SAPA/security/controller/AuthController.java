@@ -15,15 +15,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 @Tag(name = "Autenticación", description = "Operaciones relacionadas con la autenticación, gestión de tokens y sesiones de usuario")
 public class AuthController {
 
@@ -32,13 +32,6 @@ public class AuthController {
     private final CredentialRepository credentialRepository;
     private final TokenBlacklistService tokenBlacklistService;
 
-    public AuthController(AuthService authService, JWTService jwtService,
-                          CredentialRepository credentialRepository, TokenBlacklistService tokenBlacklistService) {
-        this.authService = authService;
-        this.jwtService = jwtService;
-        this.credentialRepository = credentialRepository;
-        this.tokenBlacklistService = tokenBlacklistService;
-    }
 
     @Operation(
             summary = "Autenticar usuario",
@@ -49,7 +42,7 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = AuthResponse.class))),
             @ApiResponse(responseCode = "401", description = "No autorizado - Credenciales inválidas")
     })
-    @PostMapping()
+    @PostMapping("/login")
     public ResponseEntity<AuthResponse> authenticateUser(@RequestBody AuthRequest authRequest) {
         System.out.println("ENTRE AL LOGIN");
         UserDetails user = authService.authenticate(authRequest);
@@ -102,5 +95,17 @@ public class AuthController {
             return ResponseEntity.ok("Sesión cerrada exitosamente.");
         }
         return ResponseEntity.badRequest().body("No se proporcionó un token válido.");
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+        authService.generateResetPasswordToken(email);
+        return ResponseEntity.ok("Se envió el enlace de restablecimiento al correo.");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
+        authService.resetPassword(token, newPassword);
+        return ResponseEntity.ok("Contraseña actualizada correctamente.");
     }
 }

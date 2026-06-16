@@ -1,6 +1,5 @@
 package com.example.SAPA.DTOs.Response;
 
-import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Models.LocationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,13 +9,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserDTOResponse {
-    private Long id;
+public class UserResponseDTO {
+
     private String email;
     private String role;
     private String status;
+    private LocationEntity location;
     private LocalDateTime createdAt;
-    private Long location_id;
-
 }
 

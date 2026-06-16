@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LocationService {
     private final LocationRepository locationRepository;
+
     public void validateLocations() throws EmptyCollectionException {
         if(locationRepository.count()==0) throw new EmptyCollectionException("No hay ubicaciones");
     }

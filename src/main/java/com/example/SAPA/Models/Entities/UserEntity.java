@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 
-@Getter @Setter @ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -15,10 +15,9 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user")
 public class UserEntity {
-    // Entidad de usuario.
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -35,12 +34,13 @@ public class UserEntity {
     @Column(nullable = false)
     private AccountStatus status;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "location_id")
     private LocationEntity location;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
 
     @PrePersist
     public void prePersist() {

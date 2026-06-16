@@ -1,4 +1,4 @@
-package com.example.SAPA.DTOs;
+package com.example.SAPA.DTOs.Response.fda;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

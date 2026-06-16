@@ -1,41 +1,47 @@
 package com.example.SAPA.controller;
-import com.example.SAPA.Models.Forum.ForumEntity;
+
+import com.example.SAPA.DTOs.ForumDto;
 import com.example.SAPA.service.ForumService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("forums")
+@RequestMapping("/forums")
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class ForumController {
 
-    //Atributos.
-    @Autowired
-    private ForumService forumService;
+    private final ForumService forumService;
 
-    //Metodos.
-    @PostMapping
-    public ForumEntity createForum(@RequestBody ForumEntity forum){
-        return forumService.create(forum);
-    }
 
     @GetMapping
-    public List<ForumEntity> getAll(){
-        return forumService.getAll();
+    public ResponseEntity<List<ForumDto.ForumResponse>> getAllForums() {
+        return ResponseEntity.ok(forumService.getAllForums());
     }
 
-    @PutMapping("/{id}")
-    public ForumEntity updateForum(@PathVariable Long id, @RequestBody ForumEntity forum){
-        return forumService.update(id, forum);
+    @GetMapping("/filter")
+    public ResponseEntity<List<ForumDto.ForumResponse>> filterForums(@RequestParam String title) {
+        return ResponseEntity.ok(forumService.filterForums(title));
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteForum(@PathVariable Long id){
-        forumService.delete(id);
+    @PostMapping
+    public ResponseEntity<ForumDto.ForumResponse> createForum(@RequestBody ForumDto.CreateForumRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(forumService.createForum(request));
     }
 
-    @GetMapping("/search")
-    public List<ForumEntity> search(@RequestParam String forumName){
-        return forumService.search(forumName);
+    @PutMapping("/{forumId}")
+    public ResponseEntity<ForumDto.ForumResponse> updateForum(@PathVariable Long forumId,
+                                                              @RequestBody ForumDto.UpdateForumRequest request) {
+        return ResponseEntity.ok(forumService.updateForum(forumId, request));
+    }
+
+    @DeleteMapping("/{forumId}")
+    public ResponseEntity<Void> deleteForum(@PathVariable Long forumId) {
+        forumService.deleteForum(forumId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -4,7 +4,9 @@ import com.example.SAPA.security.DTO.AuthRequest;
 import com.example.SAPA.security.DTO.AuthResponse;
 import com.example.SAPA.security.entities.CredentialEntity;
 import com.example.SAPA.security.repositories.CredentialRepository;
+import com.example.SAPA.service.EmailService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,30 +16,25 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final CredentialRepository credentialRepository;
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
-    public AuthService(CredentialRepository credentialRepository, AuthenticationManager authenticationManager,
-                       JWTService jwtService, PasswordEncoder passwordEncoder) {
-        this.credentialRepository = credentialRepository;
-        this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public UserDetails authenticate(AuthRequest input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        input.username(),
+                        input.email(),
                         input.password()
                 )
         );
 
-        return credentialRepository.findByEmail(input.username()).orElseThrow();
+        return credentialRepository.findByEmail(input.email()).orElseThrow();
     }
 
     @Transactional
@@ -78,8 +75,7 @@ public class AuthService {
 
         credentialRepository.save(credential);
 
-        // emailService.sendResetPasswordEmail(credential.getEmail(), token);
-        System.out.println("Enlace enviado: https://sapa.com/reset-password?token=" + token);
+        emailService.sendResetPasswordEmail(credential.getEmail(), token);
     }
 
     public void resetPassword(String token, String newPassword) {

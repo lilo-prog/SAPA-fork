@@ -1,30 +1,39 @@
 package com.example.SAPA.controller;
 
-import com.example.SAPA.Models.NotificationEntity;
-import com.example.SAPA.exceptions.EmptyCollectionException;
+import com.example.SAPA.DTOs.Response.NotificationResponseDTO;
 import com.example.SAPA.service.NotificationService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("api/notificaciones")
-@CrossOrigin("*")
+@RequestMapping("/notifications")
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class NotificationController {
-    //Atributos
-    public NotificationService notificationService;
-    //Constructor
-    public NotificationController(NotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
-    //Metodos
+
+    private final NotificationService notificationService;
+
     @GetMapping
-    public List<NotificationEntity> getNotifications() throws EmptyCollectionException{
-        return notificationService.getAllNotifications();
-    }
-    @GetMapping("/{id}")
-    public List<NotificationEntity> getNotificationByUserId(@PathVariable Long user_id) throws EmptyCollectionException{
-        return notificationService.getNotificationsByUserId(user_id);
+    public ResponseEntity<List<NotificationResponseDTO>> getMyNotifications() {
+        return ResponseEntity.ok(notificationService.getMyNotifications());
     }
 
+    @GetMapping("/unread")
+    public ResponseEntity<List<NotificationResponseDTO>> getUnreadNotifications() {
+        return ResponseEntity.ok(notificationService.getUnreadNotifications());
+    }
+
+    @PatchMapping("/{id}/read")
+    public ResponseEntity<NotificationResponseDTO> markAsRead(@PathVariable Long id) {
+        return ResponseEntity.ok(notificationService.markAsRead(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNotification(@PathVariable Long id) {
+        notificationService.deleteNotification(id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -1,44 +1,76 @@
 package com.example.SAPA.controller;
 
+import com.example.SAPA.DTOs.Response.HealthTipResponseDTO;
 import com.example.SAPA.Models.HealthTipEntity;
 import com.example.SAPA.service.HealthTipService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/health-tips")
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class HealthTipController {
-    //Atributos.
+
     private final HealthTipService healthTipService;
 
-    //Constructor
-    public HealthTipController(HealthTipService healthTipService) {
-        this.healthTipService = healthTipService;
+    @PostMapping
+    public ResponseEntity<HealthTipResponseDTO> createHealthTip(@RequestBody HealthTipEntity healthTip) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(healthTipService.createHealthTip(healthTip));
     }
 
-    //Metodos
-    @PostMapping
-    public HealthTipEntity create(@RequestBody HealthTipEntity healthTip) {
-        return healthTipService.create(healthTip);
+
+    @PutMapping("/{healthId}")
+    public ResponseEntity<HealthTipResponseDTO> updateHealthTip(@PathVariable Long healthId,
+                                                                @RequestBody HealthTipEntity healthTip) throws AccessDeniedException {
+
+        return ResponseEntity.ok(healthTipService.update(healthId, healthTip));
     }
+
+
+    @DeleteMapping("/{healthId}")
+    public ResponseEntity<Void> deleteHealthTip(@PathVariable Long healthId) throws AccessDeniedException {
+        healthTipService.delete(healthId);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @GetMapping
-    public List<HealthTipEntity> getAll() {
-        return healthTipService.getAll();
+    public ResponseEntity<List<HealthTipResponseDTO>> getAllHealthTips() {
+        return ResponseEntity.ok(healthTipService.getAll());
     }
 
-    @GetMapping("/visible")
-    public List<HealthTipEntity> getVisibleHealthTips(@RequestParam Long patientId, @RequestParam Long doctorId){
-        return healthTipService.getVisibleHealthTips(patientId, doctorId);
+
+    @GetMapping("/doctor/{doctorId}")
+    public ResponseEntity<List<HealthTipResponseDTO>> getHealthTipsByDoctor(@PathVariable Long doctorId) {
+        return ResponseEntity.ok(healthTipService.getHealthTipsByDoctor(doctorId));
     }
 
-    @PutMapping("/{id}")
-    public HealthTipEntity update(@PathVariable Long id, @RequestBody HealthTipEntity healthTip) {
-        return healthTipService.update(id, healthTip);
+
+    @GetMapping("/my-tips")
+    public ResponseEntity<List<HealthTipResponseDTO>> getMyTips() {
+        return ResponseEntity.ok(healthTipService.getMyTips());
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        healthTipService.delete(id);
+    /*
+    public ResponseEntity<List<HealthTipResponseDTO>> getPrivateTipsForPatient(@PathVariable Long doctorId,
+                                                                               Authentication authentication) {
+
+        String patientEmail = authentication.getName();
+
+        List<HealthTipEntity> privateTips = healthTipService.getVisibleHealthTipsForPatient(patientEmail, doctorId);
+
+        List<HealthTipResponseDTO> response = privateTips.stream()
+                .map(healthTipMapper::toHealthTipResponseDTO)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
+
+     */
 }

@@ -8,14 +8,14 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import java.time.LocalDate;
 
-@Getter @Setter @ToString
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "patient")
 public class PatientEntity {
-    // Entidad paciente.
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="patient_id")
@@ -31,12 +31,12 @@ public class PatientEntity {
     @Column(nullable = false)
     private String lastName;
 
-    @Past(message = "La fecha de nacimiento debe ser una fecha pasada (no puede ser hoy ni el futuro).")
+    @Past(message = "La fecha de nacimiento debe ser una fecha pasada (no puede ser hoy ni el futuro)")
     @NotNull
     private LocalDate birthDate;
 
-    @Size(min=8, max=15)
-    @NotNull
+    @Size(min=10, max=15)
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
     @OneToOne

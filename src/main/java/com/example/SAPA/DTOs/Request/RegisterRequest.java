@@ -1,26 +1,25 @@
-package com.example.SAPA.DTOs;
+package com.example.SAPA.DTOs.Request;
 
-import com.example.SAPA.Models.SpecialityEntity;
 import com.example.SAPA.security.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequestDTO {
+public class RegisterRequest {
 
     private String email;
     private String password;
     private Role role;
     private String firstName;
     private String lastName;
-    private String licenseNumber;
-    private String googlePlaceId;
     private LocalDate birthDate;
     private String phoneNumber;
-    private SpecialityEntity speciality;
+    private String licenseNumber;
+    private List<Long> specialities;
 }

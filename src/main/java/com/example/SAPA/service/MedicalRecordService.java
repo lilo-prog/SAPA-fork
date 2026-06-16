@@ -1,77 +1,56 @@
 package com.example.SAPA.service;
 
-import com.example.SAPA.DTOs.Response.PatientDTOResponse;
+import com.example.SAPA.DTOs.MedicalDTO;
+import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.MedicalRecord.MedicalRecordEntity;
-import com.example.SAPA.Models.Medicine;
 import com.example.SAPA.Repositories.MedicalRecordRepository;
-import com.example.SAPA.exceptions.EmptyCollectionException;
+import com.example.SAPA.Repositories.PatientRepository;
+import com.example.SAPA.mappers.MedicalRecordMapper;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MedicalRecordService {
+
     private final MedicalRecordRepository medicalRecordRepository;
-    private final PatientService patientService;
-    private final MedicineService medicineService;
+    private final PatientRepository patientRepository;
+    private final MedicalRecordMapper medicalRecordMapper;
+    private final UserContextService userContext;
 
-    public void validateMedicalRecords() throws EmptyCollectionException {
-        if(medicalRecordRepository.count()==0) throw new EmptyCollectionException("No hay fichas medicas");
+
+    private MedicalRecordEntity getOrCreateMedicalRecord(PatientEntity patient) {
+        if (patient.getMedicalRecord() != null) {
+            return patient.getMedicalRecord();
+        }
+
+        MedicalRecordEntity record = new MedicalRecordEntity();
+        MedicalRecordEntity saved = medicalRecordRepository.save(record);
+
+        patient.setMedicalRecord(saved);
+        patientRepository.save(patient);
+
+        return saved;
     }
 
-    private MedicalRecordEntity validateMedicines(Long medical_record_id) throws EmptyCollectionException {
-        validateMedicalRecords();
-        MedicalRecordEntity fichaMedica = medicalRecordRepository.findById(medical_record_id).orElseThrow(()->new EntityNotFoundException("Ficha medica no encontrada"));
-        if(fichaMedica.getMedicines().isEmpty()) throw new EmptyCollectionException("No hay medicinas cargadas");
-        return fichaMedica;
+    public MedicalDTO.MedicalRecordResponse getMyMedicalRecord() {
+        PatientEntity patient = userContext.getAuthenticatedPatient();
+        MedicalRecordEntity record = getOrCreateMedicalRecord(patient);
+        return medicalRecordMapper.toMedicalRecordResponse(record);
     }
 
-    public List<Medicine> getMedicinesOfAMedicalRecord(Long medical_record_id) throws EmptyCollectionException {
-        MedicalRecordEntity fichaMedica = validateMedicines(medical_record_id);
-        return fichaMedica.getMedicines();
-    }
-    public List<MedicalRecordEntity> getAllMedicalRecords() throws EmptyCollectionException {
-        validateMedicalRecords();
-        return medicalRecordRepository.findAll();
-    }
-    @Transactional
-    public MedicalRecordEntity save(MedicalRecordEntity medicalRecord){
-        return medicalRecordRepository.save(medicalRecord);
-    }
+    public MedicalDTO.MedicalRecordResponse getPatientMedicalRecord(Long patientId) {
 
-    @Transactional
-    public void addMedicineToMedicalRecord(
-            Long patientId,
-            Long medicineId) throws EmptyCollectionException {
+        userContext.getAuthenticatedDoctor();
 
-        PatientDTOResponse patient = patientService.getPatientById(patientId).get();
+        PatientEntity patient = patientRepository.findById(patientId)
+                .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado con id: " + patientId));
 
-        MedicalRecordEntity record = medicalRecordRepository.findById(patient.getMedical_record_id())
-                .orElseThrow(()->new EntityNotFoundException("Ficha medica no encontrada."));
+        if (patient.getMedicalRecord() == null) {
+            throw new EntityNotFoundException("El paciente aún no tiene ficha médica");
+        }
 
-        Medicine medicine = medicineService.findById(medicineId);
-
-        record.getMedicines().add(medicine);
-
-        medicalRecordRepository.save(record);
-    }
-    @Transactional
-    public void removeMedicineToMedicalRecord(
-            Long patientId,
-            Long medicineId) throws EmptyCollectionException {
-
-        PatientDTOResponse patient = patientService.getPatientById(patientId).get();
-        MedicalRecordEntity record = medicalRecordRepository.findById(patient.getMedical_record_id())
-                .orElseThrow(()->new EntityNotFoundException("Ficha medica no encontrada."));
-
-        Medicine medicine = medicineService.findById(medicineId);
-
-        record.getMedicines().remove(medicine);
-
-        medicalRecordRepository.save(record);
+        return medicalRecordMapper.toMedicalRecordResponse(patient.getMedicalRecord());
     }
 }

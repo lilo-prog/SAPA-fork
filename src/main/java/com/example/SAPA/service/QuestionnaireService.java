@@ -2,66 +2,93 @@ package com.example.SAPA.service;
 
 import com.example.SAPA.DTOs.QuestionnaireDTO;
 import com.example.SAPA.Models.Entities.DoctorEntity;
-import com.example.SAPA.Models.Questionnaire.QuestionEntity;
-import com.example.SAPA.Models.Questionnaire.QuestionnaireEntity;
-import com.example.SAPA.Models.Questionnaire.QuestionnaireResponseEntity;
-import com.example.SAPA.Repositories.DoctorRepository;
-import com.example.SAPA.Repositories.QuestionnaireRepository;
-import com.example.SAPA.Repositories.QuestionnaireResponseRepository;
-import com.example.SAPA.enums.SendFrequency;
-import com.example.SAPA.security.entities.CredentialEntity;
-import com.example.SAPA.security.repositories.CredentialRepository;
+import com.example.SAPA.Models.Questionnaire.*;
+import com.example.SAPA.Repositories.*;
+import com.example.SAPA.mappers.QuestionnaireMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class QuestionnaireService {
-    //Atributos.
-    public final QuestionnaireRepository questionnaireRepository;
-    private final DoctorRepository doctorRepository;
-    private final QuestionnaireResponseRepository responseRepository;
-    private final CredentialRepository credentialRepository;
+
+    private final QuestionnaireRepository questionnaireRepository;
+    private final QuestionRepository questionRepository;
+    private final QuestionnaireMapper questionnaireMapper;
+    private final UserContextService userContextService;
 
 
-    //Métodos.
-    public QuestionnaireEntity createQuestionnaire(QuestionnaireDTO dto){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+    @Transactional
+    public QuestionnaireDTO.QuestionnaireResponse createQuestionnaire(QuestionnaireDTO.CreateQuestionnaireRequest request) {
+        DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
 
-        CredentialEntity credential = credentialRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Credential not found"));
-        DoctorEntity doctor = doctorRepository.findByUserId(credential.getUser().getId()).orElseThrow(() -> new RuntimeException("Doctor no encontrado"));
+        QuestionnaireEntity questionnaire = QuestionnaireEntity.builder()
+                .doctor(doctor)
+                .title(request.title())
+                .description(request.description())
+                .frequency(request.frequency())
+                .build();
 
-        QuestionnaireEntity questionnaire = new QuestionnaireEntity();
+        QuestionnaireEntity saved = questionnaireRepository.save(questionnaire);
 
-        questionnaire.setDoctor(doctor);
-        questionnaire.setTitle(dto.getTitle());
-        questionnaire.setDescription(dto.getDescription());
-        questionnaire.setFrequency(dto.getFrequency());
+        List<QuestionEntity> questions = request.questions().stream()
+                .map(q -> QuestionEntity.builder()
+                        .questionnaire(saved)
+                        .text(q.text())
+                        .type(q.type())
+                        .orderIndex(q.orderIndex())
+                        .build())
+                .toList();
 
-        List<QuestionEntity> questions = dto.getQuestions().stream().map(questionDTO -> {
-            QuestionEntity question = new QuestionEntity();
-            question.setText(questionDTO.getText());
-            question.setType(questionDTO.getType());
-            question.setOrderIndex(questionDTO.getOrdexIndex());
-            question.setQuestionnaire(questionnaire);
-            return question;}
-        ).toList();
-        questionnaire.setQuestions(questions);
+        questionRepository.saveAll(questions);
+        saved.setQuestions(questions);
 
-        return questionnaireRepository.save(questionnaire);
+        return questionnaireMapper.toQuestionnaireResponse(saved, userContextService.resolveDoctorName(doctor));
     }
 
-    public void updateFrequency(Long questionnaireId, SendFrequency frequency){
-        QuestionnaireEntity questionnaire = questionnaireRepository.findById(questionnaireId).orElseThrow(() -> new RuntimeException("Questionnaire no encontrado"));
-        questionnaire.setFrequency(frequency);
+    public QuestionnaireDTO.QuestionnaireResponse updateQuestionnaire(Long questionnaireId, QuestionnaireDTO.UpdateQuestionnaireRequest request) {
+        DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
 
-        questionnaireRepository.save(questionnaire);
+        QuestionnaireEntity questionnaire = questionnaireRepository.findById(questionnaireId)
+                .orElseThrow(() -> new EntityNotFoundException("Cuestionario no encontrado con id: " + questionnaireId));
+
+        if (!questionnaire.getDoctor().getId().equals(doctor.getId())) {
+            throw new RuntimeException("No tenés permiso para modificar este cuestionario");
+        }
+
+        questionnaire.setTitle(request.title());
+        questionnaire.setDescription(request.description());
+        questionnaire.setFrequency(request.frequency());
+
+        QuestionnaireEntity updated = questionnaireRepository.save(questionnaire);
+
+        return questionnaireMapper.toQuestionnaireResponse(updated, userContextService.resolveDoctorName(doctor));
     }
 
-    public List<QuestionnaireResponseEntity> getResponses (Long patientId){
-        return responseRepository.findByAssignmentPatientId(patientId);
+    public void deleteQuestionnaire(Long questionnaireId) {
+        DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
+
+        QuestionnaireEntity questionnaire = questionnaireRepository.findById(questionnaireId)
+                .orElseThrow(() -> new EntityNotFoundException("Cuestionario no encontrado con id: " + questionnaireId));
+
+        if (!questionnaire.getDoctor().getId().equals(doctor.getId())) {
+            throw new RuntimeException("No tenés permiso para eliminar este cuestionario");
+        }
+
+        questionnaireRepository.delete(questionnaire);
+    }
+
+    public List<QuestionnaireDTO.QuestionnaireResponse> getMyQuestionnaires() {
+        DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
+
+        return questionnaireRepository.findByDoctor(doctor)
+                .stream()
+                .map(q -> questionnaireMapper.toQuestionnaireResponse(q, userContextService.resolveDoctorName(doctor)))
+                .toList();
     }
 }
+
 

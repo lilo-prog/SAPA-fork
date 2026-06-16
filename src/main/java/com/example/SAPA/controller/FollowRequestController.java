@@ -2,43 +2,48 @@ package com.example.SAPA.controller;
 
 import com.example.SAPA.Models.FollowRequestEntity;
 import com.example.SAPA.service.FollowRequestService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/follow-requests")
+@CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class FollowRequestController {
-    //Atributos.
+
     private final FollowRequestService followRequestService;
 
-    //Constructor.
-    public FollowRequestController(FollowRequestService followRequestService) {
-        this.followRequestService = followRequestService;
+    @PostMapping("/send/{doctorId}")
+    public ResponseEntity<FollowRequestEntity> create(@PathVariable Long doctorId) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(followRequestService.create(doctorId));
     }
 
-    //Metodos.
-    @PostMapping
-    public FollowRequestEntity create(@RequestBody FollowRequestEntity request){
-        return followRequestService.create(request);
+    @PatchMapping("/{id}/approve")
+    public ResponseEntity<FollowRequestEntity> approve(@PathVariable Long id) {
+        return ResponseEntity.ok(followRequestService.approve(id));
     }
 
-    @GetMapping
-    public List<FollowRequestEntity> getAll(){
-        return followRequestService.getAll();
+    @PatchMapping("/{id}/reject")
+    public ResponseEntity<FollowRequestEntity> reject(@PathVariable Long id) {
+        return ResponseEntity.ok(followRequestService.reject(id));
     }
 
-    @PutMapping("/{id}/approve")
-    public FollowRequestEntity approve(@PathVariable Long id){
-        return followRequestService.approve(id);
+    @PatchMapping("/{id}/dissolve")
+    public ResponseEntity<FollowRequestEntity> dissolve(@PathVariable Long id) {
+        return ResponseEntity.ok(followRequestService.dissolve(id));
     }
 
-    @PutMapping("/{id}/reject")
-    public FollowRequestEntity reject(@PathVariable Long id){
-        return followRequestService.reject(id);
+    @GetMapping("/pending")
+    public ResponseEntity<List<FollowRequestEntity>> getPendingRequests() {
+        return ResponseEntity.ok(followRequestService.getPendingRequests());
     }
 
-    @PutMapping("/{id}/dissolve")
-    public FollowRequestEntity dissolve(@PathVariable Long id){
-        return followRequestService.dissolve(id);
+    @GetMapping("/sent")
+    public ResponseEntity<List<FollowRequestEntity>> getSentRequests() {
+        return ResponseEntity.ok(followRequestService.getSentRequests());
     }
 }

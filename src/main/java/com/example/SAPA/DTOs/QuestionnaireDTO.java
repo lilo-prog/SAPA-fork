@@ -1,27 +1,82 @@
 package com.example.SAPA.DTOs;
 
-import com.example.SAPA.Models.Questionnaire.QuestionnaireEntity;
+import com.example.SAPA.enums.QuestionType;
 import com.example.SAPA.enums.SendFrequency;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class QuestionnaireDTO {
-    private String title;
-    private String description;
-    private SendFrequency frequency;
-    private List<QuestionDTO> questions;
 
-    public QuestionnaireEntity toEntity(QuestionnaireDTO questionnaireDTO){
-        QuestionnaireEntity questionnaireEntity = new QuestionnaireEntity();
-        questionnaireEntity.setTitle(questionnaireDTO.getTitle());
-        questionnaireEntity.setDescription(questionnaireDTO.getDescription());
-        questionnaireEntity.setFrequency(questionnaireDTO.getFrequency());
-        return questionnaireEntity;
-    }
+    public record CreateQuestionnaireRequest(
+            String title,
+            String description,
+            SendFrequency frequency,
+            List<CreateQuestionRequest> questions
+    ) {}
+
+    public record CreateQuestionRequest(
+            String text,
+            QuestionType type,
+            Integer orderIndex
+    ) {}
+
+    public record AssignQuestionnaireRequest(
+            Long patientId
+    ) {}
+
+    public record UpdateQuestionnaireRequest(
+            String title,
+            String description,
+            SendFrequency frequency
+    ) {}
+
+    public record SubmitResponseRequest(
+            List<SubmitAnswerRequest> answers
+    ) {}
+
+    public record SubmitAnswerRequest(
+            Long questionId,
+            String value
+    ) {}
+
+    public record QuestionnaireResponse(
+            Long questionnaireId,
+            String doctorName,
+            String title,
+            String description,
+            SendFrequency frequency,
+            List<QuestionResponse> questions,
+            LocalDateTime createdAt
+    ) {}
+
+    public record QuestionResponse(
+            Long questionId,
+            String text,
+            QuestionType type,
+            Integer orderIndex
+    ) {}
+
+    public record AssignmentResponse(
+            Long assignmentId,
+            Long questionnaireId,
+            String questionnaireTitle,
+            String patientName,
+            boolean active,
+            LocalDateTime assignedAt
+    ) {}
+
+    public record QuestionnaireResponseDTO(
+            Long responseId,
+            Long assignmentId,
+            List<AnswerResponse> answers,
+            LocalDateTime answeredAt
+    ) {}
+
+    public record AnswerResponse(
+            Long answerId,
+            Long questionId,
+            String questionText,
+            String value
+    ) {}
 }
