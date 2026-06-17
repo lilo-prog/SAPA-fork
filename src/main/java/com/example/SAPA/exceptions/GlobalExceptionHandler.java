@@ -46,6 +46,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
+        System.out.println(ex.getMessage());
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
     }
 }
