@@ -11,6 +11,7 @@ import com.example.SAPA.enums.FollowRequestStatus;
 import com.example.SAPA.enums.NotificationType;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;

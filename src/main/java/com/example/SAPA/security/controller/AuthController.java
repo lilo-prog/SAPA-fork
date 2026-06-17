@@ -1,5 +1,6 @@
 package com.example.SAPA.security.controller;
 
+import com.example.SAPA.DTOs.Request.RegisterRequest;
 import com.example.SAPA.security.DTO.AuthRequest;
 import com.example.SAPA.security.DTO.AuthResponse;
 import com.example.SAPA.security.DTO.RefreshTokenRequest;
@@ -8,6 +9,7 @@ import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.security.service.AuthService;
 import com.example.SAPA.security.service.JWTService;
 import com.example.SAPA.security.service.TokenBlacklistService;
+import com.example.SAPA.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,7 +33,7 @@ public class AuthController {
     private final JWTService jwtService;
     private final CredentialRepository credentialRepository;
     private final TokenBlacklistService tokenBlacklistService;
-
+    private final UserService userService;
 
     @Operation(
             summary = "Autenticar usuario",
@@ -106,5 +108,23 @@ public class AuthController {
     public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
         authService.resetPassword(token, newPassword);
         return ResponseEntity.ok("Contraseña actualizada correctamente.");
+    }
+
+    @Operation(
+            summary = "Crear usuario"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario registrado correctamente",
+                    content = @Content(schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "401", description = "No se registro el usuario - Credenciales inválidas")
+    })
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        try {
+            AuthResponse authResponse = userService.registerUser(request);
+            return ResponseEntity.ok(authResponse);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

@@ -20,16 +20,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        try {
-            AuthResponse authResponse = userService.registerUser(request);
-            return ResponseEntity.ok(authResponse);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @GetMapping
     public List<UserResponseDTO> findAllUsers() {
         return userService.getAllUsers();
