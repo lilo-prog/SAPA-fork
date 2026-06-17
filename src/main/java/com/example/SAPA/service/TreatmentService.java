@@ -6,13 +6,12 @@ import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Models.MedicalRecord.DurationEntity;
 import com.example.SAPA.Models.MedicalRecord.MedicalRecordEntity;
 import com.example.SAPA.Models.MedicalRecord.TreatmentEntity;
-import com.example.SAPA.Repositories.DurationRepository;
-import com.example.SAPA.Repositories.MedicalRecordRepository;
-import com.example.SAPA.Repositories.PatientRepository;
-import com.example.SAPA.Repositories.TreatmentRepository;
+import com.example.SAPA.Repositories.*;
+import com.example.SAPA.enums.UserCategory;
 import com.example.SAPA.mappers.TreatmentMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +27,7 @@ public class TreatmentService {
     private final PatientRepository patientRepository;
     private final UserContextService userContext;
     private final TreatmentMapper treatmentMapper;
+    private final FollowRequestRepository followRequestRepository;
 
 
     private MedicalRecordEntity getOrCreateMedicalRecord(PatientEntity patient) {
@@ -119,7 +119,10 @@ public class TreatmentService {
 
 
     public List<MedicalDTO.TreatmentResponse> getTreatments(Long patientId) {
-        UserEntity user = userContext.getAuthenticatedUser();
+        UserEntity currentUser = userContext.getAuthenticatedUser();
+
+        // 1. Validar el acceso antes de continuar
+        validarAccesoAPaciente(currentUser, patientId);
 
         PatientEntity patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado con id: " + patientId));
@@ -135,6 +138,11 @@ public class TreatmentService {
     }
 
     public List<MedicalDTO.TreatmentResponse> filterTreatments(Long patientId, String name) {
+        UserEntity currentUser = userContext.getAuthenticatedUser();
+
+        // 1. Validar el acceso antes de continuar
+        validarAccesoAPaciente(currentUser, patientId);
+
         PatientEntity patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado con id: " + patientId));
 
@@ -147,5 +155,30 @@ public class TreatmentService {
                 .stream()
                 .map(treatmentMapper::toTreatmentResponse)
                 .toList();
+    }
+    private void validarAccesoAPaciente(UserEntity currentUser, Long patientId) {
+        // REGLA 1: Si el usuario autenticado es un PACIENTE
+        if (currentUser.getRole().equals(UserCategory.PATIENT)) { // Adapta esto a cómo manejes tus Roles/Enums
+            // Verificamos que el ID del paciente consultado coincida con su propio ID de usuario/paciente
+            if (!currentUser.getId().equals(patientId)) {
+                throw new IllegalArgumentException("No tienes permiso para ver la ficha médica de otro paciente.");
+            }
+            return; // Acceso permitido
+        }
+
+        // REGLA 2: Si el usuario autenticado es un MÉDICO
+        if (currentUser.getRole().equals(UserCategory.DOCTOR)) {
+            // Buscamos en la base de datos si existe una relación activa de seguimiento entre este médico y el paciente
+            // Nota: Adapta este método según cómo se llame tu repositorio y tu entidad de seguimientos
+            boolean tieneSeguimiento = followRequestRepository.existsByMedicoIdAndPacienteId(currentUser.getId(), patientId);
+
+            if (!tieneSeguimiento) {
+                throw new IllegalArgumentException("No tienes permiso para acceder a este paciente porque no está bajo tu seguimiento.");
+            }
+            return; // Acceso permitido
+        }
+
+        // Si cae aquí (por ejemplo, es otro rol no contemplado o no tiene rol válido)
+        throw new IllegalArgumentException("Acceso denegado: Rol no autorizado para realizar esta consulta.");
     }
 }
