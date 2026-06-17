@@ -20,7 +20,6 @@ public class MailtrapAppConfig {
     public MailtrapClient mailtrapClient() {
         MailtrapConfig config = new MailtrapConfig.Builder()
                 .token(mailtrapToken)
-                .inboxId(4719169L)
                 .sandbox(true)
                 .inboxId(mailtrapInboxId) // Agregado para solucionar el error
                 .build();
