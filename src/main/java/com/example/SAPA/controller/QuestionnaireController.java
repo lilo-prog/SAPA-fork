@@ -36,7 +36,7 @@ public class QuestionnaireController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/my-questionnaire")
+    @GetMapping("/my-questionnaires")
     public ResponseEntity<List<QuestionnaireDTO.QuestionnaireResponse>> getMyQuestionnaires() {
         return ResponseEntity.ok(questionnaireService.getMyQuestionnaires());
     }
