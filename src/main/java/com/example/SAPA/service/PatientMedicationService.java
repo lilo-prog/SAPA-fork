@@ -17,7 +17,9 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -50,9 +52,17 @@ public class PatientMedicationService {
 
         MedicalRecordEntity record = getOrCreateMedicalRecord(patient);
 
+        Optional.ofNullable(fdaService.searchForMedicationByName(request.fdaDrugName())).orElseThrow(()->new IllegalArgumentException("El medicamento no existe"));
+
+        if(request.startDate().isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior al dia de actual");
+        if(request.endDate().isBefore(LocalDate.now()))
+            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de actual");
+
         PatientMedicationEntity medication = PatientMedicationEntity.builder()
                 .fdaDrugName(request.fdaDrugName())
                 .notes(request.notes())
+                .medicalRecord(record)
                 .startDate(request.startDate())
                 .endDate(request.endDate())
                 .build();
@@ -65,6 +75,11 @@ public class PatientMedicationService {
 
         PatientMedicationEntity medication = medicationRepository.findById(medicationId)
                 .orElseThrow(() -> new EntityNotFoundException("Medicación no encontrada con id: " + medicationId));
+
+        if(request.startDate().isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior al dia de actual");
+        if(request.endDate().isBefore(LocalDate.now()))
+            throw new IllegalArgumentException("La fecha de fin no puede ser anterior a la fecha de actual");
 
         medication.setNotes(request.notes());
         medication.setStartDate(request.startDate());
