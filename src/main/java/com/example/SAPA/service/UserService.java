@@ -155,6 +155,7 @@ public class UserService {
         if(user.getStatus().equals(AccountStatus.INACTIVE)) {
             throw new RuntimeException("Error. Su cuenta ya esta dada de baja");
         }
+
         user.setStatus(AccountStatus.INACTIVE);
         userRepository.save(user);
     }

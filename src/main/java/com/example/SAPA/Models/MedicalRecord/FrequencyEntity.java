@@ -1,6 +1,6 @@
 package com.example.SAPA.Models.MedicalRecord;
 
-import com.example.SAPA.enums.DurationUnit;
+import com.example.SAPA.enums.FrequencyUnit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,17 +10,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "duration")
-public class DurationEntity {
+@Table(name = "frequency")
+public class FrequencyEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="duration_id")
+    @Column(name="frequency_id")
     private Long id;
 
     private int length;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DurationUnit durationUnit;
+    private FrequencyUnit frequencyUnit;
 }

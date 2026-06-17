@@ -30,7 +30,7 @@ public class UserController {
         return userService.getActiveUsers();
     }
 
-    @GetMapping("/Inactive")
+    @GetMapping("/inactive")
     public List<UserResponseDTO> findInactiveUsers() {
         return userService.getInactiveUsers();
     }

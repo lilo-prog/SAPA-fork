@@ -1,7 +1,6 @@
 package com.example.SAPA.enums;
 
-public enum TimeLapse {
-    HOUR,
+public enum DurationUnit {
     DAY,
     WEEK,
     MONTH,

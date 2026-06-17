@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "medicalRecord")
+@Table(name = "medical_records")
 public class MedicalRecordEntity {
 
     @Id
@@ -20,9 +20,8 @@ public class MedicalRecordEntity {
     @Column(name="medical_record_id")
     private Long id;
 
-    @OneToMany
-    @JoinColumn(name = "treatements_id")
-    private List<TreatmentEntity> treatements;
+    @OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TreatmentEntity> treatments = new ArrayList<>();
 
     @OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PatientMedicationEntity> medications = new ArrayList<>();

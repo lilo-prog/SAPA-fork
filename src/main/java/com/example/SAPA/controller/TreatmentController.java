@@ -17,14 +17,16 @@ public class TreatmentController {
 
     private final TreatmentService treatmentService;
 
-    @PostMapping
-    public ResponseEntity<MedicalDTO.TreatmentResponse> createTreatment(@RequestBody MedicalDTO.CreateTreatmentRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(treatmentService.createTreatment(request));
+    @PostMapping("/patient/{patientId}")
+    public ResponseEntity<MedicalDTO.TreatmentResponse> createTreatment(@PathVariable Long patientId,
+                                                                        @RequestBody MedicalDTO.TreatmentRequest request) {
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(treatmentService.createTreatment(patientId, request));
     }
 
     @PutMapping("/{treatmentId}")
     public ResponseEntity<MedicalDTO.TreatmentResponse> updateTreatment(@PathVariable Long treatmentId,
-                                                                        @RequestBody MedicalDTO.UpdateTreatmentRequest request) {
+                                                                        @RequestBody MedicalDTO.TreatmentRequest request) {
 
         return ResponseEntity.ok(treatmentService.updateTreatment(treatmentId, request));
     }
