@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>SAPA · Probador de chat (STOMP)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #181b22;
+    --border: #2a2e38;
+    --text: #e6e8ec;
+    --muted: #8b91a0;
+    --accent: #4f8cff;
+    --ok: #3ecf8e;
+    --err: #ff6b6b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+    padding: 24px;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .panel h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 10px 0 4px;
+  }
+  input, textarea {
+    width: 100%;
+    background: #11141a;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  textarea { resize: vertical; min-height: 60px; }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  button {
+    margin-top: 12px;
+    width: 100%;
+    background: var(--accent);
+    border: none;
+    color: white;
+    padding: 9px 0;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  button.secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  button:hover:not(:disabled) { filter: brightness(1.1); }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .dot.on { background: var(--ok); }
+  .dot.off { background: var(--err); }
+  #log {
+    height: 480px;
+    overflow-y: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  .line { padding: 3px 0; border-bottom: 1px solid #1c1f27; }
+  .line .ts { color: var(--muted); margin-right: 8px; }
+  .line.sent { color: var(--accent); }
+  .line.recv { color: var(--ok); }
+  .line.err { color: var(--err); }
+  .line.info { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<h1>SAPA · Probador de chat (STOMP sobre WebSocket)</h1>
+<div class="sub">Reemplaza el flujo manual de Postman: hace login, conecta, suscribe y manda mensajes usando una librería STOMP real (sin tener que armar frames a mano).</div>
+
+<div class="grid">
+
+  <div class="panel">
+    <h2>1. Conexión</h2>
+
+    <label>URL base del backend</label>
+    <input id="baseUrl" value="http://localhost:8080">
+
+    <label>Email</label>
+    <input id="email" placeholder="paciente@ejemplo.com">
+
+    <label>Password</label>
+    <input id="password" type="password">
+
+    <button id="btnLogin">Login (obtener token)</button>
+
+    <label>Token (se completa solo, o pegá uno)</label>
+    <textarea id="token" placeholder="eyJhbGciOi..."></textarea>
+
+    <button id="btnConnect">Conectar (CONNECT)</button>
+    <button id="btnDisconnect" class="secondary" disabled>Desconectar</button>
+
+    <div class="status" style="margin-top:14px;">
+      <span class="dot" id="dot"></span>
+      <span id="statusText">Desconectado</span>
+    </div>
+
+    <h2>2. Conversación</h2>
+    <label>Conversation ID</label>
+    <input id="convId" placeholder="1">
+
+    <button id="btnSubscribe" disabled>Suscribirse (SUBSCRIBE)</button>
+
+    <label>Mensaje</label>
+    <textarea id="messageContent" placeholder="hola"></textarea>
+
+    <button id="btnSend" disabled>Enviar (SEND)</button>
+  </div>
+
+  <div class="panel">
+    <h2>Log de eventos</h2>
+    <div id="log"></div>
+  </div>
+
+</div>
+
+<script>
+let stompClient = null;
+
+const $ = (id) => document.getElementById(id);
+const logEl = $('log');
+const dot = $('dot');
+const statusText = $('statusText');
+
+function log(kind, text) {
+  const div = document.createElement('div');
+  div.className = 'line ' + kind;
+  const ts = new Date().toLocaleTimeString();
+  div.innerHTML = '<span class="ts">' + ts + '</span>' + text;
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function setConnected(isConnected) {
+  dot.className = 'dot ' + (isConnected ? 'on' : 'off');
+  statusText.textContent = isConnected ? 'Conectado' : 'Desconectado';
+  $('btnConnect').disabled = isConnected;
+  $('btnDisconnect').disabled = !isConnected;
+  $('btnSubscribe').disabled = !isConnected;
+  $('btnSend').disabled = !isConnected;
+}
+
+$('btnLogin').onclick = async () => {
+  const baseUrl = $('baseUrl').value.trim();
+  const email = $('email').value.trim();
+  const password = $('password').value;
+
+  log('info', 'Haciendo login contra ' + baseUrl + '/auth/login ...');
+  try {
+    const res = await fetch(baseUrl + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      log('err', 'Login falló (' + res.status + '): ' + JSON.stringify(data));
+      return;
+    }
+    $('token').value = data.AccessToken || data.accessToken || data.token || JSON.stringify(data);
+    log('recv', 'Login OK, token cargado.');
+  } catch (e) {
+    log('err', 'Error de red en login: ' + e.message);
+  }
+};
+
+$('btnConnect').onclick = () => {
+  const baseUrl = $('baseUrl').value.trim();
+  const token = $('token').value.trim();
+
+  if (!token) {
+    log('err', 'Falta el token. Hacé login o pegalo manualmente.');
+    return;
+  }
+
+  log('info', 'Abriendo SockJS hacia ' + baseUrl + '/ws ...');
+  const socket = new SockJS(baseUrl + '/ws');
+  stompClient = Stomp.over(socket);
+
+  stompClient.debug = (msg) => log('info', msg);
+
+  stompClient.connect(
+    { Authorization: 'Bearer ' + token },
+    (frame) => {
+      log('recv', 'CONNECTED → ' + frame);
+      setConnected(true);
+    },
+    (error) => {
+      log('err', 'Error STOMP: ' + (error.headers ? JSON.stringify(error.headers) + ' ' + error.body : error));
+      setConnected(false);
+    }
+  );
+};
+
+$('btnDisconnect').onclick = () => {
+  if (stompClient) {
+    stompClient.disconnect(() => log('info', 'Desconectado.'));
+    setConnected(false);
+  }
+};
+
+$('btnSubscribe').onclick = () => {
+  const convId = $('convId').value.trim();
+  if (!convId) { log('err', 'Falta el conversationId.'); return; }
+
+  const destination = '/queue/conversation/' + convId;
+  stompClient.subscribe(destination, (message) => {
+    log('recv', 'MESSAGE en ' + destination + ' → ' + message.body);
+  });
+  log('sent', 'SUBSCRIBE a ' + destination);
+};
+
+$('btnSend').onclick = () => {
+  const convId = $('convId').value.trim();
+  const content = $('messageContent').value;
+  if (!convId) { log('err', 'Falta el conversationId.'); return; }
+
+  const destination = '/app/chat/' + convId;
+  const body = JSON.stringify({ content, type: 'TEXT' });
+  stompClient.send(destination, {}, body);
+  log('sent', 'SEND a ' + destination + ' → ' + body);
+};
+</script>
+
+</body>
+</html>
