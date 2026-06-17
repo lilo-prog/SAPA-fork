@@ -1,44 +1,46 @@
 package com.example.SAPA.DTOs;
 
-import com.example.SAPA.enums.TimeLapse;
+import com.example.SAPA.enums.DurationUnit;
+import com.example.SAPA.enums.FrequencyUnit;
 
 import java.util.List;
 
 public class MedicalDTO {
 
-    public record DurationRequest(
+    public record TreatmentDuration(
             int length,
-            TimeLapse timeLapse
+            DurationUnit unit
     ) {}
 
-    public record DurationResponse(
-            Long durationId,
+    public record TreatmentFrequency(
             int length,
-            TimeLapse timeLapse
+            FrequencyUnit unit
     ) {}
 
-    public record CreateTreatmentRequest(
+    public record TreatmentRequest(
             String name,
             String description,
-            DurationRequest duration,
-            DurationRequest frecuency
-    ) {}
-
-    public record UpdateTreatmentRequest(
-            String name,
-            String description,
-            DurationRequest duration,
-            DurationRequest frecuency
+            TreatmentDuration duration,
+            TreatmentFrequency frequency
     ) {}
 
     public record TreatmentResponse(
             Long treatmentId,
             String name,
             String description,
-            DurationResponse duration,
-            DurationResponse frecuency
+            TreatmentDurationResponse duration,
+            TreatmentFrequencyResponse frequency
     ) {}
 
+    public record TreatmentDurationResponse(
+            int length,
+            DurationUnit unit
+    ) {}
+
+    public record TreatmentFrequencyResponse(
+            int length,
+            FrequencyUnit unit
+    ) {}
 
     public record MedicalRecordResponse(
             Long medicalRecordId,

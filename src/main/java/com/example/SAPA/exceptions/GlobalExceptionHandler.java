@@ -29,10 +29,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     }
-    @ExceptionHandler(EmptyCollectionException.class)
-    public ResponseEntity<ErrorResponse> handleEmptyCollectionException(EmptyCollectionException ex, WebRequest request) {
-        return buildResponse(HttpStatus.NO_CONTENT, ex.getMessage(), request);
-    }
 
     @ExceptionHandler(CredentialsNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(CredentialsNotFoundException ex, WebRequest request) {

@@ -1,7 +1,6 @@
 package com.example.SAPA.DTOs.Request;
 
 import com.example.SAPA.Models.Entities.UserEntity;
-import com.example.SAPA.Models.LocationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

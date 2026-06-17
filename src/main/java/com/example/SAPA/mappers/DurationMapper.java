@@ -8,6 +8,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface DurationMapper {
 
-    @Mapping(source = "id", target = "durationId")
-    MedicalDTO.DurationResponse toDurationResponse(DurationEntity duration);
+    @Mapping(source = "durationUnit", target = "unit")
+    MedicalDTO.TreatmentDurationResponse toDurationResponse(DurationEntity duration);
 }

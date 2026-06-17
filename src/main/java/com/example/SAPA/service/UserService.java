@@ -127,6 +127,23 @@ public class UserService {
                 .toList();
     }
 
+    public List<UserResponseDTO> getActiveUsers(){
+        return userRepository.findAll()
+                .stream()
+                .filter(n -> n.getStatus().equals(AccountStatus.ACTIVE))
+                .map(userMapper::toUserResponseDTO)
+                .toList();
+    }
+
+    public List<UserResponseDTO> getInactiveUsers(){
+        return userRepository.findAll()
+                .stream()
+                .filter(n -> n.getStatus().equals(AccountStatus.INACTIVE))
+                .map(userMapper::toUserResponseDTO)
+                .toList();
+    }
+
+
     public void deleteUser(String email, String password) {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Perfil de usuario no encontrado"));
@@ -135,6 +152,11 @@ public class UserService {
             throw new BadCredentialsException("Contraseña incorrecta");
         }
 
-        userRepository.delete(user);
+        if(user.getStatus().equals(AccountStatus.INACTIVE)) {
+            throw new RuntimeException("Error. Su cuenta ya esta dada de baja");
+        }
+
+        user.setStatus(AccountStatus.INACTIVE);
+        userRepository.save(user);
     }
 }

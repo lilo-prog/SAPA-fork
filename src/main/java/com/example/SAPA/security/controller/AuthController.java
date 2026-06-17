@@ -1,6 +1,8 @@
 package com.example.SAPA.security.controller;
 
 import com.example.SAPA.DTOs.Request.RegisterRequest;
+import com.example.SAPA.Models.Entities.UserEntity;
+import com.example.SAPA.enums.AccountStatus;
 import com.example.SAPA.security.DTO.AuthRequest;
 import com.example.SAPA.security.DTO.AuthResponse;
 import com.example.SAPA.security.DTO.RefreshTokenRequest;
@@ -24,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 @Tag(name = "Autenticación", description = "Operaciones relacionadas con la autenticación, gestión de tokens y sesiones de usuario")
 public class AuthController {

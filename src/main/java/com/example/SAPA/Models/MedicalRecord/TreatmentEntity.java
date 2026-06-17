@@ -29,7 +29,7 @@ public class TreatmentEntity {
 
     @ManyToOne
     @JoinColumn(name="frecuency_id", nullable = false)
-    private DurationEntity frecuency;
+    private FrequencyEntity frequency;
 
     @ManyToOne
     @JoinColumn(name = "medical_record_id", nullable = false)
