@@ -20,9 +20,19 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<UserResponseDTO> findAllUsers() {
         return userService.getAllUsers();
+    }
+
+    @GetMapping("/active")
+    public List<UserResponseDTO> findActiveUsers() {
+        return userService.getActiveUsers();
+    }
+
+    @GetMapping("/Inactive")
+    public List<UserResponseDTO> findInactiveUsers() {
+        return userService.getInactiveUsers();
     }
 
     @GetMapping("/profile")
@@ -35,10 +45,10 @@ public class UserController {
         return ResponseEntity.ok(profile);
     }
 
-    @DeleteMapping
+    @PatchMapping
     public ResponseEntity<String> deleteUser(@RequestBody DeleteAccountRequest request, Authentication authentication) {
         String email = authentication.getName();
         userService.deleteUser(email, request.password());
-        return ResponseEntity.ok("Usuario eliminado con éxito");
+        return ResponseEntity.ok("Usuario dado de baja con éxito");
     }
 }

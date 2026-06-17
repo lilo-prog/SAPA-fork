@@ -90,9 +90,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/medications/**").hasRole("DOCTOR")
                         .requestMatchers(HttpMethod.DELETE, "/medications/**").hasRole("DOCTOR")
 
-                        .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/all").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users/active").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users/inactive").hasRole("ADMIN")
                         .requestMatchers("/users/**").hasAnyRole("DOCTOR", "PATIENT", "ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET, "/fda/search-medication").permitAll()
 

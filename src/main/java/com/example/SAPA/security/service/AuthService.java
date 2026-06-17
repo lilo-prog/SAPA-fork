@@ -1,5 +1,7 @@
 package com.example.SAPA.security.service;
 
+import com.example.SAPA.Models.Entities.UserEntity;
+import com.example.SAPA.enums.AccountStatus;
 import com.example.SAPA.security.DTO.AuthRequest;
 import com.example.SAPA.security.DTO.AuthResponse;
 import com.example.SAPA.security.entities.CredentialEntity;
@@ -27,6 +29,16 @@ public class AuthService {
 
 
     public UserDetails authenticate(AuthRequest input) {
+
+        CredentialEntity credentialEntity = credentialRepository.findByEmail(input.email())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado")); //CAMBIAR TIPO EXCEPCION Y MENSAJE
+
+        UserEntity userEntity = credentialEntity.getUser();
+
+        if(userEntity.getStatus() == AccountStatus.INACTIVE){
+            throw new RuntimeException("No puede iniciar sesión. Cuenta dada de baja"); //CAMBIAR TIPO EXCEPCION
+        }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.email(),
