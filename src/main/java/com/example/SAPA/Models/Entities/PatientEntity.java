@@ -31,7 +31,7 @@ public class PatientEntity {
     @Column(nullable = false)
     private String lastName;
 
-    @Past(message = "La fecha de nacimiento debe ser una fecha pasada (no puede ser hoy ni el futuro)")
+    @Past(message = "La fecha de nacimiento debe ser una fecha pasada (no puede ser hoy ni el futuro).")
     @NotNull
     private LocalDate birthDate;
 
