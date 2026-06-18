@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAPA - Comunidad de Salud</title>
+
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -13,41 +14,41 @@
 <header>
 
     <div class="logo-container">
-        <img src="img/logo.jpg" alt="Logo SAPA">
+        <img src="/img/logo.jpg" alt="Logo SAPA">
         <h1>SAPA</h1>
     </div>
 
     <nav>
 
-        <a href="#">
-            <img src="img/foro.png" alt="">
+        <a href="/">
+            <img src="/img/foro.png" alt="">
             Inicio
         </a>
 
         <a href="#">
-            <img src="img/foro.png" alt="">
+            <img src="/img/foro.png" alt="">
             Foros
         </a>
 
         <a href="#">
-            <img src="img/guardado.png" alt="">
+            <img src="/img/guardado.png" alt="">
             Guardados
         </a>
 
         <a href="#">
-            <img src="img/lupa.png" alt="">
+            <img src="/img/lupa.png" alt="">
             Buscar
         </a>
 
     </nav>
 
-    <div class="auth-buttons">
+    <div class="auth-buttons" id="authButtons">
 
-        <a href="login.html" class="btn-login">
+        <a href="/login" class="btn-login">
             Iniciar sesión
         </a>
 
-        <a href="registro-paciente.html" class="btn-register">
+        <a href="/registro-paciente" class="btn-register">
             Registrarse
         </a>
 
@@ -56,7 +57,6 @@
 </header>
 
 <main>
-
 
     <aside class="sidebar-left">
 
@@ -93,8 +93,15 @@
 
     </aside>
 
-
     <section class="contenido">
+
+        <div class="top-actions">
+
+            <button class="btn-publicar">
+                + Nueva publicación
+            </button>
+
+        </div>
 
         <div class="cabecera">
 
@@ -106,63 +113,67 @@
 
         </div>
 
-        <div class="registro-requerido">
+        <div class="crear-post">
 
-            <h3>¿Quieres participar?</h3>
+            <h3>Nueva publicación</h3>
 
-            <p>
-                Regístrate para publicar, comentar y guardar contenido.
-            </p>
+            <input
+                    id="tituloForum"
+                    type="text"
+                    placeholder="Título de tu publicación">
 
-            <a href="registro-paciente.html">
-                Crear cuenta gratis
-            </a>
+            <textarea
+                    id="contenidoForum"
+                    placeholder="Cuéntanos tu experiencia, síntomas, tratamiento o consulta..."></textarea>
 
-        </div>
+            <div class="acciones-post">
 
-        <div class="publicacion">
+                <select>
 
-            <span class="tag">
-                Enfermedades Crónicas
-            </span>
+                    <option>
+                        Selecciona una categoría
+                    </option>
 
-            <h3>
-                Convivir con Artritis Reumatoide
-            </h3>
+                    <option>
+                        Enfermedades crónicas
+                    </option>
 
-            <p>
-                Hola a todos. Me diagnosticaron artritis hace dos años y quería
-                compartir cómo llevo el tratamiento y escuchar experiencias similares.
-            </p>
+                    <option>
+                        Salud mental
+                    </option>
 
-            <div class="publicacion-info">
-                <span>12 respuestas</span>
-                <span>28 me gusta</span>
+                    <option>
+                        Tratamientos
+                    </option>
+
+                    <option>
+                        Síntomas
+                    </option>
+
+                </select>
+
+                <div class="botones-post">
+
+                    <button class="btn-cancelar">
+                        Cancelar
+                    </button>
+
+                    <button
+                            type="button"
+                            id="btnCrearForum"
+                            class="btn-publicar-form">
+                        Publicar
+                    </button>
+
+                </div>
+
             </div>
 
         </div>
 
-        <div class="publicacion">
+        <!-- FOROS DINÁMICOS -->
 
-            <span class="tag">
-                Tratamientos
-            </span>
-
-            <h3>
-                Dudas sobre Hipotiroidismo
-            </h3>
-
-            <p>
-                Estoy comenzando mi tratamiento y me gustaría saber cómo fue la
-                adaptación de otras personas.
-            </p>
-
-            <div class="publicacion-info">
-                <span>8 respuestas</span>
-                <span>15 me gusta</span>
-            </div>
-
-        </div>
+        <div id="forumsContainer"></div>
 
         <div class="registro-banner">
 
@@ -174,14 +185,13 @@
                 Regístrate para acceder a toda la comunidad SAPA.
             </p>
 
-            <a href="registro-paciente.html">
+            <a href="/registro-paciente">
                 Registrarme
             </a>
 
         </div>
 
     </section>
-
 
     <aside class="sidebar-right">
 
@@ -204,8 +214,7 @@
             <h3>Información importante</h3>
 
             <p>
-                El contenido compartido en SAPA no reemplaza el consejo médico
-                profesional. Ante cualquier duda consulta a tu médico.
+                El contenido compartido en SAPA no reemplaza el consejo médico profesional. Ante cualquier duda consulta a tu médico.
             </p>
 
         </div>
@@ -213,6 +222,243 @@
     </aside>
 
 </main>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", async () => {
+
+        const token = localStorage.getItem("accessToken");
+        const authButtons = document.getElementById("authButtons");
+
+        if(token){
+
+            authButtons.innerHTML = `
+<div class="user-menu">
+
+    <div class="user-button" id="userButton">
+
+        <div class="user-avatar">
+            JP
+        </div>
+
+        <div class="user-info">
+            <span class="user-name">
+                Usuario
+            </span>
+
+            <span class="user-role">
+                Sesión iniciada
+            </span>
+        </div>
+
+        <span class="user-arrow">
+            ▼
+        </span>
+
+    </div>
+
+    <div class="user-dropdown" id="userDropdown">
+
+        <a href="#">
+            <span>👤</span>
+            <span>Mi perfil</span>
+        </a>
+
+        <a href="#">
+            <span>📝</span>
+            <span>Mis publicaciones</span>
+        </a>
+
+        <hr>
+
+        <button
+            id="logoutBtn"
+            class="logout-btn">
+
+            <span>🚪</span>
+            <span>Cerrar sesión</span>
+
+        </button>
+
+    </div>
+
+</div>
+`;
+
+            const userButton =
+                document.getElementById("userButton");
+
+            const userDropdown =
+                document.getElementById("userDropdown");
+
+            userButton.addEventListener("click", () => {
+
+                userDropdown.classList.toggle("active");
+
+            });
+
+            document.addEventListener("click", (e) => {
+
+                if(!e.target.closest(".user-menu")){
+
+                    userDropdown.classList.remove("active");
+
+                }
+
+            });
+
+        }
+        const logoutBtn = document.getElementById("logoutBtn");
+
+        if(logoutBtn){
+
+            logoutBtn.addEventListener("click", async () => {
+
+                const token = localStorage.getItem("accessToken");
+
+                try{
+
+                    await fetch("/auth/logout", {
+                        method:"POST",
+                        headers:{
+                            "Authorization": `Bearer ${token}`
+                        }
+                    });
+
+                }catch(error){
+                    console.error(error);
+                }
+
+                localStorage.removeItem("accessToken");
+                localStorage.removeItem("refreshToken");
+
+                window.location.reload();
+
+            });
+
+        }
+
+        console.log("TOKEN:", token);
+
+        if (!token) {
+            console.log("Usuario no autenticado");
+            return;
+        }
+
+        try {
+
+            const response = await fetch("/forums/all", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const forums = await response.json();
+
+            console.log("FOROS:");
+            console.log(forums);
+
+            const container = document.getElementById("forumsContainer");
+
+            container.innerHTML = "";
+
+            forums.forEach(forum => {
+
+                container.innerHTML += `
+                <div class="publicacion">
+
+                    <span class="tag">
+                        Foro
+                    </span>
+
+                    <h3>
+                        ${forum.title}
+                    </h3>
+
+                    <p>
+                        ${forum.content}
+                    </p>
+
+                    <div class="publicacion-info">
+                        <span>
+                            ${forum.createdByName}
+                        </span>
+                    </div>
+
+                </div>
+            `;
+
+            });
+
+        }
+        catch(error){
+
+            console.error("ERROR:");
+            console.error(error);
+
+        }
+        const btnCrearForum = document.getElementById("btnCrearForum");
+
+        btnCrearForum.addEventListener("click", async function() {
+
+            const token = localStorage.getItem("accessToken");
+
+            if(!token){
+                alert("Debes iniciar sesión");
+                return;
+            }
+
+            const titulo = document.getElementById("tituloForum").value.trim();
+            const contenido = document.getElementById("contenidoForum").value.trim();
+
+            if(!titulo || !contenido){
+                alert("Completa todos los campos");
+                return;
+            }
+
+            try{
+
+                const response = await fetch("/forums", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        title: titulo,
+                        content: contenido
+                    })
+                });
+
+                if(!response.ok){
+
+                    const mensaje = await response.text();
+
+                    console.log(mensaje);
+
+                    alert("Error al crear foro");
+
+                    return;
+                }
+
+                alert("Foro creado correctamente");
+
+                location.reload();
+
+            }
+            catch(error){
+
+                console.error(error);
+                alert("Error de conexión");
+
+            }
+
+        });
+
+    });
+
+</script>
 
 </body>
 </html>

@@ -267,30 +267,36 @@
 
         error.textContent = "";
 
-        try{
+        try {
 
             const response = await fetch("/auth/login", {
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
                 },
-                body:JSON.stringify({
+                body: JSON.stringify({
                     email: email,
                     password: password
                 })
             });
 
-            if(!response.ok){
-
+            if (!response.ok) {
                 error.textContent = "Correo o contraseña incorrectos";
                 return;
             }
 
             const data = await response.json();
 
-            localStorage.setItem("accessToken", data.accessToken);
-            localStorage.setItem("refreshToken", data.refreshToken);
+            console.log("LOGIN RESPONSE");
+            console.log(data);
 
+            localStorage.setItem("accessToken", data.AccessToken);
+            localStorage.setItem("refreshToken", data.RefreshToken);
+
+            console.log("TOKEN GUARDADO:");
+            console.log(localStorage.getItem("accessToken"));
+
+            // Redireccionar al inicio
             window.location.href = "/";
 
         }
@@ -299,6 +305,7 @@
             console.error(err);
 
             error.textContent = "Error al conectar con el servidor";
+
         }
 
     });
