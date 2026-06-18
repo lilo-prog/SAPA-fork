@@ -32,9 +32,9 @@ public class TreatmentController {
     }
 
     @DeleteMapping("/{treatmentId}")
-    public ResponseEntity<Void> deleteTreatment(@PathVariable Long treatmentId) {
+    public ResponseEntity<String> deleteTreatment(@PathVariable Long treatmentId) {
         treatmentService.deleteTreatment(treatmentId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Tratamiento eliminado correctamente.");
     }
 
 

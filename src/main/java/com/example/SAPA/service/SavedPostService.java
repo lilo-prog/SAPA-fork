@@ -1,11 +1,11 @@
 package com.example.SAPA.service;
 
-import com.example.SAPA.DTOs.ForumDto;
+import com.example.SAPA.DTOs.Response.SavedPostResponseDTO;
 import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Models.Forum.PostEntity;
 import com.example.SAPA.Models.Forum.SavedPostEntity;
 import com.example.SAPA.Repositories.*;
-import com.example.SAPA.mappers.ForumMapper;
+import com.example.SAPA.mappers.SavedPostMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,11 @@ public class SavedPostService {
 
     private final PostRepository postRepository;
     private final SavedPostRepository savedPostRepository;
-    private final ForumMapper forumMapper;
+    private final SavedPostMapper savedPostMapper;
     private final UserContextService userContextService;
 
 
-    public ForumDto.SavedPostResponse savePost(Long postId) {
+    public SavedPostResponseDTO savePost(Long postId) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
         PostEntity post = postRepository.findById(postId)
@@ -42,7 +42,7 @@ public class SavedPostService {
                 .build();
 
         SavedPostEntity result = savedPostRepository.save(saved);
-        return forumMapper.toSavedPostResponse(result, userContextService.resolveName(post.getAuthor()));
+        return savedPostMapper.toSavedPostResponse(result, userContextService.resolveName(post.getAuthor()));
     }
 
 
@@ -58,12 +58,12 @@ public class SavedPostService {
         savedPostRepository.delete(saved);
     }
 
-    public List<ForumDto.SavedPostResponse> getSavedPosts() {
+    public List<SavedPostResponseDTO> getSavedPosts() {
         UserEntity user = userContextService.getAuthenticatedUser();
 
         return savedPostRepository.findByUserEntity(user)
                 .stream()
-                .map(s -> forumMapper.toSavedPostResponse(s, userContextService.resolveName(s.getPost().getAuthor())))
+                .map(s -> savedPostMapper.toSavedPostResponse(s, userContextService.resolveName(s.getPost().getAuthor())))
                 .toList();
     }
 }

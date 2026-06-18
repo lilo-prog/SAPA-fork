@@ -1,6 +1,6 @@
 package com.example.SAPA.controller;
 
-import com.example.SAPA.DTOs.ForumDto;
+import com.example.SAPA.DTOs.Response.SavedPostResponseDTO;
 import com.example.SAPA.service.SavedPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,12 +18,12 @@ public class SavedPostController {
     private final SavedPostService savedPostService;
 
     @GetMapping
-    public ResponseEntity<List<ForumDto.SavedPostResponse>> getSavedPosts() {
+    public ResponseEntity<List<SavedPostResponseDTO>> getSavedPosts() {
         return ResponseEntity.ok(savedPostService.getSavedPosts());
     }
 
     @PostMapping("/{postId}")
-    public ResponseEntity<ForumDto.SavedPostResponse> savePost(@PathVariable Long postId) {
+    public ResponseEntity<SavedPostResponseDTO> savePost(@PathVariable Long postId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPostService.savePost(postId));
     }
 
