@@ -277,8 +277,10 @@
         if (message.attachments?.length > 0) {
             attachmentHtml = message.attachments.map(a =>
                 a.type === "IMAGE"
-                    ? `<img src="${a.fileUrl}" class="sapa-chat-attachment-img" alt="${escapeHtml(a.fileName)}">`
-                    : `<a href="${a.fileUrl}" target="_blank" class="sapa-chat-attachment-file">📄 ${escapeHtml(a.fileName)}</a>`
+                    ? `<a href="${a.fileUrl}" download="${escapeHtml(a.fileName)}" class="sapa-chat-attachment-link" title="Haz clic para descargar">
+                           <img src="${a.fileUrl}" class="sapa-chat-attachment-img" alt="${escapeHtml(a.fileName)}">
+                       </a>`
+                    : `<a href="${a.fileUrl}" download="${escapeHtml(a.fileName)}" target="_blank" class="sapa-chat-attachment-file">📄 ${escapeHtml(a.fileName)}</a>`
             ).join("");
         }
 

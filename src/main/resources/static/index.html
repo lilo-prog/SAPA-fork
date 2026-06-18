@@ -176,7 +176,7 @@
 
         <div id="forumsContainer"></div>
 
-        <div class="registro-banner">
+        <div class="registro-banner" id="registroBanner">
 
             <h3>
                 Hay más publicaciones disponibles
@@ -232,6 +232,11 @@
         const authButtons = document.getElementById("authButtons");
 
         if(token){
+
+            if(registroBanner){
+                registroBanner.style.display = "none";
+            }
+
             const profileResponse = await fetch("/users/me", {
                 headers:{
                     "Authorization": `Bearer ${token}`
@@ -349,8 +354,7 @@
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
 
-                window.location.reload();
-
+                window.location.href = "/login.html";
             });
 
         }
