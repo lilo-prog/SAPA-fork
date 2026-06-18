@@ -232,25 +232,41 @@
         const authButtons = document.getElementById("authButtons");
 
         if(token){
+            const profileResponse = await fetch("/users/me", {
+                headers:{
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const profile = await profileResponse.json();
+
+            const iniciales =
+                profile.firstName.charAt(0) +
+                profile.lastName.charAt(0);
+
+            const rol =
+                profile.role === "DOCTOR"
+                    ? "Médico"
+                    : "Paciente";
 
             authButtons.innerHTML = `
 <div class="user-menu">
 
     <div class="user-button" id="userButton">
 
-        <div class="user-avatar">
-            JP
-        </div>
+       <div class="user-avatar">
+    ${iniciales}
+    </div>
 
-        <div class="user-info">
-            <span class="user-name">
-                Usuario
-            </span>
+    <div class="user-info">
+        <span class="user-name">
+           ${profile.firstName} ${profile.lastName}
+        </span>
 
-            <span class="user-role">
-                Sesión iniciada
-            </span>
-        </div>
+     <span class="user-role">
+          ${rol}
+        </span>
+    </div>
 
         <span class="user-arrow">
             ▼
