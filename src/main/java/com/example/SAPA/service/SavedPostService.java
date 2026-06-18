@@ -5,6 +5,7 @@ import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Models.Forum.PostEntity;
 import com.example.SAPA.Models.Forum.SavedPostEntity;
 import com.example.SAPA.Repositories.*;
+import com.example.SAPA.exceptions.ResourceAlreadyExistsException;
 import com.example.SAPA.mappers.SavedPostMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class SavedPostService {
                 .isPresent();
 
         if (alreadySaved) {
-            throw new RuntimeException("Ya tenés este post guardado en favoritos");
+            throw new ResourceAlreadyExistsException("Operación inválida: El post ya se encuentra en tus favoritos.");
         }
 
         SavedPostEntity saved = SavedPostEntity.builder()
@@ -53,7 +54,7 @@ public class SavedPostService {
                 .orElseThrow(() -> new EntityNotFoundException("Post no encontrado con id: " + postId));
 
         SavedPostEntity saved = savedPostRepository.findByUserEntityAndPost(user, post)
-                .orElseThrow(() -> new RuntimeException("No tenés este post guardado en favoritos"));
+                .orElseThrow(() -> new EntityNotFoundException("No se encontró el registro de este post en tus favoritos."));
 
         savedPostRepository.delete(saved);
     }

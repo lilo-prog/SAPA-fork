@@ -1,6 +1,6 @@
 package com.example.SAPA.service;
 
-import com.example.SAPA.DTOs.MedicalDTO;
+import com.example.SAPA.DTOs.Response.MedicalRecordResponseDTO;
 import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.MedicalRecord.MedicalRecordEntity;
 import com.example.SAPA.Repositories.MedicalRecordRepository;
@@ -34,13 +34,13 @@ public class MedicalRecordService {
         return saved;
     }
 
-    public MedicalDTO.MedicalRecordResponse getMyMedicalRecord() {
+    public MedicalRecordResponseDTO getMyMedicalRecord() {
         PatientEntity patient = userContext.getAuthenticatedPatient();
         MedicalRecordEntity record = getOrCreateMedicalRecord(patient);
         return medicalRecordMapper.toMedicalRecordResponse(record);
     }
 
-    public MedicalDTO.MedicalRecordResponse getPatientMedicalRecord(Long patientId) {
+    public MedicalRecordResponseDTO getPatientMedicalRecord(Long patientId) {
 
         userContext.getAuthenticatedDoctor();
 

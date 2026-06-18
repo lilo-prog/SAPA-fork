@@ -1,6 +1,9 @@
 package com.example.SAPA.service;
 
-import com.example.SAPA.DTOs.MedicalDTO;
+import com.example.SAPA.DTOs.Request.TreatmentRequestDTO;
+import com.example.SAPA.DTOs.Response.TreatmentResponseDTO;
+import com.example.SAPA.DTOs.TreatmentDurationDTO;
+import com.example.SAPA.DTOs.TreatmentFrequencyDTO;
 import com.example.SAPA.Models.Entities.DoctorEntity;
 import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.Entities.UserEntity;
@@ -14,6 +17,7 @@ import com.example.SAPA.enums.UserCategory;
 import com.example.SAPA.mappers.TreatmentMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +51,7 @@ public class TreatmentService {
     }
 
 
-    private DurationEntity buildDuration(MedicalDTO.TreatmentDuration durationRequest) {
+    private DurationEntity buildDuration(TreatmentDurationDTO durationRequest) {
         DurationEntity duration = new DurationEntity();
 
         duration.setLength(durationRequest.length());
@@ -56,7 +60,7 @@ public class TreatmentService {
         return durationRepository.save(duration);
     }
 
-    private FrequencyEntity buildFrequency(MedicalDTO.TreatmentFrequency frequencyRequest) {
+    private FrequencyEntity buildFrequency(TreatmentFrequencyDTO frequencyRequest) {
         FrequencyEntity frequency = new FrequencyEntity();
 
         frequency.setLength(frequencyRequest.length());
@@ -67,7 +71,7 @@ public class TreatmentService {
 
 
     @Transactional
-    public MedicalDTO.TreatmentResponse createTreatment(Long patientId, MedicalDTO.TreatmentRequest request) {
+    public TreatmentResponseDTO createTreatment(Long patientId, TreatmentRequestDTO request) {
 
         UserEntity currentUser = userContext.getAuthenticatedUser();
         validatePatientAccess(currentUser, patientId);
@@ -100,7 +104,7 @@ public class TreatmentService {
     }
 
     @Transactional
-    public MedicalDTO.TreatmentResponse updateTreatment(Long treatmentId, MedicalDTO.TreatmentRequest request) {
+    public TreatmentResponseDTO updateTreatment(Long treatmentId, TreatmentRequestDTO request) {
 
         UserEntity currentUser = userContext.getAuthenticatedUser();
 
@@ -152,14 +156,14 @@ public class TreatmentService {
         );
 
         if (!isAssignedDoctor) {
-            throw new SecurityException("No tienes permiso para eliminar tratamientos de este paciente porque no eres su médico asignado.");
+            throw new AccessDeniedException("No tienes permiso para eliminar tratamientos de este paciente porque no eres su médico asignado.");
         }
 
         treatmentRepository.delete(treatment);
     }
 
 
-    public List<MedicalDTO.TreatmentResponse> getTreatments(Long patientId) {
+    public List<TreatmentResponseDTO> getTreatments(Long patientId) {
         UserEntity currentUser = userContext.getAuthenticatedUser();
 
         validatePatientAccess(currentUser, patientId);
@@ -178,7 +182,7 @@ public class TreatmentService {
     }
 
 
-    public List<MedicalDTO.TreatmentResponse> filterTreatments(Long patientId, String name) {
+    public List<TreatmentResponseDTO> filterTreatments(Long patientId, String name) {
         UserEntity currentUser = userContext.getAuthenticatedUser();
 
         validatePatientAccess(currentUser, patientId);
@@ -202,7 +206,7 @@ public class TreatmentService {
 
         if (currentUser.getRole().equals(UserCategory.PATIENT)) {
             if (!currentUser.getId().equals(patientId)) {
-                throw new SecurityException("No tienes permiso para ver la ficha médica de otro paciente.");
+                throw new AccessDeniedException("No tienes permiso para ver la ficha médica de otro paciente.");
             }
             return;
         }
@@ -216,11 +220,11 @@ public class TreatmentService {
             );
 
             if (!hasFollow) {
-                throw new SecurityException("No tienes permiso para acceder a este paciente porque no está bajo tu seguimiento aprobado.");
+                throw new AccessDeniedException("No tienes permiso para acceder a este paciente porque no está bajo tu seguimiento aprobado.");
             }
             return;
         }
 
-        throw new SecurityException("Acceso denegado: Rol no autorizado para realizar esta consulta.");
+        throw new AccessDeniedException("Acceso denegado: Rol no autorizado para realizar esta consulta.");
     }
 }

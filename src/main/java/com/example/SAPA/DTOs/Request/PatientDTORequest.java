@@ -1,28 +1,34 @@
 package com.example.SAPA.DTOs.Request;
 
-import com.example.SAPA.Models.Entities.UserEntity;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class PatientDTORequest {
+public record PatientDTORequest(
 
-    private Long user_id;
+        @NotNull(message = "El ID de usuario es obligatorio.")
+        Long user_id,
 
-    private String firstName;
+        @NotBlank(message = "El nombre es obligatorio.")
+        @Size(max = 50, message = "El nombre no puede superar los 50 caracteres.")
+        String firstName,
 
-    private String lastName;
+        @NotBlank(message = "El apellido es obligatorio.")
+        @Size(max = 50, message = "El apellido no puede superar los 50 caracteres.")
+        String lastName,
 
-    private LocalDate birthDate;
+        @NotNull(message = "La fecha de nacimiento es obligatoria.")
+        @Past(message = "La fecha de nacimiento debe ser una fecha pasada.")
+        LocalDate birthDate,
 
-    private String phoneNumber;
+        @NotBlank(message = "El número de teléfono es obligatorio.")
+        @Size(min = 7, max = 20, message = "El número de teléfono debe tener entre 7 y 20 caracteres.")
+        @Pattern(regexp = "^\\+?[0-9\\s\\-\\(]+$", message = "El número de teléfono solo puede contener números, espacios, guiones o el signo +.")
+        String phoneNumber,
 
-    private Long medical_record_id;
+        @NotNull(message = "El ID de la historia clínica es obligatorio.")
+        Long medical_record_id,
 
-    private Long location_id;
-}
+        @NotNull(message = "El ID de la ubicación es obligatorio.")
+        Long location_id
+) {}

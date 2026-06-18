@@ -11,7 +11,6 @@ import com.example.SAPA.enums.FollowRequestStatus;
 import com.example.SAPA.enums.NotificationType;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,11 +26,6 @@ public class FollowRequestService {
     private final UserContextService userContextService;
     private final NotificationService notificationService;
 
-    private DoctorEntity getAuthenticatedDoctor() {
-        UserEntity user = userContextService.getAuthenticatedUser();
-        return doctorRepository.findByUser(user)
-                .orElseThrow(() -> new EntityNotFoundException("No se encontró el médico asociado al usuario autenticado"));
-    }
 
     public FollowRequestEntity create(Long doctorId) {
         PatientEntity patient = userContextService.getAuthenticatedPatient();
@@ -55,7 +49,7 @@ public class FollowRequestService {
     }
 
     public FollowRequestEntity approve(Long id) {
-        DoctorEntity authenticatedDoctor = getAuthenticatedDoctor();
+        DoctorEntity authenticatedDoctor = userContextService.getAuthenticatedDoctor();
 
         FollowRequestEntity request = followRequestRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Solicitud no encontrada con id: " + id));
@@ -90,7 +84,7 @@ public class FollowRequestService {
     }
 
     public FollowRequestEntity reject(Long id) {
-        DoctorEntity authenticatedDoctor = getAuthenticatedDoctor();
+        DoctorEntity authenticatedDoctor = userContextService.getAuthenticatedDoctor();
 
         FollowRequestEntity request = followRequestRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Solicitud no encontrada con id: " + id));
@@ -136,7 +130,7 @@ public class FollowRequestService {
     }
 
     public List<FollowRequestEntity> getPendingRequests() {
-        DoctorEntity doctor = getAuthenticatedDoctor();
+        DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
         return followRequestRepository.findByDoctorAndStatus(doctor, FollowRequestStatus.PENDING);
     }
 

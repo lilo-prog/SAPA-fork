@@ -1,6 +1,6 @@
 package com.example.SAPA.controller;
 
-import com.example.SAPA.DTOs.MedicalDTO;
+import com.example.SAPA.DTOs.Response.MedicalRecordResponseDTO;
 import com.example.SAPA.service.MedicalRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +15,12 @@ public class MedicalRecordController {
     private final MedicalRecordService medicalRecordService;
 
     @GetMapping("/my")
-    public ResponseEntity<MedicalDTO.MedicalRecordResponse> getMyMedicalRecord() {
+    public ResponseEntity<MedicalRecordResponseDTO> getMyMedicalRecord() {
         return ResponseEntity.ok(medicalRecordService.getMyMedicalRecord());
     }
 
     @GetMapping("/patient/{patientId}")
-    public ResponseEntity<MedicalDTO.MedicalRecordResponse> getPatientMedicalRecord(@PathVariable Long patientId) {
+    public ResponseEntity<MedicalRecordResponseDTO> getPatientMedicalRecord(@PathVariable Long patientId) {
         return ResponseEntity.ok(medicalRecordService.getPatientMedicalRecord(patientId));
     }
 }

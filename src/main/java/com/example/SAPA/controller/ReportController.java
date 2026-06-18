@@ -3,6 +3,7 @@ package com.example.SAPA.controller;
 import com.example.SAPA.DTOs.Request.CreateReportRequestDTO;
 import com.example.SAPA.DTOs.Response.ReportResponseDTO;
 import com.example.SAPA.service.ReportService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +19,15 @@ public class ReportController {
 
     private final ReportService reportService;
 
-
     @PostMapping
-    public ResponseEntity<ReportResponseDTO> createReport(@RequestBody CreateReportRequestDTO request) {
+    public ResponseEntity<ReportResponseDTO> createReport(@Valid @RequestBody CreateReportRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(reportService.createReport(request));
     }
-
 
     @GetMapping("/unreviewed")
     public ResponseEntity<List<ReportResponseDTO>> getUnreviewed() {
         return ResponseEntity.ok(reportService.getUnreviewed());
     }
-
 
     @PatchMapping("/{reportId}/review")
     public ResponseEntity<ReportResponseDTO> markAsReviewed(@PathVariable Long reportId) {

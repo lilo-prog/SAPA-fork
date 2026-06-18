@@ -23,7 +23,7 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostsByForum(forumId));
     }
 
-    @GetMapping("/{forumId}/filter/")
+    @GetMapping("/{forumId}/filter")
     public ResponseEntity<List<PostResponseDTO>> filterPosts(@PathVariable Long forumId, @RequestParam String title){
         return ResponseEntity.ok(postService.filterPosts(forumId, title));
     }

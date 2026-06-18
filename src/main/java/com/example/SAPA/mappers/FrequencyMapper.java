@@ -1,6 +1,6 @@
 package com.example.SAPA.mappers;
 
-import com.example.SAPA.DTOs.MedicalDTO;
+import com.example.SAPA.DTOs.TreatmentFrequencyDTO;
 import com.example.SAPA.Models.MedicalRecord.FrequencyEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,5 +9,5 @@ import org.mapstruct.Mapping;
 public interface FrequencyMapper {
 
     @Mapping(source = "frequencyUnit", target = "unit")
-    MedicalDTO.TreatmentFrequencyResponse toFrequencyResponse(FrequencyEntity frequency);
+    TreatmentFrequencyDTO toFrequencyResponse(FrequencyEntity frequency);
 }

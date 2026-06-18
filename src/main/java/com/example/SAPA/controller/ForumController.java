@@ -3,6 +3,7 @@ package com.example.SAPA.controller;
 import com.example.SAPA.DTOs.Request.ForumRequestDTO;
 import com.example.SAPA.DTOs.Response.ForumResponseDTO;
 import com.example.SAPA.service.ForumService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,19 +40,19 @@ public class ForumController {
     }
 
     @PostMapping
-    public ResponseEntity<ForumResponseDTO> createForum(@RequestBody ForumRequestDTO request) {
+    public ResponseEntity<ForumResponseDTO> createForum(@Valid @RequestBody ForumRequestDTO request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(forumService.createForum(request));
     }
 
     @PutMapping("/{forumId}")
     public ResponseEntity<ForumResponseDTO> updateForum(@PathVariable Long forumId,
-                                                              @RequestBody ForumRequestDTO request) {
+                                                        @Valid @RequestBody ForumRequestDTO request) {
         return ResponseEntity.ok(forumService.updateForum(forumId, request));
     }
 
     @DeleteMapping("/{forumId}")
-    public ResponseEntity<String> deleteForum(@PathVariable Long forumId) {
+    public ResponseEntity<Void> deleteForum(@PathVariable Long forumId) {
         forumService.deleteForum(forumId);
-        return ResponseEntity.ok("Cambio de estado exitoso. Ahora el foro se encuentra en estado inactivo.");
+        return ResponseEntity.noContent().build();
     }
 }

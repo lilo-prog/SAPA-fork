@@ -1,20 +1,18 @@
 package com.example.SAPA.DTOs.Request;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
+public record ReportDTORequest(
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ReportDTORequest {
-    private Long id;
-    private Long user_reporter_id;
-    private Long content_id;
-    private String contentType;
-    private String reason;
-    private LocalDateTime created_at;
-    private boolean reviewed;
-}
+        @NotNull(message = "El ID del contenido es obligatorio.")
+        Long contentId,
+
+        @NotNull(message = "El tipo de contenido (POST/FORUM) es obligatorio.")
+        String contentType,
+
+        @NotBlank(message = "La razón del reporte no puede estar vacía.")
+        @Size(min = 10, max = 1000, message = "La razón debe tener entre 10 y 1000 caracteres.")
+        String reason
+) {}

@@ -9,6 +9,7 @@ import com.example.SAPA.Repositories.*;
 import com.example.SAPA.mappers.PostMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class PostService {
                 .orElseThrow(() -> new EntityNotFoundException("Foro no encontrado con id: " + forumId));
 
         if (!forum.isActive()) {
-            throw new RuntimeException("No se puede publicar en un foro inactivo");
+            throw new IllegalStateException("No se puede publicar en un foro inactivo");
         }
 
         PostEntity post = PostEntity.builder()
@@ -52,7 +53,7 @@ public class PostService {
                 .orElseThrow(() -> new EntityNotFoundException("Post no encontrado con id: " + postId));
 
         if (!post.getAuthor().getId().equals(user.getId())) {
-            throw new RuntimeException("No tenés permiso para modificar este post");
+            throw new AccessDeniedException("No tenés permiso para modificar este post");
         }
 
         post.setTitle(request.title());
@@ -70,7 +71,11 @@ public class PostService {
                 .orElseThrow(() -> new EntityNotFoundException("Post no encontrado con id: " + postId));
 
         if (!post.getAuthor().getId().equals(user.getId())) {
-            throw new RuntimeException("No tenés permiso para eliminar este post");
+            throw new AccessDeniedException("No tenés permiso para eliminar este post");
+        }
+
+        if(!post.isActive()){
+            throw new IllegalStateException("Este post ya esta eliminado.");
         }
 
         post.setActive(false);

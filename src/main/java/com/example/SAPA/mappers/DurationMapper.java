@@ -1,6 +1,6 @@
 package com.example.SAPA.mappers;
 
-import com.example.SAPA.DTOs.MedicalDTO;
+import com.example.SAPA.DTOs.TreatmentDurationDTO;
 import com.example.SAPA.Models.MedicalRecord.DurationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,5 +9,5 @@ import org.mapstruct.Mapping;
 public interface DurationMapper {
 
     @Mapping(source = "durationUnit", target = "unit")
-    MedicalDTO.TreatmentDurationResponse toDurationResponse(DurationEntity duration);
+    TreatmentDurationDTO toDurationResponse(DurationEntity duration);
 }

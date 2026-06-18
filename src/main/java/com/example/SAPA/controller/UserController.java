@@ -1,10 +1,9 @@
 package com.example.SAPA.controller;
 
 import com.example.SAPA.DTOs.Request.DeleteAccountRequest;
-import com.example.SAPA.DTOs.Request.RegisterRequest;
 import com.example.SAPA.DTOs.Response.UserResponseDTO;
-import com.example.SAPA.security.DTO.AuthResponse;
 import com.example.SAPA.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,34 +20,32 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/all")
-    public List<UserResponseDTO> findAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<UserResponseDTO>> findAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/active")
-    public List<UserResponseDTO> findActiveUsers() {
-        return userService.getActiveUsers();
+    public ResponseEntity<List<UserResponseDTO>> findActiveUsers() {
+        return ResponseEntity.ok(userService.getActiveUsers());
     }
 
     @GetMapping("/inactive")
-    public List<UserResponseDTO> findInactiveUsers() {
-        return userService.getInactiveUsers();
+    public ResponseEntity<List<UserResponseDTO>> findInactiveUsers() {
+        return ResponseEntity.ok(userService.getInactiveUsers());
     }
 
     @GetMapping("/profile")
     public ResponseEntity<UserResponseDTO> getMyProfile(Authentication authentication) {
-
         String email = authentication.getName();
-
         UserResponseDTO profile = userService.getMyProfile(email);
-
         return ResponseEntity.ok(profile);
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteUser(@RequestBody DeleteAccountRequest request, Authentication authentication) {
+    public ResponseEntity<Void> deleteUser(@Valid @RequestBody DeleteAccountRequest request,
+                                           Authentication authentication) {
         String email = authentication.getName();
         userService.deleteUser(email, request.password());
-        return ResponseEntity.ok("Usuario dado de baja con éxito");
+        return ResponseEntity.noContent().build();
     }
 }

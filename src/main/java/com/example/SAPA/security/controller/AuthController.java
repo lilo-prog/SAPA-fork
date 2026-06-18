@@ -1,11 +1,7 @@
 package com.example.SAPA.security.controller;
 
 import com.example.SAPA.DTOs.Request.RegisterRequest;
-import com.example.SAPA.Models.Entities.UserEntity;
-import com.example.SAPA.enums.AccountStatus;
-import com.example.SAPA.security.DTO.AuthRequest;
-import com.example.SAPA.security.DTO.AuthResponse;
-import com.example.SAPA.security.DTO.RefreshTokenRequest;
+import com.example.SAPA.security.DTO.*;
 import com.example.SAPA.security.entities.CredentialEntity;
 import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.security.service.AuthService;
@@ -19,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 @Tag(name = "Autenticación", description = "Operaciones relacionadas con la autenticación, gestión de tokens y sesiones de usuario")
 public class AuthController {
 
@@ -46,7 +44,7 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "No autorizado - Credenciales inválidas")
     })
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> authenticateUser(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<AuthResponse> authenticateUser(@Valid @RequestBody AuthRequest authRequest) {
         UserDetails user = authService.authenticate(authRequest);
 
         String token = jwtService.generateToken(user);
@@ -100,15 +98,15 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
-        authService.generateResetPasswordToken(email);
-        return ResponseEntity.ok("Se envió el enlace de restablecimiento al correo.");
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.generateResetPasswordToken(request.email());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
-        authService.resetPassword(token, newPassword);
-        return ResponseEntity.ok("Contraseña actualizada correctamente.");
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(
@@ -120,7 +118,7 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "No se registro el usuario - Credenciales inválidas")
     })
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         try {
             AuthResponse authResponse = userService.registerUser(request);
             return ResponseEntity.ok(authResponse);
