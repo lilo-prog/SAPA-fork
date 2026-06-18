@@ -1,4 +1,4 @@
 package com.example.SAPA.DTOs.Response.fda;
 
-public record ProfileResponseDTO( String firstName, String lastName, String email, String role) {
+public record ProfileResponseDTO(Long id, String firstName, String lastName, String email, String role) {
 }
