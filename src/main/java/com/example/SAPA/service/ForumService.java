@@ -1,6 +1,7 @@
 package com.example.SAPA.service;
 
-import com.example.SAPA.DTOs.ForumDto;
+import com.example.SAPA.DTOs.Request.ForumRequestDTO;
+import com.example.SAPA.DTOs.Response.ForumResponseDTO;
 import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Models.Forum.ForumEntity;
 import com.example.SAPA.Repositories.*;
@@ -20,13 +21,13 @@ public class ForumService {
     private final UserContextService userContextService;
 
 
-    public ForumDto.ForumResponse createForum(ForumDto.CreateForumRequest request) {
+    public ForumResponseDTO createForum(ForumRequestDTO request) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
         ForumEntity forum = ForumEntity.builder()
                 .createdBy(user)
                 .title(request.title())
-                .description(request.description())
+                .description(request.content())
                 .build();
 
         ForumEntity saved = forumRepository.save(forum);
@@ -34,18 +35,18 @@ public class ForumService {
     }
 
 
-    public ForumDto.ForumResponse updateForum(Long forumId, ForumDto.UpdateForumRequest request) {
+    public ForumResponseDTO updateForum(Long forumId, ForumRequestDTO request) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
         ForumEntity forum = forumRepository.findById(forumId)
-                .orElseThrow(() -> new EntityNotFoundException("Foro no encontrado con id: " + forumId));
+                .orElseThrow(() -> new EntityNotFoundException("Foro con ID: " + forumId + " no encontrado."));
 
         if (!forum.getCreatedBy().getId().equals(user.getId())) {
             throw new RuntimeException("No tenés permiso para modificar este foro");
         }
 
         forum.setTitle(request.title());
-        forum.setDescription(request.description());
+        forum.setDescription(request.content());
 
         ForumEntity updated = forumRepository.save(forum);
         return forumMapper.toForumResponse(updated, userContextService.resolveName(user));
@@ -56,7 +57,7 @@ public class ForumService {
         UserEntity user = userContextService.getAuthenticatedUser();
 
         ForumEntity forum = forumRepository.findById(forumId)
-                .orElseThrow(() -> new EntityNotFoundException("Foro no encontrado con id: " + forumId));
+                .orElseThrow(() -> new EntityNotFoundException("Foro con ID: " + forumId + " no encontrado."));
 
         if (!forum.getCreatedBy().getId().equals(user.getId())) {
             throw new RuntimeException("No tenés permiso para eliminar este foro");
@@ -67,15 +68,29 @@ public class ForumService {
     }
 
 
-    public List<ForumDto.ForumResponse> getAllForums() {
+    public List<ForumResponseDTO> getAllForums() {
+        return forumRepository.findAll()
+                .stream()
+                .map(f -> forumMapper.toForumResponse(f, userContextService.resolveName(f.getCreatedBy())))
+                .toList();
+    }
+
+    public List<ForumResponseDTO> getActiveForums() {
         return forumRepository.findByActiveTrue()
                 .stream()
                 .map(f -> forumMapper.toForumResponse(f, userContextService.resolveName(f.getCreatedBy())))
                 .toList();
     }
 
+    public List<ForumResponseDTO> getInactiveForums() {
+        return forumRepository.findByActiveFalse()
+                .stream()
+                .map(f -> forumMapper.toForumResponse(f, userContextService.resolveName(f.getCreatedBy())))
+                .toList();
+    }
 
-    public List<ForumDto.ForumResponse> filterForums(String title) {
+
+    public List<ForumResponseDTO> filterForums(String title) {
         return forumRepository.findByActiveTrueAndTitleContainingIgnoreCase(title)
                 .stream()
                 .map(f -> forumMapper.toForumResponse(f, userContextService.resolveName(f.getCreatedBy())))

@@ -45,7 +45,7 @@ public class UserController {
         return ResponseEntity.ok(profile);
     }
 
-    @PatchMapping
+    @DeleteMapping
     public ResponseEntity<String> deleteUser(@RequestBody DeleteAccountRequest request, Authentication authentication) {
         String email = authentication.getName();
         userService.deleteUser(email, request.password());
