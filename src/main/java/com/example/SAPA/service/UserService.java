@@ -67,6 +67,10 @@ public class UserService {
                 .role(UserCategory.valueOf(request.getRole().name().replace("ROLE_", "")))
                 .build();
 
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Ya existe una cuenta con ese email.");
+        }
         userConnector = userRepository.save(userConnector);
 
         if (request.getRole() == Role.ROLE_DOCTOR) {
@@ -104,7 +108,6 @@ public class UserService {
                 .roles(Set.of(assignedRole))
                 .refreshToken("")
                 .build();
-
         String accessToken = jwtService.generateToken(securityCredentials);
         String refreshToken = jwtService.generateRefreshToken(securityCredentials);
 
