@@ -355,30 +355,38 @@
 
                 const response = await fetch("/auth/register", {
 
-                    method: "POST",
+                    method:"POST",
 
-                    headers: {
-                        "Content-Type": "application/json"
+                    headers:{
+                        "Content-Type":"application/json"
                     },
 
                     body: JSON.stringify(datos)
 
                 });
 
-                const texto = await response.text();
-
-                console.log(texto);
-
                 if(response.ok){
 
-                    mensaje.style.color = "green";
-                    mensaje.textContent =
-                        "Usuario registrado correctamente";
+                    const data = await response.json();
+
+                    localStorage.setItem(
+                        "accessToken",
+                        data.AccessToken
+                    );
+
+                    localStorage.setItem(
+                        "refreshToken",
+                        data.RefreshToken
+                    );
+
+                    window.location.href = "/";
 
                 }else{
 
+                    const mensajeError = await response.text();
+
                     mensaje.style.color = "red";
-                    mensaje.textContent = texto;
+                    mensaje.textContent = mensajeError;
 
                 }
 
