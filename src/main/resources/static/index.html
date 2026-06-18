@@ -7,6 +7,7 @@
     <title>SAPA - Comunidad de Salud</title>
 
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/chat.css">
 </head>
 
 <body>
@@ -20,7 +21,7 @@
 
     <nav>
 
-        <a href="/">
+        <a href="/index.html">
             <img src="/img/foro.png" alt="">
             Inicio
         </a>
@@ -44,11 +45,11 @@
 
     <div class="auth-buttons" id="authButtons">
 
-        <a href="/login" class="btn-login">
+        <a href="/login.html" class="btn-login">
             Iniciar sesión
         </a>
 
-        <a href="/registro-paciente" class="btn-register">
+        <a href="/registro-paciente.html" class="btn-register">
             Registrarse
         </a>
 
@@ -175,7 +176,7 @@
 
         <div id="forumsContainer"></div>
 
-        <div class="registro-banner">
+        <div class="registro-banner" id="registroBanner">
 
             <h3>
                 Hay más publicaciones disponibles
@@ -185,7 +186,7 @@
                 Regístrate para acceder a toda la comunidad SAPA.
             </p>
 
-            <a href="/registro-paciente">
+            <a href="/registro-paciente.html">
                 Registrarme
             </a>
 
@@ -232,24 +233,45 @@
 
         if(token){
 
+            if(registroBanner){
+                registroBanner.style.display = "none";
+            }
+
+            const profileResponse = await fetch("/users/me", {
+                headers:{
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const profile = await profileResponse.json();
+
+            const iniciales =
+                profile.firstName.charAt(0) +
+                profile.lastName.charAt(0);
+
+            const rol =
+                profile.role === "DOCTOR"
+                    ? "Médico"
+                    : "Paciente";
+
             authButtons.innerHTML = `
 <div class="user-menu">
 
     <div class="user-button" id="userButton">
 
-        <div class="user-avatar">
-            JP
-        </div>
+       <div class="user-avatar">
+    ${iniciales}
+    </div>
 
-        <div class="user-info">
-            <span class="user-name">
-                Usuario
-            </span>
+    <div class="user-info">
+        <span class="user-name">
+           ${profile.firstName} ${profile.lastName}
+        </span>
 
-            <span class="user-role">
-                Sesión iniciada
-            </span>
-        </div>
+     <span class="user-role">
+          ${rol}
+        </span>
+    </div>
 
         <span class="user-arrow">
             ▼
@@ -332,8 +354,7 @@
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("refreshToken");
 
-                window.location.reload();
-
+                window.location.href = "/login.html";
             });
 
         }
@@ -459,6 +480,8 @@
     });
 
 </script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/js/chat.js"></script>
 </body>
 </html>

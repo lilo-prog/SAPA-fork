@@ -56,8 +56,13 @@ public class SecurityConfig {
 
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/specialities").permitAll()
+
                         .requestMatchers(
                                 "/",
+                                "/index.html",
+                                "/login.html",
+                                "/registro-paciente.html",
+                                "/registro-medico.html",
                                 "/login",
                                 "/registro-paciente",
                                 "/registro-medico"
@@ -78,6 +83,8 @@ public class SecurityConfig {
                         .requestMatchers("/posts/**").hasAnyRole("PATIENT", "DOCTOR")
 
                         .requestMatchers("/medications/search/**").permitAll()
+
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/health-tips/**").permitAll()
                         .requestMatchers("/health-tips/**").hasAnyRole("PATIENT", "DOCTOR")
