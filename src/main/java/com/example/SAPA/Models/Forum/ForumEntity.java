@@ -6,14 +6,14 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter @Setter @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "forum")
 public class ForumEntity {
-
+    // Entidad del foro;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="forum_id")
@@ -32,6 +32,7 @@ public class ForumEntity {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    // False if deleted (we never hard delete)
     @Column(nullable = false)
     private boolean active;
 

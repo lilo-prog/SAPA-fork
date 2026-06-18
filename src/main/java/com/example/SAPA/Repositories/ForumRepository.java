@@ -11,8 +11,6 @@ public interface ForumRepository extends JpaRepository<ForumEntity, Long> {
 
     List<ForumEntity> findByActiveTrue();
 
-    List<ForumEntity> findByActiveFalse();
-
     List<ForumEntity> findByActiveTrueAndTitleContainingIgnoreCase(String title);
 
     List<ForumEntity> findByCreatedByAndActiveTrue(UserEntity createdBy);
