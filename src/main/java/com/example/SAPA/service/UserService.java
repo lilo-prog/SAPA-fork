@@ -174,6 +174,7 @@ public class UserService {
                             .orElseThrow();
 
             return new ProfileResponseDTO(
+                    user.getId(),
                     doctor.getFirstName(),
                     doctor.getLastName(),
                     user.getEmail(),
@@ -186,6 +187,7 @@ public class UserService {
                         .orElseThrow();
 
         return new ProfileResponseDTO(
+                user.getId(),
                 patient.getFirstName(),
                 patient.getLastName(),
                 user.getEmail(),
