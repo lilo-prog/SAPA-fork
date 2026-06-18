@@ -67,6 +67,8 @@ public class SecurityConfig {
 
                         .requestMatchers("/medications/search/**").permitAll()
 
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
                         .requestMatchers(HttpMethod.GET, "/health-tips/**").permitAll()
                         .requestMatchers("/health-tips/**").hasAnyRole("PATIENT", "DOCTOR")
 
