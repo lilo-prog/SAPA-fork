@@ -1,11 +1,12 @@
 package com.example.SAPA.service;
 
-import com.example.SAPA.DTOs.ForumDto;
+import com.example.SAPA.DTOs.Request.ForumRequestDTO;
+import com.example.SAPA.DTOs.Response.PostResponseDTO;
 import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Models.Forum.ForumEntity;
 import com.example.SAPA.Models.Forum.PostEntity;
 import com.example.SAPA.Repositories.*;
-import com.example.SAPA.mappers.ForumMapper;
+import com.example.SAPA.mappers.PostMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,11 @@ public class PostService {
 
     private final ForumRepository forumRepository;
     private final PostRepository postRepository;
-    private final ForumMapper forumMapper;
+    private final PostMapper postMapper;
     private final UserContextService userContextService;
 
 
-    public ForumDto.PostResponse createPost(Long forumId, ForumDto.CreatePostRequest request) {
+    public PostResponseDTO createPost(Long forumId, ForumRequestDTO request) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
         ForumEntity forum = forumRepository.findById(forumId)
@@ -40,11 +41,11 @@ public class PostService {
                 .build();
 
         PostEntity saved = postRepository.save(post);
-        return forumMapper.toPostResponse(saved, userContextService.resolveName(user));
+        return postMapper.toPostResponse(saved, userContextService.resolveName(user));
     }
 
 
-    public ForumDto.PostResponse updatePost(Long postId, ForumDto.UpdatePostRequest request) {
+    public PostResponseDTO updatePost(Long postId, ForumRequestDTO request) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
         PostEntity post = postRepository.findById(postId)
@@ -58,7 +59,7 @@ public class PostService {
         post.setContent(request.content());
 
         PostEntity updated = postRepository.save(post);
-        return forumMapper.toPostResponse(updated, userContextService.resolveName(user));
+        return postMapper.toPostResponse(updated, userContextService.resolveName(user));
     }
 
 
@@ -77,24 +78,24 @@ public class PostService {
     }
 
 
-    public List<ForumDto.PostResponse> getPostsByForum(Long forumId) {
+    public List<PostResponseDTO> getPostsByForum(Long forumId) {
         ForumEntity forum = forumRepository.findById(forumId)
                 .orElseThrow(() -> new EntityNotFoundException("Foro no encontrado con id: " + forumId));
 
         return postRepository.findByForumAndActiveTrue(forum)
                 .stream()
-                .map(p -> forumMapper.toPostResponse(p, userContextService.resolveName(p.getAuthor())))
+                .map(p -> postMapper.toPostResponse(p, userContextService.resolveName(p.getAuthor())))
                 .toList();
     }
 
 
-    public List<ForumDto.PostResponse> filterPosts(Long forumId, String title) {
+    public List<PostResponseDTO> filterPosts(Long forumId, String title) {
         ForumEntity forum = forumRepository.findById(forumId)
                 .orElseThrow(() -> new EntityNotFoundException("Foro no encontrado con id: " + forumId));
 
         return postRepository.findByForumAndActiveTrueAndTitleContainingIgnoreCase(forum, title)
                 .stream()
-                .map(p -> forumMapper.toPostResponse(p, userContextService.resolveName(p.getAuthor())))
+                .map(p -> postMapper.toPostResponse(p, userContextService.resolveName(p.getAuthor())))
                 .toList();
     }
 }
