@@ -2,6 +2,7 @@ package com.example.SAPA.service;
 
 import com.example.SAPA.DTOs.Request.RegisterRequest;
 import com.example.SAPA.DTOs.Response.UserResponseDTO;
+import com.example.SAPA.DTOs.Response.fda.ProfileResponseDTO;
 import com.example.SAPA.Models.Entities.DoctorEntity;
 import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.Entities.UserEntity;
@@ -158,5 +159,39 @@ public class UserService {
 
         user.setStatus(AccountStatus.INACTIVE);
         userRepository.save(user);
+    }
+
+    public ProfileResponseDTO getProfile(String email){
+
+        UserEntity user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Usuario no encontrado"));
+
+        if(user.getRole() == UserCategory.DOCTOR){
+
+            DoctorEntity doctor =
+                    doctorRepository.findByUser(user)
+                            .orElseThrow();
+
+            return new ProfileResponseDTO(
+                    user.getId(),
+                    doctor.getFirstName(),
+                    doctor.getLastName(),
+                    user.getEmail(),
+                    user.getRole().name()
+            );
+        }
+
+        PatientEntity patient =
+                patientRepository.findByUser(user)
+                        .orElseThrow();
+
+        return new ProfileResponseDTO(
+                user.getId(),
+                patient.getFirstName(),
+                patient.getLastName(),
+                user.getEmail(),
+                user.getRole().name()
+        );
     }
 }

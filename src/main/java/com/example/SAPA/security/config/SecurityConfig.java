@@ -57,6 +57,23 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/specialities").permitAll()
 
+                        .requestMatchers(
+                                "/",
+                                "/index.html",
+                                "/login.html",
+                                "/registro-paciente.html",
+                                "/registro-medico.html",
+                                "/login",
+                                "/registro-paciente",
+                                "/registro-medico"
+                        ).permitAll()
+
+                        .requestMatchers(
+                                "/css/**",
+                                "/img/**",
+                                "/js/**"
+                        ).permitAll()
+
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/uploads/chat/**").permitAll()
 

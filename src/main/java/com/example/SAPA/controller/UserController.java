@@ -1,9 +1,8 @@
 package com.example.SAPA.controller;
 
 import com.example.SAPA.DTOs.Request.DeleteAccountRequest;
-import com.example.SAPA.DTOs.Request.RegisterRequest;
 import com.example.SAPA.DTOs.Response.UserResponseDTO;
-import com.example.SAPA.security.DTO.AuthResponse;
+import com.example.SAPA.DTOs.Response.fda.ProfileResponseDTO;
 import com.example.SAPA.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -106,5 +105,16 @@ public class UserController {
         String email = authentication.getName();
         userService.deleteUser(email, request.password());
         return ResponseEntity.ok("Usuario dado de baja con éxito");
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ProfileResponseDTO> me(
+            Authentication authentication){
+
+        return ResponseEntity.ok(
+                userService.getProfile(
+                        authentication.getName()
+                )
+        );
     }
 }
