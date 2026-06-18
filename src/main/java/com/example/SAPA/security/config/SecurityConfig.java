@@ -60,7 +60,9 @@ public class SecurityConfig {
                                 "/",
                                 "/login",
                                 "/registro-paciente",
-                                "/registro-medico"
+                                "/registro-medico",
+                                "/perfil",
+                                "/favicon.ico"
                         ).permitAll()
 
                         .requestMatchers(

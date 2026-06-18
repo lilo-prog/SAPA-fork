@@ -24,4 +24,8 @@ public class PageController {
     public String registroMedico() {
         return "registro-medico";
     }
+
+    @GetMapping("/perfil")
+    public String profile(){return "perfil";}
+
 }
