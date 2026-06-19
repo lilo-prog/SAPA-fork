@@ -1,9 +1,7 @@
 package com.example.SAPA.security.controller;
 
 import com.example.SAPA.DTOs.Request.RegisterRequest;
-import com.example.SAPA.security.DTO.AuthRequest;
-import com.example.SAPA.security.DTO.AuthResponse;
-import com.example.SAPA.security.DTO.RefreshTokenRequest;
+import com.example.SAPA.security.DTO.*;
 import com.example.SAPA.security.entities.CredentialEntity;
 import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.security.service.AuthService;
@@ -11,15 +9,14 @@ import com.example.SAPA.security.service.JWTService;
 import com.example.SAPA.security.service.TokenBlacklistService;
 import com.example.SAPA.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -98,49 +95,49 @@ public class AuthController {
         return ResponseEntity.badRequest().body("No se proporcionó un token válido.");
     }
 
+    @PostMapping("/forgot-password")
     @Operation(
-            summary = "Olvidé mi contraseña",
-            description = "Hace que el sistema envíe un email con un token de reinicio de contraseña utilizado en /reset-password"
+            summary = "Solicitar recuperación de contraseña",
+            description = "Recibe el email del usuario y, si existe en el sistema, genera un token único de restablecimiento y envía un correo con las instrucciones."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Se envió el enlace de restablecimiento al correo.",
-                    content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "400", description = "No existe ningún usuario registrado con ese correo electrónico", content = @Content),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Solicitud procesada con éxito. Por motivos de seguridad, se devuelve este estado aunque el email no exista en la base de datos (evita enumeración de usuarios)."
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos de entrada inválidos (ej. formato de email incorrecto).",
+                    content = @Content(schema = @Schema(implementation = Void.class)) // Cambia Void por tu DTO de error global si tenés uno
+            )
     })
-    @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(
-            @Parameter(description = "Correo electrónico del usuario", required = true) @RequestParam String email) {
-        try {
-            authService.generateResetPasswordToken(email);
-            return ResponseEntity.ok("Se envió el enlace de restablecimiento al correo.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.generateResetPasswordToken(request.email());
+        return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/reset-password")
     @Operation(
-            summary = "Reiniciar contraseña",
-            description = "Mediante un token enviado por email desde el endpoint /forgot-password, permite cambiar la contraseña de la cuenta."
+            summary = "Restablecer la contraseña con el token",
+            description = "Valida el token enviado por correo electrónico y actualiza la contraseña del usuario en el sistema."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Contraseña actualizada correctamente",
-                    content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "400", description = "El token de restablecimiento es inválido o mal formado.", content = @Content),
-            @ApiResponse(responseCode = "410", description = "El token de restablecimiento es válido, pero ya caducó.", content = @Content)
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Contraseña restablecida exitosamente. El token ha sido invalidado."
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "El token es inválido, ya fue utilizado, expiró, o las contraseñas no coinciden."
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "No se encontró ningún usuario asociado al token enviado."
+            )
     })
-    @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(
-            @Parameter(description = "Token recibido por correo electrónico", required = true) @RequestParam String token,
-            @Parameter(description = "Nueva contraseña para la cuenta", required = true) @RequestParam String newPassword) {
-
-        try {
-            authService.resetPassword(token, newPassword);
-            return ResponseEntity.ok("Contraseña actualizada correctamente.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("El token de restablecimiento es inválido.");
-        } catch (io.jsonwebtoken.ExpiredJwtException e) {
-            return ResponseEntity.status(HttpStatus.GONE).body("El token de restablecimiento es válido, pero ya caducó.");
-        }
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(
@@ -153,7 +150,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "No se registró el usuario - El correo ya existe o los datos son inválidos", content = @Content)
     })
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         try {
             AuthResponse authResponse = userService.registerUser(request);
             return ResponseEntity.ok(authResponse);
@@ -162,3 +159,4 @@ public class AuthController {
         }
     }
 }
+

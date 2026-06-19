@@ -40,6 +40,7 @@ public class ConversationEntity {
     private DoctorEntity doctor;
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<MessageEntity> messages = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)

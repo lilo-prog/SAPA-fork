@@ -1,6 +1,7 @@
 package com.example.SAPA.controller;
 
-import com.example.SAPA.DTOs.ForumDto;
+import com.example.SAPA.DTOs.Request.ForumRequestDTO;
+import com.example.SAPA.DTOs.Response.PostResponseDTO;
 import com.example.SAPA.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,11 +33,11 @@ public class PostController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de publicaciones recuperada con éxito.",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ForumDto.PostResponse.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostResponseDTO.class)))),
             @ApiResponse(responseCode = "404", description = "El ID del foro especificado no existe.", content = @Content)
     })
     @GetMapping("/{forumId}")
-    public ResponseEntity<List<ForumDto.PostResponse>> getPostsByForum(
+    public ResponseEntity<List<PostResponseDTO>> getPostsByForum(
             @Parameter(description = "ID único del foro", required = true) @PathVariable Long forumId) {
         return ResponseEntity.ok(postService.getPostsByForum(forumId));
     }
@@ -47,11 +48,11 @@ public class PostController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Resultados del filtro obtenidos exitosamente.",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ForumDto.PostResponse.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostResponseDTO.class)))),
             @ApiResponse(responseCode = "404", description = "El foro indicado no fue encontrado.", content = @Content)
     })
     @GetMapping("/{forumId}/filter")
-    public ResponseEntity<List<ForumDto.PostResponse>> filterPosts(
+    public ResponseEntity<List<PostResponseDTO>> filterPosts(
             @Parameter(description = "ID único del foro", required = true) @PathVariable Long forumId,
             @Parameter(description = "Texto o palabra clave para buscar en los títulos de los posts", required = true, example = "Síntomas") @RequestParam String title){
         return ResponseEntity.ok(postService.filterPosts(forumId, title));
@@ -63,15 +64,15 @@ public class PostController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Publicación creada con éxito.",
-                    content = @Content(schema = @Schema(implementation = ForumDto.PostResponse.class))),
+                    content = @Content(schema = @Schema(implementation = PostResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "El contenido o los datos de la publicación no son válidos.", content = @Content),
             @ApiResponse(responseCode = "401", description = "No autorizado - Token JWT ausente o inválido.", content = @Content),
             @ApiResponse(responseCode = "404", description = "El foro donde se intenta publicar no existe.", content = @Content)
     })
     @PostMapping("/{forumId}/create")
-    public ResponseEntity<ForumDto.PostResponse> createPost(
+    public ResponseEntity<PostResponseDTO> createPost(
             @Parameter(description = "ID del foro donde se creará la publicación", required = true) @PathVariable Long forumId,
-            @RequestBody ForumDto.CreatePostRequest request) {
+            @RequestBody ForumRequestDTO request) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(forumId, request));
     }
@@ -82,15 +83,15 @@ public class PostController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Publicación modificada de forma exitosa.",
-                    content = @Content(schema = @Schema(implementation = ForumDto.PostResponse.class))),
+                    content = @Content(schema = @Schema(implementation = PostResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Los datos de la actualización son inválidos.", content = @Content),
             @ApiResponse(responseCode = "403", description = "Prohibido - No eres el autor de este post o no tienes permisos de edición.", content = @Content),
             @ApiResponse(responseCode = "404", description = "El ID del post especificado no existe.", content = @Content)
     })
     @PutMapping("/{postId}")
-    public ResponseEntity<ForumDto.PostResponse> updatePost(
+    public ResponseEntity<PostResponseDTO> updatePost(
             @Parameter(description = "ID de la publicación a editar", required = true) @PathVariable Long postId,
-            @RequestBody ForumDto.UpdatePostRequest request) {
+            @RequestBody ForumRequestDTO request) {
 
         return ResponseEntity.ok(postService.updatePost(postId, request));
     }
