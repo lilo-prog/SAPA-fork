@@ -55,13 +55,18 @@ public class SecurityConfig {
 
                         .requestMatchers(
                                 "/",
+                                "/index",
                                 "/index.html",
                                 "/login.html",
                                 "/registro-paciente.html",
                                 "/registro-medico.html",
+                                "/perfil.html",
                                 "/login",
                                 "/registro-paciente",
-                                "/registro-medico"
+                                "/registro-medico",
+                                "/perfil",
+                                "/error",
+                                "/favicon.ico"
                         ).permitAll()
 
                         .requestMatchers(
