@@ -69,7 +69,7 @@ public class UserService {
                 .build();
 
 
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("Ya existe una cuenta con ese email.");
         }
         userConnector = userRepository.save(userConnector);
