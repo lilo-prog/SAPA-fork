@@ -61,6 +61,7 @@ public class SecurityConfig {
                                 "/registro-paciente.html",
                                 "/registro-medico.html",
                                 "/perfil.html",
+                                "/notificaciones.html",
                                 "/login",
                                 "/registro-paciente",
                                 "/registro-medico",

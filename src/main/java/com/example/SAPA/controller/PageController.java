@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class PageController {
-    @GetMapping({"/", "/index"})
+    @GetMapping({"/index"})
     public String index() {
-        return "index";
+        return "redirect:/index.html";
     }
 
     @GetMapping("/login")
