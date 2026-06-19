@@ -106,7 +106,16 @@ public class UserController {
         userService.deleteUser(email, request.password());
         return ResponseEntity.ok("Usuario dado de baja con éxito");
     }
-
+    @Operation(
+            summary = "Mostrar mi perfil",
+            description = "Permite al usuario autenticado visualizar los datos de su perfil como medico o paciente."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Perfil mostrado correctamente.",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Paciente no encontrado", content = @Content)
+    })
     @GetMapping("/me")
     public ResponseEntity<ProfileResponseDTO> me(Authentication authentication){
         return ResponseEntity.ok(
