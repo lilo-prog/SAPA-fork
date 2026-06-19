@@ -1,0 +1,100 @@
+/* ===== SAPA - Buscador de médicos (dropdown bajo "Buscar") ===== */
+
+.dsearch-panel {
+    position: absolute;
+    width: 320px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.2);
+    z-index: 1100;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    animation: dsearchFadeIn 0.15s ease;
+}
+
+@keyframes dsearchFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.dsearch-panel input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #eee;
+    padding: 12px 16px;
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.dsearch-panel input:focus {
+    border-bottom-color: #02968c;
+}
+
+.dsearch-results {
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 4px;
+}
+
+.dsearch-empty {
+    color: #999;
+    text-align: center;
+    padding: 20px 12px;
+    font-size: 13px;
+}
+
+.dsearch-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 10px;
+    border-radius: 8px;
+}
+
+.dsearch-item:hover {
+    background: #ecf8f6;
+}
+
+.dsearch-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dsearch-send-btn {
+    background: #02968c;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.dsearch-send-btn:hover:not(:disabled) {
+    filter: brightness(0.93);
+}
+
+.dsearch-send-btn:disabled {
+    cursor: default;
+    opacity: 0.85;
+}
+
+.dsearch-send-btn.dsearch-sent {
+    background: #6fae65;
+}
+
+@media (max-width: 480px) {
+    .dsearch-panel {
+        width: calc(100vw - 32px);
+    }
+}
