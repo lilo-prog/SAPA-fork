@@ -10,7 +10,9 @@ import com.example.SAPA.enums.NotificationType;
 import com.example.SAPA.mappers.QuestionnaireMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class AssignmentService {
     private final NotificationService notificationService;
 
 
+    @Transactional
     public QuestionnaireDTO.AssignmentResponse assignQuestionnaire(Long questionnaireId, QuestionnaireDTO.AssignQuestionnaireRequest request) {
         DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
 
@@ -34,7 +37,7 @@ public class AssignmentService {
                 .orElseThrow(() -> new EntityNotFoundException("Cuestionario no encontrado con id: " + questionnaireId));
 
         if (!questionnaire.getDoctor().getId().equals(doctor.getId())) {
-            throw new RuntimeException("No tenés permiso para asignar este cuestionario");
+            throw new AccessDeniedException("No tenés permiso para asignar este cuestionario");
         }
 
         PatientEntity patient = patientRepository.findById(request.patientId())
@@ -45,12 +48,13 @@ public class AssignmentService {
                 .isPresent();
 
         if (alreadyAssigned) {
-            throw new RuntimeException("Este cuestionario ya está asignado activamente a este paciente");
+            throw new IllegalStateException("Este cuestionario ya está asignado activamente a este paciente");
         }
 
         QuestionnaireAssignmentEntity assignment = QuestionnaireAssignmentEntity.builder()
                 .questionnaire(questionnaire)
                 .patient(patient)
+                .active(true)
                 .build();
 
         QuestionnaireAssignmentEntity saved = assignmentRepository.save(assignment);
@@ -66,6 +70,7 @@ public class AssignmentService {
         return questionnaireMapper.toAssignmentResponse(saved, userContextService.resolvePatientName(patient));
     }
 
+    @Transactional(readOnly = true)
     public List<QuestionnaireDTO.AssignmentResponse> getMyAssignments() {
         PatientEntity patient = userContextService.getAuthenticatedPatient();
 
@@ -75,6 +80,7 @@ public class AssignmentService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<QuestionnaireDTO.QuestionnaireResponseDTO> getResponsesByQuestionnaire(Long questionnaireId) {
         DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
 
@@ -82,7 +88,7 @@ public class AssignmentService {
                 .orElseThrow(() -> new EntityNotFoundException("Cuestionario no encontrado con id: " + questionnaireId));
 
         if (!questionnaire.getDoctor().getId().equals(doctor.getId())) {
-            throw new RuntimeException("No tenés permiso para ver las respuestas de este cuestionario");
+            throw new AccessDeniedException("No tenés permiso para ver las respuestas de este cuestionario");
         }
 
         return assignmentRepository.findByQuestionnaire(questionnaire)
@@ -92,15 +98,15 @@ public class AssignmentService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<QuestionnaireDTO.QuestionnaireResponseDTO> getPatientResponses(Long patientId) {
         DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
 
         PatientEntity patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado con id: " + patientId));
 
-        return assignmentRepository.findByQuestionnaire(null).stream()
-                .filter(a -> a.getPatient().getId().equals(patient.getId())
-                        && a.getQuestionnaire().getDoctor().getId().equals(doctor.getId()))
+        return assignmentRepository.findByPatientAndQuestionnaireDoctorId(patient, doctor.getId())
+                .stream()
                 .flatMap(a -> responseRepository.findByAssignmentOrderByAnsweredAtDesc(a).stream())
                 .map(questionnaireMapper::toResponseDTO)
                 .toList();

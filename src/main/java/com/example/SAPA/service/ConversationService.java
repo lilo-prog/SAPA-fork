@@ -13,7 +13,9 @@ import com.example.SAPA.Repositories.PatientRepository;
 import com.example.SAPA.mappers.MessageMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class ConversationService {
     private final MessageMapper messageMapper;
     private final UserContextService userContextService;
 
+    @Transactional
     public ConversationEntity createConversation(PatientEntity patient, DoctorEntity doctor) {
         return conversationRepository.findByPatientAndDoctor(patient, doctor)
                 .orElseGet(() -> {
@@ -39,6 +42,7 @@ public class ConversationService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public List<ChatDTO.ConversationSummary> getMyConversations() {
         UserEntity user = userContextService.getAuthenticatedUser();
 
@@ -80,6 +84,7 @@ public class ConversationService {
         }).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ChatDTO.MessageResponse> getConversationHistory(Long conversationId) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
@@ -102,7 +107,7 @@ public class ConversationService {
         boolean isDoctor = conversation.getDoctor().getUser().getId().equals(user.getId());
 
         if (!isPatient && !isDoctor) {
-            throw new RuntimeException("No tenés permiso para acceder a esta conversación");
+            throw new AccessDeniedException("No tenés permiso para acceder a esta conversación");
         }
     }
 }

@@ -16,13 +16,12 @@ public class EmailService {
     }
 
     public void sendResetPasswordEmail(String toEmail, String token) {
-        // Corrección del enlace para que incluya los parámetros de la URL
+
         String url = "https://sapa.com" + token;
 
         String cuerpoMensaje = "Hacé click en el siguiente enlace para restablecer tu contraseña:\n\n"
                 + url + "\n\nEste enlace expira en 15 minutos.";
 
-        // Estructura oficial según el repositorio mailtrap-java
         MailtrapMail mail = MailtrapMail.builder()
                 .from(new Address("no-reply@sapa.com", "SAPA Sistema"))
                 .to(List.of(new Address(toEmail)))
@@ -31,7 +30,6 @@ public class EmailService {
                 .build();
 
         try {
-            // Envío a través de la API
             mailtrapClient.send(mail);
         } catch (Exception e) {
             System.err.println("Error al enviar con el SDK de Mailtrap: " + e.getMessage());

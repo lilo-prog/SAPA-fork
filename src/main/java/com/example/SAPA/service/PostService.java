@@ -11,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class PostService {
     private final UserContextService userContextService;
 
 
+    @Transactional
     public PostResponseDTO createPost(Long forumId, ForumRequestDTO request) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
@@ -46,6 +48,7 @@ public class PostService {
     }
 
 
+    @Transactional
     public PostResponseDTO updatePost(Long postId, ForumRequestDTO request) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
@@ -64,6 +67,7 @@ public class PostService {
     }
 
 
+    @Transactional
     public void deletePost(Long postId) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
@@ -83,6 +87,7 @@ public class PostService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<PostResponseDTO> getPostsByForum(Long forumId) {
         ForumEntity forum = forumRepository.findById(forumId)
                 .orElseThrow(() -> new EntityNotFoundException("Foro no encontrado con id: " + forumId));
@@ -94,6 +99,7 @@ public class PostService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<PostResponseDTO> filterPosts(Long forumId, String title) {
         ForumEntity forum = forumRepository.findById(forumId)
                 .orElseThrow(() -> new EntityNotFoundException("Foro no encontrado con id: " + forumId));

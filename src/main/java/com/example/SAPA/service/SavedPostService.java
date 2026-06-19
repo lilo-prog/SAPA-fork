@@ -10,6 +10,7 @@ import com.example.SAPA.mappers.SavedPostMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class SavedPostService {
     private final SavedPostMapper savedPostMapper;
     private final UserContextService userContextService;
 
-
+    @Transactional
     public SavedPostResponseDTO savePost(Long postId) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
@@ -47,6 +48,7 @@ public class SavedPostService {
     }
 
 
+    @Transactional
     public void unsavePost(Long postId) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
@@ -59,6 +61,7 @@ public class SavedPostService {
         savedPostRepository.delete(saved);
     }
 
+    @Transactional(readOnly = true)
     public List<SavedPostResponseDTO> getSavedPosts() {
         UserEntity user = userContextService.getAuthenticatedUser();
 

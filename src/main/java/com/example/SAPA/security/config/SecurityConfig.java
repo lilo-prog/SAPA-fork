@@ -5,6 +5,7 @@ import com.example.SAPA.security.filters.RestAuthenticationEntryPoint;
 import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.security.service.UserDetailsService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,16 +27,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
-                          RestAuthenticationEntryPoint restAuthenticationEntryPoint) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
-    }
 
 
     @Bean
@@ -116,9 +112,11 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET, "/fda/search-medication").permitAll()
 
-                        .requestMatchers("/doctors/**").hasRole("DOCTOR")
                         .requestMatchers(HttpMethod.GET, "/doctors/**").permitAll()
+                        .requestMatchers("/doctors/**").hasRole("DOCTOR")
 
+
+                        .requestMatchers(HttpMethod.GET, "/patients/my-patients").hasRole("DOCTOR")
                         .requestMatchers("/patients/**").hasRole("PATIENT")
 
                         .requestMatchers("/health-tips/**").hasRole("DOCTOR")

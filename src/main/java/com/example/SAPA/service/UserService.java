@@ -115,6 +115,7 @@ public class UserService {
         return new AuthResponse(accessToken, refreshToken);
     }
 
+    @Transactional(readOnly = true)
     public UserResponseDTO getMyProfile(String email) {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Perfil de usuario no encontrado"));
@@ -122,6 +123,7 @@ public class UserService {
         return userMapper.toUserResponseDTO(user);
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getAllUsers(){
         return userRepository.findAll()
                 .stream()
@@ -129,6 +131,7 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getActiveUsers(){
         return userRepository.findAll()
                 .stream()
@@ -137,6 +140,7 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getInactiveUsers(){
         return userRepository.findAll()
                 .stream()
@@ -145,7 +149,7 @@ public class UserService {
                 .toList();
     }
 
-
+    @Transactional
     public void deleteUser(String email, String password) {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Perfil de usuario no encontrado"));
