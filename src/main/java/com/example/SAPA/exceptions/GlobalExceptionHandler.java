@@ -82,4 +82,5 @@ public class GlobalExceptionHandler {
         System.out.println(ex.getMessage());
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
     }
+
 }

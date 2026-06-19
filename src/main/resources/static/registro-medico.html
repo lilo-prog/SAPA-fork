@@ -275,6 +275,14 @@
                     </div>
 
                     <div class="group">
+                        <label>Fecha de nacimiento</label>
+                        <input
+                                id="birthDate"
+                                type="date"
+                                required>
+                    </div>
+
+                    <div class="group">
                         <label>Matrícula Profesional</label>
                         <input
                                 id="licenseNumber"
@@ -405,6 +413,8 @@
                     phoneNumber: document.getElementById("phoneNumber").value,
 
                     licenseNumber: document.getElementById("licenseNumber").value,
+
+                    birthDate: document.getElementById("birthDate").value,
 
                     specialities: [
                         Number(document.getElementById("speciality").value)

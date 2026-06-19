@@ -122,6 +122,7 @@ public class UserService {
         return new AuthResponse(accessToken, refreshToken);
     }
 
+
     @Transactional(readOnly = true)
     public UserResponseDTO getMyProfile(String email) {
         UserEntity user = userRepository.findByEmail(email)
@@ -173,37 +174,44 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public ProfileResponseDTO getProfile(String email){
+    public ProfileResponseDTO getProfile(String email) {
 
         UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
-        if(user.getRole() == UserCategory.DOCTOR){
+        if (user.getRole() == UserCategory.PATIENT) {
 
-            DoctorEntity doctor =
-                    doctorRepository.findByUser(user)
-                            .orElseThrow();
+            PatientEntity patient = patientRepository.findByUser(user)
+                    .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado"));
 
             return new ProfileResponseDTO(
-                    user.getId(),
-                    doctor.getFirstName(),
-                    doctor.getLastName(),
+                    null,
+                    patient.getFirstName(),
+                    patient.getLastName(),
                     user.getEmail(),
-                    user.getRole().name()
+                    user.getRole().name(),
+                    patient.getBirthDate(),
+                    patient.getPhoneNumber(),
+                    patient.getMedicalRecord() != null
+                            ? patient.getMedicalRecord().getId()
+                            : null,
+                    null
             );
         }
 
-        PatientEntity patient =
-                patientRepository.findByUser(user)
-                        .orElseThrow();
+        DoctorEntity doctor = doctorRepository.findByUser(user)
+                .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado"));
 
         return new ProfileResponseDTO(
-                user.getId(),
-                patient.getFirstName(),
-                patient.getLastName(),
+                null,
+                doctor.getFirstName(),
+                doctor.getLastName(),
                 user.getEmail(),
-                user.getRole().name()
+                user.getRole().name(),
+                null,
+                doctor.getPhoneNumber(),
+                null,
+                doctor.getLicenseNumber()
         );
     }
 }
