@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "doctor")
+@Table(name = "doctors")
 public class DoctorEntity {
 
     @Id
@@ -32,7 +32,7 @@ public class DoctorEntity {
     @Column(nullable = false, unique = true)
     private String licenseNumber;
 
-    @Column(length = 1000)
+    @Column(length = 2000)
     private String bio;
 
     private String hospitalUrl;

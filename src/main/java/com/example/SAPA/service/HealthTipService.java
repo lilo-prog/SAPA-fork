@@ -8,6 +8,7 @@ import com.example.SAPA.mappers.HealthTipMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.util.List;
@@ -21,6 +22,7 @@ public class HealthTipService {
     private final UserContextService userContext;
 
 
+    @Transactional
     public HealthTipResponseDTO createHealthTip(HealthTipEntity healthTip) {
         DoctorEntity doctor = userContext.getAuthenticatedDoctor();
 
@@ -30,6 +32,7 @@ public class HealthTipService {
     }
 
 
+    @Transactional
     public HealthTipResponseDTO update(Long id, HealthTipEntity healthTip) throws AccessDeniedException {
         DoctorEntity doctor = userContext.getAuthenticatedDoctor();
 
@@ -47,6 +50,7 @@ public class HealthTipService {
     }
 
 
+    @Transactional
     public void delete(Long id) throws AccessDeniedException {
         DoctorEntity doctor = userContext.getAuthenticatedDoctor();
 
@@ -61,6 +65,7 @@ public class HealthTipService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<HealthTipResponseDTO> getAll() {
         return healthTipRepository.findAll()
                 .stream()
@@ -69,6 +74,7 @@ public class HealthTipService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<HealthTipResponseDTO> getHealthTipsByDoctor(Long doctorId) {
         return healthTipRepository.findByDoctorId(doctorId)
                 .stream()
@@ -77,6 +83,7 @@ public class HealthTipService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<HealthTipResponseDTO> getMyTips() {
         DoctorEntity doctor = userContext.getAuthenticatedDoctor();
 
@@ -85,23 +92,4 @@ public class HealthTipService {
                 .map(healthTipMapper::toHealthTipResponseDTO)
                 .toList();
     }
-
-    /*
-    public boolean isPatientLinkedWithDoctor(String patientEmail, Long doctorId) {
-        return followRequestRepository
-                .findByPatientUserEmailAndDoctorIdAndStatus(patientEmail, doctorId, FollowRequestStatus.APPROVED)
-                .isPresent();
-    }
-
-    public List<HealthTipEntity> getVisibleHealthTipsForPatient(String patientEmail, Long doctorId) {
-
-        boolean isLinked = isPatientLinkedWithDoctor(patientEmail, doctorId);
-
-        if (!isLinked) {
-            return Collections.emptyList();
-        }
-
-        return healthTipRepository.findByDoctorId(doctorId);
-    }
-     */
 }

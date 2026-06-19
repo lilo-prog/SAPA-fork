@@ -1,6 +1,9 @@
 package com.example.SAPA.service;
 
-import com.example.SAPA.DTOs.MedicalDTO;
+import com.example.SAPA.DTOs.Request.TreatmentRequestDTO;
+import com.example.SAPA.DTOs.Response.TreatmentResponseDTO;
+import com.example.SAPA.DTOs.TreatmentDurationDTO;
+import com.example.SAPA.DTOs.TreatmentFrequencyDTO;
 import com.example.SAPA.Models.Entities.DoctorEntity;
 import com.example.SAPA.Models.Entities.PatientEntity;
 import com.example.SAPA.Models.Entities.UserEntity;
@@ -14,6 +17,7 @@ import com.example.SAPA.enums.UserCategory;
 import com.example.SAPA.mappers.TreatmentMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +34,7 @@ public class TreatmentService {
     private final MedicalRecordRepository medicalRecordRepository;
     private final FollowRequestRepository followRequestRepository;
     private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
     private final UserContextService userContext;
     private final TreatmentMapper treatmentMapper;
 
@@ -47,7 +52,7 @@ public class TreatmentService {
     }
 
 
-    private DurationEntity buildDuration(MedicalDTO.TreatmentDuration durationRequest) {
+    private DurationEntity buildDuration(TreatmentDurationDTO durationRequest) {
         DurationEntity duration = new DurationEntity();
 
         duration.setLength(durationRequest.length());
@@ -56,7 +61,7 @@ public class TreatmentService {
         return durationRepository.save(duration);
     }
 
-    private FrequencyEntity buildFrequency(MedicalDTO.TreatmentFrequency frequencyRequest) {
+    private FrequencyEntity buildFrequency(TreatmentFrequencyDTO frequencyRequest) {
         FrequencyEntity frequency = new FrequencyEntity();
 
         frequency.setLength(frequencyRequest.length());
@@ -67,7 +72,7 @@ public class TreatmentService {
 
 
     @Transactional
-    public MedicalDTO.TreatmentResponse createTreatment(Long patientId, MedicalDTO.TreatmentRequest request) {
+    public TreatmentResponseDTO createTreatment(Long patientId, TreatmentRequestDTO request) {
 
         UserEntity currentUser = userContext.getAuthenticatedUser();
         validatePatientAccess(currentUser, patientId);
@@ -76,7 +81,6 @@ public class TreatmentService {
                 .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado con id: " + patientId));
 
         MedicalRecordEntity record = getOrCreateMedicalRecord(patient);
-        medicalRecordRepository.saveAndFlush(record);
 
         DurationEntity duration = buildDuration(request.duration());
         FrequencyEntity frequency = buildFrequency(request.frequency());
@@ -100,8 +104,7 @@ public class TreatmentService {
     }
 
     @Transactional
-    public MedicalDTO.TreatmentResponse updateTreatment(Long treatmentId, MedicalDTO.TreatmentRequest request) {
-
+    public TreatmentResponseDTO updateTreatment(Long treatmentId, TreatmentRequestDTO request) {
         UserEntity currentUser = userContext.getAuthenticatedUser();
 
         TreatmentEntity treatment = treatmentRepository.findById(treatmentId)
@@ -113,25 +116,25 @@ public class TreatmentService {
         validatePatientAccess(currentUser, patient.getId());
 
         if (request.duration() != null) {
-            treatment.getDuration().setLength(request.duration().length());
-            treatment.getDuration().setDurationUnit(request.duration().unit());
-            durationRepository.save(treatment.getDuration());
+            DurationEntity duration = treatment.getDuration() != null ? treatment.getDuration() : new DurationEntity();
+            duration.setLength(request.duration().length());
+            duration.setDurationUnit(request.duration().unit());
+            treatment.setDuration(durationRepository.save(duration));
         }
 
         if (request.frequency() != null) {
-            treatment.getFrequency().setLength(request.frequency().length());
-            treatment.getFrequency().setFrequencyUnit(request.frequency().unit());
-            frequencyRepository.save(treatment.getFrequency());
+            FrequencyEntity frequency = treatment.getFrequency() != null ? treatment.getFrequency() : new FrequencyEntity();
+            frequency.setLength(request.frequency().length());
+            frequency.setFrequencyUnit(request.frequency().unit());
+            treatment.setFrequency(frequencyRepository.save(frequency));
         }
 
-        treatment.setName(request.name());
-        treatment.setDescription(request.description());
+        if (request.name() != null && !request.name().isBlank()) treatment.setName(request.name());
+        if (request.description() != null && !request.description().isBlank()) treatment.setDescription(request.description());
 
         TreatmentEntity updatedTreatment = treatmentRepository.save(treatment);
-
         return treatmentMapper.toTreatmentResponse(updatedTreatment);
     }
-
 
     @Transactional
     public void deleteTreatment(Long treatmentId) {
@@ -152,14 +155,14 @@ public class TreatmentService {
         );
 
         if (!isAssignedDoctor) {
-            throw new SecurityException("No tienes permiso para eliminar tratamientos de este paciente porque no eres su médico asignado.");
+            throw new AccessDeniedException("No tienes permiso para eliminar tratamientos de este paciente porque no eres su médico asignado.");
         }
 
         treatmentRepository.delete(treatment);
     }
 
-
-    public List<MedicalDTO.TreatmentResponse> getTreatments(Long patientId) {
+    @Transactional(readOnly = true)
+    public List<TreatmentResponseDTO> getTreatments(Long patientId) {
         UserEntity currentUser = userContext.getAuthenticatedUser();
 
         validatePatientAccess(currentUser, patientId);
@@ -177,8 +180,8 @@ public class TreatmentService {
                 .toList();
     }
 
-
-    public List<MedicalDTO.TreatmentResponse> filterTreatments(Long patientId, String name) {
+    @Transactional(readOnly = true)
+    public List<TreatmentResponseDTO> filterTreatments(Long patientId, String name) {
         UserEntity currentUser = userContext.getAuthenticatedUser();
 
         validatePatientAccess(currentUser, patientId);
@@ -199,28 +202,32 @@ public class TreatmentService {
 
 
     private void validatePatientAccess(UserEntity currentUser, Long patientId) {
-
         if (currentUser.getRole().equals(UserCategory.PATIENT)) {
-            if (!currentUser.getId().equals(patientId)) {
-                throw new SecurityException("No tienes permiso para ver la ficha médica de otro paciente.");
+            PatientEntity patient = patientRepository.findByUserId(currentUser.getId())
+                    .orElseThrow(() -> new AccessDeniedException("No se encontró un perfil de paciente asociado a este usuario."));
+
+            if (!patient.getId().equals(patientId)) {
+                throw new AccessDeniedException("No tienes permiso para ver la ficha médica de otro paciente.");
             }
             return;
         }
 
-
         if (currentUser.getRole().equals(UserCategory.DOCTOR)) {
+            DoctorEntity doctor = doctorRepository.findByUserId(currentUser.getId())
+                    .orElseThrow(() -> new AccessDeniedException("No se encontró un perfil médico asociado a este usuario."));
+
             boolean hasFollow = followRequestRepository.existsByDoctorIdAndPatientIdAndStatus(
-                    currentUser.getId(),
+                    doctor.getId(),
                     patientId,
                     FollowRequestStatus.APPROVED
             );
 
             if (!hasFollow) {
-                throw new SecurityException("No tienes permiso para acceder a este paciente porque no está bajo tu seguimiento aprobado.");
+                throw new AccessDeniedException("No tienes permiso para acceder a este paciente porque no está bajo tu seguimiento aprobado.");
             }
             return;
         }
 
-        throw new SecurityException("Acceso denegado: Rol no autorizado para realizar esta consulta.");
+        throw new AccessDeniedException("Acceso denegado: Rol no autorizado.");
     }
 }

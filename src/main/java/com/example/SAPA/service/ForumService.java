@@ -9,6 +9,7 @@ import com.example.SAPA.mappers.ForumMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class ForumService {
     private final UserContextService userContextService;
 
 
+    @Transactional
     public ForumResponseDTO createForum(ForumRequestDTO request) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
@@ -35,6 +37,7 @@ public class ForumService {
     }
 
 
+    @Transactional
     public ForumResponseDTO updateForum(Long forumId, ForumRequestDTO request) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
@@ -53,6 +56,7 @@ public class ForumService {
     }
 
 
+    @Transactional
     public void deleteForum(Long forumId) {
         UserEntity user = userContextService.getAuthenticatedUser();
 
@@ -67,7 +71,7 @@ public class ForumService {
         forumRepository.save(forum);
     }
 
-
+    @Transactional(readOnly = true)
     public List<ForumResponseDTO> getAllForums() {
         return forumRepository.findAll()
                 .stream()
@@ -75,6 +79,7 @@ public class ForumService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ForumResponseDTO> getActiveForums() {
         return forumRepository.findByActiveTrue()
                 .stream()
@@ -82,6 +87,7 @@ public class ForumService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ForumResponseDTO> getInactiveForums() {
         return forumRepository.findByActiveFalse()
                 .stream()
@@ -89,7 +95,7 @@ public class ForumService {
                 .toList();
     }
 
-
+    @Transactional(readOnly = true)
     public List<ForumResponseDTO> filterForums(String title) {
         return forumRepository.findByActiveTrueAndTitleContainingIgnoreCase(title)
                 .stream()

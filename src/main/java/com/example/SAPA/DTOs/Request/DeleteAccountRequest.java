@@ -1,4 +1,10 @@
 package com.example.SAPA.DTOs.Request;
 
-public record DeleteAccountRequest(String password) {}
+import jakarta.validation.constraints.NotBlank;
+
+public record DeleteAccountRequest(
+
+        @NotBlank(message = "La contraseña es obligatoria para confirmar la eliminación de la cuenta.")
+        String password
+) {}
 

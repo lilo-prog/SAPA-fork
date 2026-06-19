@@ -18,4 +18,6 @@ public interface QuestionnaireAssignmentRepository extends JpaRepository<Questio
 
     Optional<QuestionnaireAssignmentEntity> findByQuestionnaireAndPatientAndActiveTrue(
             QuestionnaireEntity questionnaire, PatientEntity patient);
+
+    List<QuestionnaireAssignmentEntity> findByPatientAndQuestionnaireDoctorId(PatientEntity patient, Long doctorId);
 }

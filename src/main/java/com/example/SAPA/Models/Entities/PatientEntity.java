@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "patient")
+@Table(name = "patients")
 public class PatientEntity {
 
     @Id
@@ -31,11 +31,9 @@ public class PatientEntity {
     @Column(nullable = false)
     private String lastName;
 
-    @Past(message = "La fecha de nacimiento debe ser una fecha pasada (no puede ser hoy ni el futuro).")
-    @NotNull
+    @Column(nullable = false)
     private LocalDate birthDate;
 
-    @Size(min=10, max=15)
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 

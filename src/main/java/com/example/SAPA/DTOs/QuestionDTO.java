@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuestionDTO {
+
     private String text;
     private QuestionType type;
     private Integer ordexIndex;

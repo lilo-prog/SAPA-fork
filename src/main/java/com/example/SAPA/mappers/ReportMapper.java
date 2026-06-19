@@ -10,6 +10,5 @@ public interface ReportMapper {
 
     @Mapping(source = "report.id", target = "reportId")
     @Mapping(source = "report.reportedBy.id", target = "reportedById")
-    @Mapping(source = "reportedByName", target = "reportedByName")
     ReportResponseDTO toResponse(ReportEntity report, String reportedByName);
 }

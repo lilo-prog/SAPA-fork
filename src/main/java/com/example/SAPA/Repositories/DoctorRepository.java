@@ -9,7 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface DoctorRepository extends JpaRepository<DoctorEntity, Long>{
-    Optional<DoctorEntity> findByUserId(Long userId);
     Optional<DoctorEntity> findByUser(UserEntity user);
-
+    Optional<DoctorEntity> findByUserId(Long userId);
 }

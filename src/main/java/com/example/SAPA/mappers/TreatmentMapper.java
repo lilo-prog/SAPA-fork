@@ -1,6 +1,6 @@
 package com.example.SAPA.mappers;
 
-import com.example.SAPA.DTOs.MedicalDTO;
+import com.example.SAPA.DTOs.Response.TreatmentResponseDTO;
 import com.example.SAPA.Models.MedicalRecord.TreatmentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -9,5 +9,5 @@ import org.mapstruct.Mapping;
 public interface TreatmentMapper {
 
     @Mapping(source = "id", target = "treatmentId")
-    MedicalDTO.TreatmentResponse toTreatmentResponse(TreatmentEntity treatment);
+    TreatmentResponseDTO toTreatmentResponse(TreatmentEntity treatment);
 }

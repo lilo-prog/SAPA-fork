@@ -23,6 +23,7 @@ import com.example.SAPA.security.service.JWTService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,23 +49,23 @@ public class UserService {
     @Transactional
     public AuthResponse registerUser(RegisterRequest request) {
 
-        if (request.getRole() == Role.ROLE_DOCTOR) {
-            if (request.getLicenseNumber() == null || request.getLicenseNumber().isBlank()) {
+        if (request.role() == Role.ROLE_DOCTOR) {
+            if (request.licenseNumber() == null || request.licenseNumber().isBlank()) {
                 throw new IllegalArgumentException("La matrícula es obligatoria para los médicos.");
             }
 
-            if (request.getSpecialities() == null || request.getSpecialities().isEmpty()) {
+            if (request.specialities() == null || request.specialities().isEmpty()) {
                 throw new IllegalArgumentException("El médico debe tener al menos una especialidad.");
             }
         }
 
-        String encryptedPassword = passwordEncoder.encode(request.getPassword());
+        String encryptedPassword = passwordEncoder.encode(request.password());
 
         UserEntity userConnector = UserEntity.builder()
-                .email(request.getEmail())
+                .email(request.email())
                 .password(encryptedPassword)
                 .status(AccountStatus.ACTIVE)
-                .role(UserCategory.valueOf(request.getRole().name().replace("ROLE_", "")))
+                .role(UserCategory.valueOf(request.role().name().replace("ROLE_", "")))
                 .build();
 
 
@@ -73,35 +74,35 @@ public class UserService {
         }
         userConnector = userRepository.save(userConnector);
 
-        if (request.getRole() == Role.ROLE_DOCTOR) {
+        if (request.role() == Role.ROLE_DOCTOR) {
 
             DoctorEntity doctor = DoctorEntity.builder()
                     .user(userConnector)
-                    .firstName(request.getFirstName())
-                    .lastName(request.getLastName())
-                    .phoneNumber(request.getPhoneNumber())
-                    .licenseNumber(request.getLicenseNumber())
-                    .specialities((specialityRepository.findAllById(request.getSpecialities())))
+                    .firstName(request.firstName())
+                    .lastName(request.lastName())
+                    .phoneNumber(request.phoneNumber())
+                    .licenseNumber(request.licenseNumber())
+                    .specialities((specialityRepository.findAllById(request.specialities())))
                     .build();
             doctorRepository.save(doctor);
 
-        } else if (request.getRole() == Role.ROLE_PATIENT) {
+        } else if (request.role() == Role.ROLE_PATIENT) {
 
             PatientEntity patient = PatientEntity.builder()
                     .user(userConnector)
-                    .firstName(request.getFirstName())
-                    .lastName(request.getLastName())
-                    .birthDate(request.getBirthDate())
-                    .phoneNumber(request.getPhoneNumber())
+                    .firstName(request.firstName())
+                    .lastName(request.lastName())
+                    .birthDate(request.birthDate())
+                    .phoneNumber(request.phoneNumber())
                     .build();
             patientRepository.save(patient);
         }
 
-        RoleEntity assignedRole = roleRepository.findByRole(request.getRole())
-                .orElseThrow(() -> new RuntimeException("El rol no existe."));
+        RoleEntity assignedRole = roleRepository.findByRole(request.role())
+                .orElseThrow(() -> new IllegalArgumentException("El rol especificado no es válido."));
 
         CredentialEntity securityCredentials = CredentialEntity.builder()
-                .email(request.getEmail())
+                .email(request.email())
                 .password(encryptedPassword)
                 .active(true)
                 .user(userConnector)
@@ -117,6 +118,7 @@ public class UserService {
         return new AuthResponse(accessToken, refreshToken);
     }
 
+    @Transactional(readOnly = true)
     public UserResponseDTO getMyProfile(String email) {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Perfil de usuario no encontrado"));
@@ -124,6 +126,7 @@ public class UserService {
         return userMapper.toUserResponseDTO(user);
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getAllUsers(){
         return userRepository.findAll()
                 .stream()
@@ -131,6 +134,7 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getActiveUsers(){
         return userRepository.findAll()
                 .stream()
@@ -139,6 +143,7 @@ public class UserService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getInactiveUsers(){
         return userRepository.findAll()
                 .stream()
@@ -147,7 +152,7 @@ public class UserService {
                 .toList();
     }
 
-
+    @Transactional
     public void deleteUser(String email, String password) {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Perfil de usuario no encontrado"));
@@ -157,7 +162,7 @@ public class UserService {
         }
 
         if(user.getStatus().equals(AccountStatus.INACTIVE)) {
-            throw new RuntimeException("Error. Su cuenta ya esta dada de baja");
+            throw new DisabledException("Su cuenta se encuentra dada de baja.");
         }
 
         user.setStatus(AccountStatus.INACTIVE);

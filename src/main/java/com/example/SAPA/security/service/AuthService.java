@@ -2,8 +2,12 @@ package com.example.SAPA.security.service;
 
 import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.enums.AccountStatus;
+import com.example.SAPA.exceptions.CredentialsNotFoundException;
+import com.example.SAPA.exceptions.TokenExpiredException;
+import com.example.SAPA.exceptions.TokenNotFoundException;
 import com.example.SAPA.security.DTO.AuthRequest;
 import com.example.SAPA.security.DTO.AuthResponse;
+import com.example.SAPA.security.DTO.ResetPasswordRequest;
 import com.example.SAPA.security.entities.CredentialEntity;
 import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.service.EmailService;
@@ -77,29 +81,26 @@ public class AuthService {
 
     public void generateResetPasswordToken(String email) {
         CredentialEntity credential = credentialRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("No existe ningún usuario registrado con ese correo electrónico."));
+                .orElseThrow(() -> new CredentialsNotFoundException("No existe ningún usuario registrado con ese correo electrónico."));
 
         String token = UUID.randomUUID().toString();
-
         credential.setResetPasswordToken(token);
-
         credential.setResetPasswordTokenExpiration(LocalDateTime.now().plusMinutes(15));
 
         credentialRepository.save(credential);
-
         emailService.sendResetPasswordEmail(credential.getEmail(), token);
     }
 
-    public void resetPassword(String token, String newPassword) {
+    public void resetPassword(ResetPasswordRequest request) {
 
-        CredentialEntity credential = credentialRepository.findByResetPasswordToken(token)
-                .orElseThrow(() -> new RuntimeException("El token de restablecimiento es inválido."));
+        CredentialEntity credential = credentialRepository.findByResetPasswordToken(request.token())
+                .orElseThrow(() -> new TokenNotFoundException("El token de restablecimiento es inválido."));
 
         if (credential.getResetPasswordTokenExpiration().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("El enlace ha expirado. Por favor, solicite uno nuevo.");
+            throw new TokenExpiredException("El enlace ha expirado. Por favor, solicite uno nuevo.");
         }
 
-        credential.setPassword(passwordEncoder.encode(newPassword));
+        credential.setPassword(passwordEncoder.encode(request.newPassword()));
 
         credential.setResetPasswordToken(null);
         credential.setResetPasswordTokenExpiration(null);
