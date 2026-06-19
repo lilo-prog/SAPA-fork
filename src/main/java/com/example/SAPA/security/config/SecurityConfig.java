@@ -78,6 +78,8 @@ public class SecurityConfig {
                         .requestMatchers("/forums/**").hasAnyRole("PATIENT", "DOCTOR")
                         .requestMatchers("/posts/**").hasAnyRole("PATIENT", "DOCTOR")
 
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+
                         .requestMatchers("/medications/search/**").permitAll()
 
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()

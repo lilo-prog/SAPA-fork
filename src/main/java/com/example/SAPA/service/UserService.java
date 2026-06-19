@@ -53,7 +53,6 @@ public class UserService {
             if (request.licenseNumber() == null || request.licenseNumber().isBlank()) {
                 throw new IllegalArgumentException("La matrícula es obligatoria para los médicos.");
             }
-
             if (request.specialities() == null || request.specialities().isEmpty()) {
                 throw new IllegalArgumentException("El médico debe tener al menos una especialidad.");
             }
@@ -61,17 +60,20 @@ public class UserService {
 
         String encryptedPassword = passwordEncoder.encode(request.password());
 
+        AccountStatus initialStatus = (request.role() == Role.ROLE_DOCTOR)
+                ? AccountStatus.PENDING
+                : AccountStatus.ACTIVE;
+
         UserEntity userConnector = UserEntity.builder()
                 .email(request.email())
                 .password(encryptedPassword)
-                .status(AccountStatus.ACTIVE)
+                .status(initialStatus)
                 .role(UserCategory.valueOf(request.role().name().replace("ROLE_", "")))
                 .build();
 
         userConnector = userRepository.save(userConnector);
 
         if (request.role() == Role.ROLE_DOCTOR) {
-
             DoctorEntity doctor = DoctorEntity.builder()
                     .user(userConnector)
                     .firstName(request.firstName())
@@ -84,7 +86,6 @@ public class UserService {
             doctorRepository.save(doctor);
 
         } else if (request.role() == Role.ROLE_PATIENT) {
-
             PatientEntity patient = PatientEntity.builder()
                     .user(userConnector)
                     .firstName(request.firstName())
@@ -106,6 +107,11 @@ public class UserService {
                 .roles(Set.of(assignedRole))
                 .refreshToken("")
                 .build();
+
+        if (request.role() == Role.ROLE_DOCTOR) {
+            credentialRepository.save(securityCredentials);
+            return null;
+        }
 
         String accessToken = jwtService.generateToken(securityCredentials);
         String refreshToken = jwtService.generateRefreshToken(securityCredentials);
