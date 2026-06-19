@@ -3,6 +3,7 @@ package com.example.SAPA.controller;
 import com.example.SAPA.DTOs.QuestionnaireDTO;
 import com.example.SAPA.service.AssignmentService;
 import com.example.SAPA.service.ResponseService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class AssigmentController {
 
     @PostMapping("/{id}")
     public ResponseEntity<QuestionnaireDTO.AssignmentResponse> assignQuestionnaire(@PathVariable Long id,
-                                                                                   @RequestBody QuestionnaireDTO.AssignQuestionnaireRequest request) {
+                                                                                   @Valid @RequestBody QuestionnaireDTO.AssignQuestionnaireRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(assignmentService.assignQuestionnaire(id, request));
     }
@@ -43,7 +44,7 @@ public class AssigmentController {
 
     @PostMapping("/{assignmentId}/submit")
     public ResponseEntity<QuestionnaireDTO.QuestionnaireResponseDTO> submitResponse(@PathVariable Long assignmentId,
-                                                                                    @RequestBody QuestionnaireDTO.SubmitResponseRequest  request) {
+                                                                                    @Valid @RequestBody QuestionnaireDTO.SubmitResponseRequest  request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(responseService.submitResponse(assignmentId, request));
     }

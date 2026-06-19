@@ -13,6 +13,7 @@ import com.example.SAPA.mappers.ReportMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class ReportService {
     private final ForumRepository forumRepository;
 
 
+    @Transactional
     public ReportResponseDTO createReport(CreateReportRequestDTO request) {
         UserEntity user = userContext.getAuthenticatedUser();
 
@@ -68,6 +70,7 @@ public class ReportService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<ReportResponseDTO> getUnreviewed() {
         return reportRepository.findByReviewedFalseWithUser()
                 .stream()
@@ -76,6 +79,7 @@ public class ReportService {
     }
 
 
+    @Transactional
     public ReportResponseDTO markAsReviewed(Long reportId) {
         ReportEntity report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Reporte no encontrado con id: " + reportId));

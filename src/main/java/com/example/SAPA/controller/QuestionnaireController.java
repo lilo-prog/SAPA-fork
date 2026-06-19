@@ -2,6 +2,7 @@ package com.example.SAPA.controller;
 
 import com.example.SAPA.DTOs.QuestionnaireDTO;
 import com.example.SAPA.service.QuestionnaireService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,13 @@ public class QuestionnaireController {
 
     @PostMapping
     public ResponseEntity<QuestionnaireDTO.QuestionnaireResponse> createQuestionnaire(
-            @RequestBody QuestionnaireDTO.CreateQuestionnaireRequest request) {
+            @Valid @RequestBody QuestionnaireDTO.CreateQuestionnaireRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(questionnaireService.createQuestionnaire(request));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<QuestionnaireDTO.QuestionnaireResponse> updateQuestionnaire(@PathVariable Long id,
-                                                                                      @RequestBody QuestionnaireDTO.UpdateQuestionnaireRequest request) {
+                                                                                      @Valid @RequestBody QuestionnaireDTO.UpdateQuestionnaireRequest request) {
 
         return ResponseEntity.ok(questionnaireService.updateQuestionnaire(id, request));
     }

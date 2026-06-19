@@ -56,21 +56,4 @@ public class HealthTipController {
     public ResponseEntity<List<HealthTipResponseDTO>> getMyTips() {
         return ResponseEntity.ok(healthTipService.getMyTips());
     }
-
-    /*
-    public ResponseEntity<List<HealthTipResponseDTO>> getPrivateTipsForPatient(@PathVariable Long doctorId,
-                                                                               Authentication authentication) {
-
-        String patientEmail = authentication.getName();
-
-        List<HealthTipEntity> privateTips = healthTipService.getVisibleHealthTipsForPatient(patientEmail, doctorId);
-
-        List<HealthTipResponseDTO> response = privateTips.stream()
-                .map(healthTipMapper::toHealthTipResponseDTO)
-                .toList();
-
-        return ResponseEntity.ok(response);
-    }
-
-     */
 }

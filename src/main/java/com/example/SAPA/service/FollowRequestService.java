@@ -12,6 +12,8 @@ import com.example.SAPA.enums.NotificationType;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class FollowRequestService {
     private final NotificationService notificationService;
 
 
+    @Transactional
     public FollowRequestEntity create(Long doctorId) {
         PatientEntity patient = userContextService.getAuthenticatedPatient();
 
@@ -48,6 +51,7 @@ public class FollowRequestService {
         return followRequestRepository.save(request);
     }
 
+    @Transactional
     public FollowRequestEntity approve(Long id) {
         DoctorEntity authenticatedDoctor = userContextService.getAuthenticatedDoctor();
 
@@ -83,6 +87,7 @@ public class FollowRequestService {
         return saved;
     }
 
+    @Transactional
     public FollowRequestEntity reject(Long id) {
         DoctorEntity authenticatedDoctor = userContextService.getAuthenticatedDoctor();
 
@@ -107,6 +112,7 @@ public class FollowRequestService {
         return followRequestRepository.save(request);
     }
 
+    @Transactional
     public FollowRequestEntity dissolve(Long id) {
         UserEntity authenticatedUser = userContextService.getAuthenticatedUser();
 
@@ -129,11 +135,13 @@ public class FollowRequestService {
         return followRequestRepository.save(request);
     }
 
+    @Transactional(readOnly = true)
     public List<FollowRequestEntity> getPendingRequests() {
         DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
         return followRequestRepository.findByDoctorAndStatus(doctor, FollowRequestStatus.PENDING);
     }
 
+    @Transactional(readOnly = true)
     public List<FollowRequestEntity> getSentRequests() {
         PatientEntity patient = userContextService.getAuthenticatedPatient();
         return followRequestRepository.findByPatient(patient);

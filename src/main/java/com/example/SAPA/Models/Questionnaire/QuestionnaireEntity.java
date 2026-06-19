@@ -43,7 +43,6 @@ public class QuestionnaireEntity {
         this.createdAt = LocalDateTime.now();
     }
 
-    //Anotacion de jpa para relacion entre questionnaireEntity y questionEntity para cuestionarios personalizados
     @OneToMany(
             mappedBy = "questionnaire",
             cascade = CascadeType.ALL,

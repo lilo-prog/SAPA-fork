@@ -10,6 +10,7 @@ import com.example.SAPA.Repositories.*;
 import com.example.SAPA.mappers.QuestionnaireMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,11 +35,11 @@ public class ResponseService {
                 .orElseThrow(() -> new EntityNotFoundException("Asignación no encontrada con id: " + assignmentId));
 
         if (!assignment.getPatient().getId().equals(patient.getId())) {
-            throw new RuntimeException("No tenés permiso para responder este cuestionario");
+            throw new AccessDeniedException("No tenés permiso para responder este cuestionario.");
         }
 
         if (!assignment.isActive()) {
-            throw new RuntimeException("Este cuestionario ya no está activo");
+            throw new IllegalStateException("Este cuestionario ya ha sido respondido o ya no se encuentra activo.");
         }
 
         QuestionnaireResponseEntity response = QuestionnaireResponseEntity.builder()
@@ -47,6 +48,8 @@ public class ResponseService {
 
         QuestionnaireResponseEntity savedResponse = responseRepository.save(response);
 
+        Long originalQuestionnaireId = assignment.getQuestionnaire().getId();
+
         List<AnswerEntity> answers = request.answers()
                 .stream()
                 .map(a -> {
@@ -54,17 +57,23 @@ public class ResponseService {
                             .orElseThrow(() -> new EntityNotFoundException(
                                     "Pregunta no encontrada con id: " + a.questionId()));
 
+                    if (!question.getQuestionnaire().getId().equals(originalQuestionnaireId)) {
+                        throw new IllegalArgumentException("La pregunta con id " + a.questionId() + " no pertenece a este cuestionario.");
+                    }
+
                     return AnswerEntity.builder()
                             .response(savedResponse)
                             .question(question)
                             .value(a.value())
                             .build();
                 })
-
                 .toList();
 
         answerRepository.saveAll(answers);
         savedResponse.setAnswers(answers);
+
+        assignment.setActive(false);
+        assignmentRepository.save(assignment);
 
         return questionnaireMapper.toResponseDTO(savedResponse);
     }

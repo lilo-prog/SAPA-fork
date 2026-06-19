@@ -15,6 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -37,6 +38,7 @@ public class AttachmentService {
     private static final String UPLOAD_DIR = "uploads/chat/";
 
 
+    @Transactional(rollbackFor = Exception.class)
     public ChatDTO.MessageResponse uploadAttachment(Long conversationId, MultipartFile file) throws IOException {
         UserEntity sender = userContextService.getAuthenticatedUser();
 
@@ -80,7 +82,7 @@ public class AttachmentService {
 
         savedMessage.setAttatchments(List.of(attachment));
 
-        String senderName = userContextService.resolveName(sender); //puede que este mal esta linea y no haga la relacion correctamente
+        String senderName = userContextService.resolveName(sender);
         ChatDTO.MessageResponse response = messageMapper.toResponse(savedMessage, senderName);
 
         messagingTemplate.convertAndSend(
@@ -101,7 +103,7 @@ public class AttachmentService {
         } else if (contentType.equals("application/pdf")) {
             return AttachmentType.PDF;
         } else {
-            throw new RuntimeException("Tipo de archivo no permitido. Solo se aceptan imágenes y PDFs");
+            throw new IllegalArgumentException("Tipo de archivo no permitido. Solo se aceptan imágenes y PDFs.");
         }
     }
 }

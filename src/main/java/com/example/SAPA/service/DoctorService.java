@@ -5,7 +5,6 @@ import com.example.SAPA.Models.Entities.DoctorEntity;
 import com.example.SAPA.Models.Entities.UserEntity;
 import com.example.SAPA.Repositories.DoctorRepository;
 import com.example.SAPA.Repositories.SpecialityRepository;
-import com.example.SAPA.Repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,41 +15,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class DoctorService {
 
     private final DoctorRepository doctorRepository;
-    private final UserRepository userRepository;
     private final SpecialityRepository specialityRepository;
+    private final UserContextService userContextService;
 
 
     @Transactional
     public void updateDoctor(String email, UpdateDoctorRequestDTO request) {
 
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado."));
+        UserEntity user = userContextService.getAuthenticatedUser();
 
-        DoctorEntity doctor = doctorRepository.findByUser(user)
-                .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado."));
+        DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
 
-        if (request.getFirstName() != null && !request.getFirstName().isBlank())
-            doctor.setFirstName(request.getFirstName());
+        doctor.setFirstName(request.firstName());
+        doctor.setLastName(request.lastName());
+        doctor.setPhoneNumber(request.phoneNumber());
+        doctor.setLicenseNumber(request.licenseNumber());
 
-        if (request.getLastName() != null && !request.getLastName().isBlank())
-            doctor.setLastName(request.getLastName());
+        doctor.setBio(request.bio());
+        doctor.setHospitalUrl(request.hospitalUrl());
 
-        if (request.getBio() != null)
-            doctor.setBio(request.getBio());
-
-        if (request.getHospitalUrl() != null)
-            doctor.setHospitalUrl(request.getHospitalUrl());
-
-        if (request.getPhoneNumber() != null)
-            doctor.setPhoneNumber(request.getPhoneNumber());
-
-        if (request.getLicenseNumber() != null && !request.getLicenseNumber().isBlank())
-            doctor.setLicenseNumber(request.getLicenseNumber());
-
-        if (request.getSpecialities() != null && !request.getSpecialities().isEmpty())
-            doctor.setSpecialities(specialityRepository.findAllById(request.getSpecialities()));
-
-        doctorRepository.save(doctor);
+        doctor.setSpecialities(specialityRepository.findAllById(request.specialities()));
     }
 
 

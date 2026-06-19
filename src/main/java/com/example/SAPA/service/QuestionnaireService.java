@@ -49,6 +49,7 @@ public class QuestionnaireService {
         return questionnaireMapper.toQuestionnaireResponse(saved, userContextService.resolveDoctorName(doctor));
     }
 
+    @Transactional
     public QuestionnaireDTO.QuestionnaireResponse updateQuestionnaire(Long questionnaireId, QuestionnaireDTO.UpdateQuestionnaireRequest request) {
         DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
 
@@ -68,6 +69,7 @@ public class QuestionnaireService {
         return questionnaireMapper.toQuestionnaireResponse(updated, userContextService.resolveDoctorName(doctor));
     }
 
+    @Transactional
     public void deleteQuestionnaire(Long questionnaireId) {
         DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
 
@@ -81,6 +83,7 @@ public class QuestionnaireService {
         questionnaireRepository.delete(questionnaire);
     }
 
+    @Transactional(readOnly = true)
     public List<QuestionnaireDTO.QuestionnaireResponse> getMyQuestionnaires() {
         DoctorEntity doctor = userContextService.getAuthenticatedDoctor();
 
