@@ -11,9 +11,12 @@ import com.example.SAPA.security.DTO.ResetPasswordRequest;
 import com.example.SAPA.security.entities.CredentialEntity;
 import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.service.EmailService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,12 +38,12 @@ public class AuthService {
     public UserDetails authenticate(AuthRequest input) {
 
         CredentialEntity credentialEntity = credentialRepository.findByEmail(input.email())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado")); //CAMBIAR TIPO EXCEPCION Y MENSAJE
+                .orElseThrow(() -> new BadCredentialsException("Email o contraseña incorrectos"));
 
         UserEntity userEntity = credentialEntity.getUser();
 
         if(userEntity.getStatus() == AccountStatus.INACTIVE){
-            throw new RuntimeException("No puede iniciar sesión. Cuenta dada de baja"); //CAMBIAR TIPO EXCEPCION
+            throw new DisabledException("No puede iniciar sesión. Cuenta dada de baja");
         }
 
         authenticationManager.authenticate(
@@ -50,7 +53,7 @@ public class AuthService {
                 )
         );
 
-        return credentialRepository.findByEmail(input.email()).orElseThrow();
+        return credentialEntity;
     }
 
     @Transactional
