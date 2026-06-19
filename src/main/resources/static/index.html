@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAPA - Comunidad de Salud</title>
 
-    <link rel="icon" type="image/jpg" href="/img/logo.jpg">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/chat.css">
     <link rel="stylesheet" href="/css/doctor-search.css">
@@ -100,9 +99,7 @@
 
         <div class="top-actions">
 
-            <button
-                    class="btn-publicar"
-                    onclick="mostrarMensajeRegistro()">
+            <button class="btn-publicar">
                 + Nueva publicación
             </button>
 
@@ -134,24 +131,31 @@
             <div class="acciones-post">
 
                 <select>
+
                     <option>
                         Selecciona una categoría
                     </option>
+
                     <option>
                         Enfermedades crónicas
                     </option>
+
                     <option>
                         Salud mental
                     </option>
+
                     <option>
                         Tratamientos
                     </option>
+
                     <option>
                         Síntomas
                     </option>
+
                 </select>
 
                 <div class="botones-post">
+
                     <button class="btn-cancelar">
                         Cancelar
                     </button>
@@ -159,20 +163,15 @@
                     <button
                             type="button"
                             id="btnCrearForum"
-                            class="btn-publicar-form"
-                            onclick="mostrarMensajeRegistro()">
+                            class="btn-publicar-form">
                         Publicar
                     </button>
+
                 </div>
+
             </div>
+
         </div>
-        <script>
-            function mostrarMensajeRegistro() {
-                if(confirm("Debes iniciar sesión o registrarte para publicar contenido.")) {
-                    window.location.href = "/login";
-                }
-            }
-        </script>
 
         <!-- FOROS DINÁMICOS -->
 
@@ -282,22 +281,28 @@
     </div>
 
     <div class="user-dropdown" id="userDropdown">
-        <a href="/perfil">
+
+        <a href="/perfil.html">
             <span>👤</span>
             <span>Mi perfil</span>
         </a>
+
         <a href="#">
             <span>📝</span>
             <span>Mis publicaciones</span>
         </a>
+
         <hr>
+
         <button
             id="logoutBtn"
             class="logout-btn">
 
             <span>🚪</span>
             <span>Cerrar sesión</span>
+
         </button>
+
     </div>
 
 </div>

@@ -108,9 +108,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ProfileResponseDTO> me(
-            Authentication authentication){
-
+    public ResponseEntity<ProfileResponseDTO> me(Authentication authentication){
         return ResponseEntity.ok(
                 userService.getProfile(
                         authentication.getName()
