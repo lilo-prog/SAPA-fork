@@ -48,6 +48,7 @@ public class CredentialEntity implements UserDetails {
             joinColumns = @JoinColumn(name = "credential_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @Builder.Default
     private Set<RoleEntity> roles = new HashSet<>();
 
     @Column(name = "refresh_token", length = 2048, unique = true, nullable = false)

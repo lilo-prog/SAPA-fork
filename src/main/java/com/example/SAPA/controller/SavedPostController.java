@@ -1,6 +1,6 @@
 package com.example.SAPA.controller;
 
-import com.example.SAPA.DTOs.ForumDto;
+import com.example.SAPA.DTOs.Response.SavedPostResponseDTO;
 import com.example.SAPA.service.SavedPostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,11 +32,11 @@ public class SavedPostController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de publicaciones guardadas obtenida con éxito.",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = ForumDto.SavedPostResponse.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = SavedPostResponseDTO.class)))),
             @ApiResponse(responseCode = "401", description = "No autorizado - Token JWT ausente o inválido.", content = @Content)
     })
     @GetMapping
-    public ResponseEntity<List<ForumDto.SavedPostResponse>> getSavedPosts() {
+    public ResponseEntity<List<SavedPostResponseDTO>> getSavedPosts() {
         return ResponseEntity.ok(savedPostService.getSavedPosts());
     }
 
@@ -46,13 +46,13 @@ public class SavedPostController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Publicación guardada exitosamente en la colección.",
-                    content = @Content(schema = @Schema(implementation = ForumDto.SavedPostResponse.class))),
+                    content = @Content(schema = @Schema(implementation = SavedPostResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "La publicación ya se encuentra guardada en la colección del usuario.", content = @Content),
             @ApiResponse(responseCode = "401", description = "No autorizado - Sesión inválida.", content = @Content),
             @ApiResponse(responseCode = "404", description = "El ID del post especificado no existe.", content = @Content)
     })
     @PostMapping("/{postId}")
-    public ResponseEntity<ForumDto.SavedPostResponse> savePost(
+    public ResponseEntity<SavedPostResponseDTO> savePost(
             @Parameter(description = "ID único de la publicación a guardar", required = true) @PathVariable Long postId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPostService.savePost(postId));
     }

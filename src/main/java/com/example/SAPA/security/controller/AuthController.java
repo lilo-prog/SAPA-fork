@@ -1,11 +1,7 @@
 package com.example.SAPA.security.controller;
 
 import com.example.SAPA.DTOs.Request.RegisterRequest;
-import com.example.SAPA.Models.Entities.UserEntity;
-import com.example.SAPA.enums.AccountStatus;
-import com.example.SAPA.security.DTO.AuthRequest;
-import com.example.SAPA.security.DTO.AuthResponse;
-import com.example.SAPA.security.DTO.RefreshTokenRequest;
+import com.example.SAPA.security.DTO.*;
 import com.example.SAPA.security.entities.CredentialEntity;
 import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.security.service.AuthService;
@@ -19,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,7 +40,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Autenticado exitosamente",
                     content = @Content(schema = @Schema(implementation = AuthResponse.class))),
-            @ApiResponse(responseCode = "401", description = "No autorizado - Credenciales inválidas")
+            @ApiResponse(responseCode = "401", description = "No autorizado - Credenciales inválidas", content = @Content)
     })
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> authenticateUser(@RequestBody AuthRequest authRequest) {
@@ -68,7 +65,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Token renovado exitosamente",
                     content = @Content(schema = @Schema(implementation = AuthResponse.class))),
-            @ApiResponse(responseCode = "401", description = "No autorizado - Token de refresco inválido o expirado")
+            @ApiResponse(responseCode = "401", description = "No autorizado - Token de refresco inválido o expirado", content = @Content)
     })
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
@@ -81,8 +78,8 @@ public class AuthController {
             description = "Cierra la sesión del usuario revocando el token de acceso actual. Añade el token a la lista negra."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Sesión cerrada exitosamente."),
-            @ApiResponse(responseCode = "400", description = "No se proporcionó un token válido.")
+            @ApiResponse(responseCode = "200", description = "Sesión cerrada exitosamente.", content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "No se proporcionó un token válido.", content = @Content)
     })
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest httpServletRequest) {
@@ -91,7 +88,6 @@ public class AuthController {
             String token = auth.substring(7);
 
             long tiempoExpiracion = jwtService.extractExpiration(token).getTime();
-
             tokenBlacklistService.addToBlacklist(token, tiempoExpiracion);
 
             return ResponseEntity.ok("Sesión cerrada exitosamente.");
@@ -100,27 +96,61 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
-        authService.generateResetPasswordToken(email);
-        return ResponseEntity.ok("Se envió el enlace de restablecimiento al correo.");
+    @Operation(
+            summary = "Solicitar recuperación de contraseña",
+            description = "Recibe el email del usuario y, si existe en el sistema, genera un token único de restablecimiento y envía un correo con las instrucciones."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Solicitud procesada con éxito. Por motivos de seguridad, se devuelve este estado aunque el email no exista en la base de datos (evita enumeración de usuarios)."
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Datos de entrada inválidos (ej. formato de email incorrecto).",
+                    content = @Content(schema = @Schema(implementation = Void.class)) // Cambia Void por tu DTO de error global si tenés uno
+            )
+    })
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.generateResetPasswordToken(request.email());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
-        authService.resetPassword(token, newPassword);
-        return ResponseEntity.ok("Contraseña actualizada correctamente.");
+    @Operation(
+            summary = "Restablecer la contraseña con el token",
+            description = "Valida el token enviado por correo electrónico y actualiza la contraseña del usuario en el sistema."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Contraseña restablecida exitosamente. El token ha sido invalidado."
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "El token es inválido, ya fue utilizado, expiró, o las contraseñas no coinciden."
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "No se encontró ningún usuario asociado al token enviado."
+            )
+    })
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(
-            summary = "Crear usuario"
+            summary = "Crear usuario",
+            description = "Registra un nuevo usuario en el sistema. Devuelve las credenciales de acceso JWT inmediatas tras el registro."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Usuario registrado correctamente",
                     content = @Content(schema = @Schema(implementation = AuthResponse.class))),
-            @ApiResponse(responseCode = "401", description = "No se registro el usuario - Credenciales inválidas")
+            @ApiResponse(responseCode = "400", description = "No se registró el usuario - El correo ya existe o los datos son inválidos", content = @Content)
     })
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         try {
             AuthResponse authResponse = userService.registerUser(request);
             return ResponseEntity.ok(authResponse);
@@ -129,3 +159,4 @@ public class AuthController {
         }
     }
 }
+
