@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/chat.css">
     <link rel="stylesheet" href="/css/doctor-search.css">
+    <link rel="stylesheet" href="/css/notifications.css">
 </head>
 
 <body>
@@ -45,6 +46,23 @@
     </nav>
 
     <div class="auth-buttons" id="authButtons">
+
+        <button id="notifBellBtn"
+                class="notif-bell-btn"
+                title="Notificaciones"
+                style="display:none">
+
+            <img src="/img/notification.png"
+                 width="24"
+                 height="24"
+                 alt="Notificaciones">
+
+            <span id="notifBadge"
+                  class="notif-badge"
+                  style="display:none">
+        </span>
+
+        </button>
 
         <a href="/login.html" class="btn-login">
             Iniciar sesión
@@ -255,24 +273,36 @@
                     ? "Médico"
                     : "Paciente";
 
-            authButtons.innerHTML = `
-<div class="user-menu">
+const notifBtn = document.getElementById("notifBellBtn");
+const notifBadge = document.getElementById("notifBadge");
+
+authButtons.querySelector(".btn-login")?.remove();
+authButtons.querySelector(".btn-register")?.remove();
+
+notifBtn.style.display = "flex";
+
+authButtons.insertAdjacentHTML(
+    "beforeend",
+    `
+<div class="user-menu" id="userMenu">
 
     <div class="user-button" id="userButton">
 
-       <div class="user-avatar">
-    ${iniciales}
-    </div>
+        <div class="user-avatar">
+            ${iniciales}
+        </div>
 
-    <div class="user-info">
-        <span class="user-name">
-           ${profile.firstName} ${profile.lastName}
-        </span>
+        <div class="user-info">
 
-     <span class="user-role">
-          ${rol}
-        </span>
-    </div>
+            <span class="user-name">
+                ${profile.firstName} ${profile.lastName}
+            </span>
+
+            <span class="user-role">
+                ${rol}
+            </span>
+
+        </div>
 
         <span class="user-arrow">
             ▼
@@ -294,19 +324,16 @@
 
         <hr>
 
-        <button
-            id="logoutBtn"
-            class="logout-btn">
-
+        <button id="logoutBtn" class="logout-btn">
             <span>🚪</span>
             <span>Cerrar sesión</span>
-
         </button>
 
     </div>
 
 </div>
-`;
+`
+);
 
             const userButton =
                 document.getElementById("userButton");
@@ -485,5 +512,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="/js/doctor-search.js"></script>
 <script src="/js/chat.js"></script>
+<script src="/js/notifications.js"></script>
 </body>
 </html>

@@ -48,6 +48,14 @@ public class FollowRequestService {
                 .doctor(doctor)
                 .build();
 
+        notificationService.createNotification(
+                request.getDoctor().getUser(),
+                "Solitud recibida",
+                "El Paciente " + patient.getFirstName() + " " + patient.getLastName()
+                        + " te envio una solicitud de seguimiento.",
+                NotificationType.FOLLOW
+        );
+
         return followRequestRepository.save(request);
     }
 

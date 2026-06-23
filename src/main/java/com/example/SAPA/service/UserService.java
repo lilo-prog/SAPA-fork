@@ -185,7 +185,7 @@ public class UserService {
                     .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado"));
 
             return new ProfileResponseDTO(
-                    null,
+                    user.getId(),
                     patient.getFirstName(),
                     patient.getLastName(),
                     user.getEmail(),
@@ -203,7 +203,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado"));
 
         return new ProfileResponseDTO(
-                null,
+                user.getId(),
                 doctor.getFirstName(),
                 doctor.getLastName(),
                 user.getEmail(),
