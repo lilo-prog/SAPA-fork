@@ -275,35 +275,35 @@
                         ? "Administrador"
                         : "Paciente";
 
-const notifBtn = document.getElementById("notifBellBtn");
-const notifBadge = document.getElementById("notifBadge");
+            const notifBtn = document.getElementById("notifBellBtn");
+            const notifBadge = document.getElementById("notifBadge");
 
-authButtons.querySelector(".btn-login")?.remove();
-authButtons.querySelector(".btn-register")?.remove();
+            authButtons.querySelector(".btn-login")?.remove();
+            authButtons.querySelector(".btn-register")?.remove();
 
-notifBtn.style.display = "flex";
+            notifBtn.style.display = "flex";
 
 // Show admin pending doctors badge
-if (profile.role === "ADMIN") {
-    loadAdminPendingBadge();
-}
+            if (profile.role === "ADMIN") {
+                loadAdminPendingBadge();
+            }
 
 // Show doctor pending follow requests badge
-if (profile.role === "DOCTOR") {
-    loadDoctorPendingBadge();
-}
+            if (profile.role === "DOCTOR") {
+                loadDoctorPendingBadge();
+            }
 
-const adminPanelLink = profile.role === "ADMIN"
-    ? `<a href="/admin.html"><span>&#128188;</span><span>Panel Admin</span></a><hr>`
-    : "";
+            const adminPanelLink = profile.role === "ADMIN"
+                ? `<a href="/admin.html"><span>&#128188;</span><span>Panel Admin</span></a><hr>`
+                : "";
 
-const doctorPanelLink = profile.role === "DOCTOR"
-    ? `<a href="/doctor-panel.html"><span>&#128188;</span><span>Solicitudes de Pacientes</span></a><hr>`
-    : "";
+            const doctorPanelLink = profile.role === "DOCTOR"
+                ? `<a href="/doctor-panel.html"><span>&#128188;</span><span>Solicitudes de Pacientes</span></a><hr>`
+                : "";
 
-authButtons.insertAdjacentHTML(
-    "beforeend",
-    `
+            authButtons.insertAdjacentHTML(
+                "beforeend",
+                `
 <div class="user-menu" id="userMenu">
 
     <div class="user-button" id="userButton">
@@ -356,7 +356,7 @@ authButtons.insertAdjacentHTML(
 
 </div>
 `
-);
+            );
 
             const userButton =
                 document.getElementById("userButton");

@@ -94,48 +94,48 @@
             "Authorization": "Bearer " + token
         }
     })
-    .then(async response => {
-        const text = await response.text();
+        .then(async response => {
+            const text = await response.text();
 
-        if (!response.ok) {
-            throw new Error(text);
-        }
-        return JSON.parse(text);
+            if (!response.ok) {
+                throw new Error(text);
+            }
+            return JSON.parse(text);
 
-    })
-    .then(data => {
-    document.getElementById("firstName").textContent =
-        data.firstName || "No disponible";
-    document.getElementById("lastName").textContent =
-        data.lastName || "No disponible";
-    document.getElementById("email").textContent =
-        data.email || "No disponible";
-    document.getElementById("role").textContent =
-        data.role || "No disponible";
-    if (data.role === "PATIENT") {
-        document.getElementById("patientFields").style.display = "block";
-        document.getElementById("birthDate").textContent =
-            data.birthDate || "No disponible";
-        document.getElementById("phoneNumber").textContent =
-            data.phoneNumber || "No disponible";
-        document.getElementById("medicalRecordId").textContent =
-            data.medicalRecordId || "Sin historia clínica";
+        })
+        .then(data => {
+            document.getElementById("firstName").textContent =
+                data.firstName || "No disponible";
+            document.getElementById("lastName").textContent =
+                data.lastName || "No disponible";
+            document.getElementById("email").textContent =
+                data.email || "No disponible";
+            document.getElementById("role").textContent =
+                data.role || "No disponible";
+            if (data.role === "PATIENT") {
+                document.getElementById("patientFields").style.display = "block";
+                document.getElementById("birthDate").textContent =
+                    data.birthDate || "No disponible";
+                document.getElementById("phoneNumber").textContent =
+                    data.phoneNumber || "No disponible";
+                document.getElementById("medicalRecordId").textContent =
+                    data.medicalRecordId || "Sin historia clínica";
 
-    }
-    if (data.role === "DOCTOR") {
-        document.getElementById("doctorFields").style.display = "block";
-        document.getElementById("licenseNumber").textContent =
-            data.licenseNumber || "No disponible";
-    }
+            }
+            if (data.role === "DOCTOR") {
+                document.getElementById("doctorFields").style.display = "block";
+                document.getElementById("licenseNumber").textContent =
+                    data.licenseNumber || "No disponible";
+            }
 
-})
-    .catch(error => {
+        })
+        .catch(error => {
 
-        console.error(error);
+            console.error(error);
 
-        alert("No se pudo cargar el perfil");
+            alert("No se pudo cargar el perfil");
 
-    });
+        });
 </script>
 </body>
 </html>

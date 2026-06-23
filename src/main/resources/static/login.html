@@ -276,7 +276,20 @@
             });
 
             if (!response.ok) {
-                error.textContent = "Correo o contraseña incorrectos";
+
+                let mensaje = "Error al iniciar sesión";
+
+                try {
+                    const errorData = await response.json();
+                    mensaje = errorData.message || mensaje;
+
+                    if (mensaje === "Bad credentials") {
+                        mensaje = "Correo o contraseña incorrectos";
+                    }
+
+                } catch {}
+
+                error.textContent = mensaje;
                 return;
             }
 

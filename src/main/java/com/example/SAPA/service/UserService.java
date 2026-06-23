@@ -76,6 +76,7 @@ public class UserService {
         userConnector = userRepository.save(userConnector);
 
         if (request.role() == Role.ROLE_DOCTOR) {
+
             DoctorEntity doctor = DoctorEntity.builder()
                     .user(userConnector)
                     .firstName(request.firstName())
@@ -83,9 +84,14 @@ public class UserService {
                     .birthDate(request.birthDate())
                     .phoneNumber(request.phoneNumber())
                     .licenseNumber(request.licenseNumber())
-                    .specialities((specialityRepository.findAllById(request.specialities())))
+                    .specialities(
+                            specialityRepository.findAllById(request.specialities())
+                    )
                     .build();
-            doctorRepository.save(doctor);
+
+            doctor = doctorRepository.save(doctor);
+
+            notifyAdminsOfNewDoctorRegistration(doctor);
 
         } else if (request.role() == Role.ROLE_PATIENT) {
             PatientEntity patient = PatientEntity.builder()
