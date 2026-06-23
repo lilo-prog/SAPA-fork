@@ -288,8 +288,17 @@ if (profile.role === "ADMIN") {
     loadAdminPendingBadge();
 }
 
+// Show doctor pending follow requests badge
+if (profile.role === "DOCTOR") {
+    loadDoctorPendingBadge();
+}
+
 const adminPanelLink = profile.role === "ADMIN"
     ? `<a href="/admin.html"><span>&#128188;</span><span>Panel Admin</span></a><hr>`
+    : "";
+
+const doctorPanelLink = profile.role === "DOCTOR"
+    ? `<a href="/doctor-panel.html"><span>&#128188;</span><span>Solicitudes de Pacientes</span></a><hr>`
     : "";
 
 authButtons.insertAdjacentHTML(
@@ -324,6 +333,7 @@ authButtons.insertAdjacentHTML(
     <div class="user-dropdown" id="userDropdown">
 
         ${adminPanelLink}
+        ${doctorPanelLink}
 
         <a href="/perfil.html">
             <span>👤</span>
@@ -535,6 +545,26 @@ authButtons.insertAdjacentHTML(
                 }
             } catch (error) {
                 console.error("Error loading admin pending badge:", error);
+            }
+        }
+
+        async function loadDoctorPendingBadge() {
+            try {
+                const response = await fetch("/follow-requests/pending", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const pendingRequests = await response.json();
+                    if (pendingRequests.length > 0) {
+                        const notifBadge = document.getElementById("notifBadge");
+                        const currentCount = notifBadge.textContent ? parseInt(notifBadge.textContent) || 0 : 0;
+                        const totalCount = currentCount + pendingRequests.length;
+                        notifBadge.textContent = totalCount > 9 ? "9+" : String(totalCount);
+                        notifBadge.style.display = "";
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading doctor pending badge:", error);
             }
         }
 

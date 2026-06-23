@@ -1,11 +1,14 @@
 package com.example.SAPA.controller;
 
+import com.example.SAPA.DTOs.Response.FollowRequestResponseDTO;
 import com.example.SAPA.Models.FollowRequestEntity;
+import com.example.SAPA.mappers.FollowRequestMapper;
 import com.example.SAPA.service.FollowRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -15,35 +18,48 @@ import java.util.List;
 public class FollowRequestController {
 
     private final FollowRequestService followRequestService;
+    private final FollowRequestMapper followRequestMapper;
 
     @PostMapping("/send/{doctorId}")
-    public ResponseEntity<FollowRequestEntity> create(@PathVariable Long doctorId) {
+    public ResponseEntity<FollowRequestResponseDTO> create(@PathVariable Long doctorId) {
+        FollowRequestEntity entity = followRequestService.create(doctorId);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(followRequestService.create(doctorId));
+                .body(followRequestMapper.toResponse(entity));
     }
 
     @PatchMapping("/{id}/approve")
-    public ResponseEntity<FollowRequestEntity> approve(@PathVariable Long id) {
-        return ResponseEntity.ok(followRequestService.approve(id));
+    public ResponseEntity<FollowRequestResponseDTO> approve(@PathVariable Long id) {
+        FollowRequestEntity entity = followRequestService.approve(id);
+        return ResponseEntity.ok(followRequestMapper.toResponse(entity));
     }
 
     @PatchMapping("/{id}/reject")
-    public ResponseEntity<FollowRequestEntity> reject(@PathVariable Long id) {
-        return ResponseEntity.ok(followRequestService.reject(id));
+    public ResponseEntity<FollowRequestResponseDTO> reject(@PathVariable Long id) {
+        FollowRequestEntity entity = followRequestService.reject(id);
+        return ResponseEntity.ok(followRequestMapper.toResponse(entity));
     }
 
     @PatchMapping("/{id}/dissolve")
-    public ResponseEntity<FollowRequestEntity> dissolve(@PathVariable Long id) {
-        return ResponseEntity.ok(followRequestService.dissolve(id));
+    public ResponseEntity<FollowRequestResponseDTO> dissolve(@PathVariable Long id) {
+        FollowRequestEntity entity = followRequestService.dissolve(id);
+        return ResponseEntity.ok(followRequestMapper.toResponse(entity));
     }
 
     @GetMapping("/pending")
-    public ResponseEntity<List<FollowRequestEntity>> getPendingRequests() {
-        return ResponseEntity.ok(followRequestService.getPendingRequests());
+    public ResponseEntity<List<FollowRequestResponseDTO>> getPendingRequests() {
+        List<FollowRequestEntity> entities = followRequestService.getPendingRequests();
+        List<FollowRequestResponseDTO> dtos = entities.stream()
+                .map(followRequestMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/sent")
-    public ResponseEntity<List<FollowRequestEntity>> getSentRequests() {
-        return ResponseEntity.ok(followRequestService.getSentRequests());
+    public ResponseEntity<List<FollowRequestResponseDTO>> getSentRequests() {
+        List<FollowRequestEntity> entities = followRequestService.getSentRequests();
+        List<FollowRequestResponseDTO> dtos = entities.stream()
+                .map(followRequestMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(dtos);
     }
 }

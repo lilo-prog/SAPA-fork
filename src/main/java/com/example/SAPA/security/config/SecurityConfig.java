@@ -62,11 +62,13 @@ public class SecurityConfig {
                                 "/registro-medico.html",
                                 "/perfil.html",
                                 "/admin.html",
+                                "/doctor-panel.html",
                                 "/login",
                                 "/registro-paciente",
                                 "/registro-medico",
                                 "/perfil",
                                 "/admin",
+                                "/doctor-panel",
                                 "/error",
                                 "/favicon.ico"
                         ).permitAll()
