@@ -271,7 +271,9 @@
             const rol =
                 profile.role === "DOCTOR"
                     ? "Médico"
-                    : "Paciente";
+                    : profile.role === "ADMIN"
+                        ? "Administrador"
+                        : "Paciente";
 
 const notifBtn = document.getElementById("notifBellBtn");
 const notifBadge = document.getElementById("notifBadge");
@@ -280,6 +282,15 @@ authButtons.querySelector(".btn-login")?.remove();
 authButtons.querySelector(".btn-register")?.remove();
 
 notifBtn.style.display = "flex";
+
+// Show admin pending doctors badge
+if (profile.role === "ADMIN") {
+    loadAdminPendingBadge();
+}
+
+const adminPanelLink = profile.role === "ADMIN"
+    ? `<a href="/admin.html"><span>&#128188;</span><span>Panel Admin</span></a><hr>`
+    : "";
 
 authButtons.insertAdjacentHTML(
     "beforeend",
@@ -311,6 +322,8 @@ authButtons.insertAdjacentHTML(
     </div>
 
     <div class="user-dropdown" id="userDropdown">
+
+        ${adminPanelLink}
 
         <a href="/perfil.html">
             <span>👤</span>
@@ -504,6 +517,26 @@ authButtons.insertAdjacentHTML(
             }
 
         });
+
+        async function loadAdminPendingBadge() {
+            try {
+                const response = await fetch("/admin/pending-doctors", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const pendingDoctors = await response.json();
+                    if (pendingDoctors.length > 0) {
+                        const notifBadge = document.getElementById("notifBadge");
+                        const currentCount = notifBadge.textContent ? parseInt(notifBadge.textContent) || 0 : 0;
+                        const totalCount = currentCount + pendingDoctors.length;
+                        notifBadge.textContent = totalCount > 9 ? "9+" : String(totalCount);
+                        notifBadge.style.display = "";
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading admin pending badge:", error);
+            }
+        }
 
     });
 

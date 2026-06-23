@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Configuration
 public class DataInitializer {
@@ -62,7 +63,7 @@ public class DataInitializer {
 
                 credentialRepository.save(CredentialEntity.builder()
                         .email(adminEmail).password(admin.getPassword()).active(true)
-                        .user(admin).roles(Set.of(adminRole)).refreshToken("").build());
+                        .user(admin).roles(Set.of(adminRole)).refreshToken(UUID.randomUUID().toString()).build());
                 System.out.println("🌱 Admin inicializado.");
             }
 
@@ -152,7 +153,7 @@ public class DataInitializer {
                 .active(user.getStatus() == AccountStatus.ACTIVE)
                 .user(user)
                 .roles(Set.of(role))
-                .refreshToken("")
+                .refreshToken(UUID.randomUUID().toString())
                 .build();
     }
 }

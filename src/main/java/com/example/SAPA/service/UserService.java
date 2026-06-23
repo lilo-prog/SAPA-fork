@@ -11,6 +11,7 @@ import com.example.SAPA.Repositories.PatientRepository;
 import com.example.SAPA.Repositories.SpecialityRepository;
 import com.example.SAPA.Repositories.UserRepository;
 import com.example.SAPA.enums.AccountStatus;
+import com.example.SAPA.enums.NotificationType;
 import com.example.SAPA.enums.UserCategory;
 import com.example.SAPA.mappers.UserMapper;
 import com.example.SAPA.security.DTO.AuthResponse;
@@ -44,6 +45,7 @@ public class UserService {
     private final JWTService jwtService;
     private final UserMapper userMapper;
     private final SpecialityRepository specialityRepository;
+    private final NotificationService notificationService;
 
 
     @Transactional
@@ -179,6 +181,20 @@ public class UserService {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
+        if (user.getRole() == UserCategory.ADMIN) {
+            return new ProfileResponseDTO(
+                    user.getId(),
+                    "Admin",
+                    "SAPA",
+                    user.getEmail(),
+                    user.getRole().name(),
+                    null,
+                    null,
+                    null,
+                    null
+            );
+        }
+
         if (user.getRole() == UserCategory.PATIENT) {
 
             PatientEntity patient = patientRepository.findByUser(user)
@@ -213,5 +229,19 @@ public class UserService {
                 null,
                 doctor.getLicenseNumber()
         );
+    }
+    private void notifyAdminsOfNewDoctorRegistration(DoctorEntity doctor) {
+        List<UserEntity> admins = userRepository.findByRole(UserCategory.ADMIN);
+        String doctorFullName = doctor.getFirstName() + " " + doctor.getLastName();
+        String title = "Nuevo registro de médico";
+        String message = String.format(
+                "El médico %s (Matrícula: %s) ha solicitado registrarse. Revise su solicitud pendiente.",
+                doctorFullName,
+                doctor.getLicenseNumber()
+        );
+
+        for (UserEntity admin : admins) {
+            notificationService.createNotification(admin, title, message, NotificationType.SYSTEM);
+        }
     }
 }

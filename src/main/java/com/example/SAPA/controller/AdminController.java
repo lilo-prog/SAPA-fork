@@ -1,6 +1,6 @@
 package com.example.SAPA.controller;
 
-import com.example.SAPA.Models.Entities.UserEntity;
+import com.example.SAPA.DTOs.Response.PendingDoctorResponseDTO;
 import com.example.SAPA.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,14 +25,14 @@ public class AdminController {
     @GetMapping("/pending-doctors")
     @Operation(
             summary = "Listar médicos pendientes de aprobación",
-            description = "Devuelve una lista con todos los usuarios registrados cuyo rol es DOCTOR y su estado actual es INACTIVE."
+            description = "Devuelve una lista con todos los médicos registrados cuyo estado actual es PENDING y requieren aprobación de un administrador."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de médicos pendientes recuperada con éxito."),
             @ApiResponse(responseCode = "401", description = "No autorizado. Falta el token JWT o es inválido."),
             @ApiResponse(responseCode = "403", description = "Acceso denegado. El usuario autenticado no posee el rol de Administrador.")
     })
-    public ResponseEntity<List<UserEntity>> getPendingDoctors() {
+    public ResponseEntity<List<PendingDoctorResponseDTO>> getPendingDoctors() {
         return ResponseEntity.ok(adminService.getPendingDoctors());
     }
 

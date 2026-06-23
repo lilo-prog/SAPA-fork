@@ -61,10 +61,12 @@ public class SecurityConfig {
                                 "/registro-paciente.html",
                                 "/registro-medico.html",
                                 "/perfil.html",
+                                "/admin.html",
                                 "/login",
                                 "/registro-paciente",
                                 "/registro-medico",
                                 "/perfil",
+                                "/admin",
                                 "/error",
                                 "/favicon.ico"
                         ).permitAll()
@@ -103,7 +105,7 @@ public class SecurityConfig {
                         .requestMatchers("/medical-records/**").hasAnyRole("PATIENT", "DOCTOR")
                         .requestMatchers("/treatments/**").hasAnyRole("PATIENT", "DOCTOR")
 
-                        .requestMatchers("/notifications/**").hasAnyRole("PATIENT", "DOCTOR")
+                        .requestMatchers("/notifications/**").hasAnyRole("PATIENT", "DOCTOR", "ADMIN")
 
                         .requestMatchers(HttpMethod.POST, "/reports").hasAnyRole("PATIENT", "DOCTOR")
                         .requestMatchers("/reports/**").hasRole("ADMIN")
