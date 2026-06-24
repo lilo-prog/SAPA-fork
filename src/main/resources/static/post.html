@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Foro | SAPA</title>
+    <link rel="stylesheet" href="foro.css">
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="img/logo.png" alt="Logo SAPA">
+        <h1>SAPA</h1>
+    </div>
+
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="foro.html">Foro</a>
+        <a href="notifications.html">Notificaciones</a>
+    </nav>
+
+    <div class="auth-buttons" id="authButtons">
+        <a href="login.html" class="btn-login">Iniciar sesión</a>
+        <a href="register.html" class="btn-register">Registrarse</a>
+    </div>
+
+    <div class="user-menu" id="userMenu" style="display:none;">
+        <button class="user-button" onclick="toggleUserMenu()">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <div class="user-info">
+                <span class="user-name" id="userName">Usuario</span>
+                <span class="user-role" id="userRole">Paciente</span>
+            </div>
+            <span class="user-arrow">▼</span>
+        </button>
+
+        <div class="user-dropdown" id="userDropdown">
+            <a href="perfil.html">Mi perfil</a>
+            <hr>
+            <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <aside class="sidebar-left">
+        <div class="card">
+            <h3>Categorías</h3>
+            <ul>
+                <li>Diabetes</li>
+                <li>Salud mental</li>
+                <li>Tratamientos</li>
+                <li>Consultas generales</li>
+            </ul>
+        </div>
+    </aside>
+
+    <section class="contenido">
+        <div class="cabecera">
+            <h2>Foro de la comunidad</h2>
+            <p>Compartí experiencias, dudas o información útil con otros pacientes.</p>
+        </div>
+
+        <div class="buscador">
+            <input type="text" id="searchInput" placeholder="Buscar publicaciones por título...">
+            <button onclick="buscarForos()">Buscar</button>
+            <button onclick="cargarForosActivos()">Ver todos</button>
+        </div>
+
+        <div class="top-actions">
+            <button class="btn-publicar" onclick="mostrarFormulario()">Nueva publicación</button>
+        </div>
+
+        <form class="crear-post" id="formCrearPost" style="display:none;">
+            <h3>Crear publicación</h3>
+
+            <input type="text" id="titulo" placeholder="Título de la publicación" required>
+
+            <textarea id="contenido" placeholder="Escribí tu publicación..." required></textarea>
+
+            <div class="acciones-post">
+                <select id="categoria">
+                    <option value="GENERAL">General</option>
+                    <option value="DIABETES">Diabetes</option>
+                    <option value="SALUD_MENTAL">Salud mental</option>
+                    <option value="TRATAMIENTO">Tratamiento</option>
+                    <option value="CONSULTA">Consulta</option>
+                </select>
+
+                <div class="botones-post">
+                    <button type="button" class="btn-cancelar" onclick="ocultarFormulario()">Cancelar</button>
+                    <button type="submit" class="btn-publicar-form">Publicar</button>
+                </div>
+            </div>
+        </form>
+
+        <div id="mensaje" class="mensaje"></div>
+
+        <div id="listaForos"></div>
+    </section>
+
+    <aside class="sidebar-right">
+        <div class="card">
+            <h3>Información</h3>
+            <p class="empty-state">
+                Este espacio permite a los pacientes publicar dudas, experiencias o consejos.
+            </p>
+        </div>
+    </aside>
+</main>
+
+<script src="foro.js"></script>
+</body>
+</html>
