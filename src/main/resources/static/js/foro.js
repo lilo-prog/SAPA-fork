@@ -100,13 +100,20 @@
         }
 
         contenedor.innerHTML = foros.map(foro => `
-            <article class="publicacion">
+            <article class="publicacion" onclick="entrarAlForo(${foro.forumId || foro.id})">
                 <span class="tag">Foro</span>
                 <h3>${escapeHtml(foro.title)}</h3>
                 <p>${escapeHtml(foro.content)}</p>
+                <p class="autor">${escapeHtml(foro.authorName || "")}</p>
             </article>
         `).join("");
     }
+
+    function entrarAlForo(id) {
+        window.location.href = "foro-detalle.html?id=" + id;
+    }
+
+    window.entrarAlForo = entrarAlForo;
 
     function mostrarFormulario() {
         if (!getToken()) {

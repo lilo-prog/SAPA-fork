@@ -430,4 +430,14 @@ main{
     .user-info{
         display:none;
     }
+
+    .publicacion{
+        cursor:pointer;
+        transition:.25s;
+    }
+
+    .publicacion:hover{
+        transform:translateY(-3px);
+        box-shadow:0 6px 18px rgba(0,0,0,.08);
+    }
 }
