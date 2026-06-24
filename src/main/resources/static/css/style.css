@@ -603,6 +603,7 @@ main{
     }
 
     .btn-entrar-foro{
+        display:inline-block;
         margin-top:18px;
         background:#02968c;
         color:white;
@@ -611,10 +612,8 @@ main{
         padding:10px 16px;
         font-weight:600;
         cursor:pointer;
-    }
-
-    .btn-entrar-foro:hover{
-        background:#018278;
+        position:relative;
+        z-index:10;
     }
 
 }
