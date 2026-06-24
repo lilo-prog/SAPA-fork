@@ -141,11 +141,11 @@
             <input
                     id="tituloForum"
                     type="text"
-                    placeholder="Título de tu foro">
+                    placeholder="Ej: Torceduras de tobillo.">
 
             <textarea
                     id="contenidoForum"
-                    placeholder="Cuéntanos tu experiencia, síntomas, tratamiento o consulta..."></textarea>
+                    placeholder="Ej: Publicaciones sobre torceduras de tobillo."></textarea>
 
             <div class="acciones-post">
 
@@ -284,12 +284,10 @@ authButtons.querySelector(".btn-register")?.remove();
 
 notifBtn.style.display = "flex";
 
-// Show admin pending doctors badge
 if (profile.role === "ADMIN") {
     loadAdminPendingBadge();
 }
 
-// Show doctor pending follow requests badge
 if (profile.role === "DOCTOR") {
     loadDoctorPendingBadge();
 }
@@ -439,28 +437,24 @@ authButtons.insertAdjacentHTML(
             forums.forEach(forum => {
 
                 container.innerHTML += `
-                <div class="publicacion">
+    <div class="publicacion">
+        <span class="tag">Foro</span>
 
-                    <span class="tag">
-                        Foro
-                    </span>
+        <h3>${forum.title}</h3>
 
-                    <h3>
-                        ${forum.title}
-                    </h3>
+        <p>${forum.content}</p>
 
-                    <p>
-                        ${forum.content}
-                    </p>
+        <div class="publicacion-info">
+            <span>Creado por ${forum.createdByName}</span>
+        </div>
 
-                    <div class="publicacion-info">
-                        <span>
-                            ${forum.createdByName}
-                        </span>
-                    </div>
-
-                </div>
-            `;
+        <button
+            class="btn-entrar-foro"
+            onclick="window.location.href='/foro.html?id=${forum.forumId || forum.id}'">
+            Entrar al foro
+        </button>
+    </div>
+`;
 
             });
 

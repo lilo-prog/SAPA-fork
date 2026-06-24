@@ -602,4 +602,19 @@ main{
         flex:1;
     }
 
+    .btn-entrar-foro{
+        margin-top:18px;
+        background:#02968c;
+        color:white;
+        border:none;
+        border-radius:8px;
+        padding:10px 16px;
+        font-weight:600;
+        cursor:pointer;
+    }
+
+    .btn-entrar-foro:hover{
+        background:#018278;
+    }
+
 }
