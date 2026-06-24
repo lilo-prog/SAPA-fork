@@ -17,9 +17,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -138,17 +141,24 @@ public class AuthController {
 
     @Operation(
             summary = "Crear usuario",
-            description = "Registra un nuevo usuario en el sistema. Devuelve las credenciales de acceso JWT inmediatas tras el registro."
+            description = "Registra un nuevo usuario en el sistema. Para pacientes, devuelve las credenciales de acceso JWT inmediatas. Para médicos, la cuenta queda pendiente de aprobación por un administrador."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuario registrado correctamente",
+            @ApiResponse(responseCode = "200", description = "Usuario registrado correctamente (paciente recibe tokens, médico recibe mensaje de pendiente)",
                     content = @Content(schema = @Schema(implementation = AuthResponse.class))),
+            @ApiResponse(responseCode = "202", description = "Médico registrado correctamente - pendiente de aprobación por administrador"),
             @ApiResponse(responseCode = "400", description = "No se registró el usuario - El correo ya existe o los datos son inválidos", content = @Content)
     })
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
         try {
             AuthResponse authResponse = userService.registerUser(request);
+            if (authResponse == null) {
+                return ResponseEntity.status(HttpStatus.ACCEPTED)
+                        .body(Map.of(
+                                "message", "Su cuenta ha sido creada exitosamente. Un administrador debe aprobar su solicitud antes de poder acceder al sistema. Recibirá una notificación por correo electrónico cuando su cuenta sea aprobada."
+                        ));
+            }
             return ResponseEntity.ok(authResponse);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

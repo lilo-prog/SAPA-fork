@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/chat.css">
     <link rel="stylesheet" href="/css/doctor-search.css">
+    <link rel="stylesheet" href="/css/notifications.css">
 </head>
 
 <body>
@@ -44,19 +45,24 @@
 
     </nav>
 
-    <div class="notification-menu">
-        <button id="btnNotifications" class="notification-button">
-            🔔
-            <span id="notificationCount">0</span>
-        </button>
-
-        <div id="notificationDropdown" class="notification-dropdown">
-            <h4>Notificaciones</h4>
-            <div id="notificationList"></div>
-        </div>
-    </div>
-
     <div class="auth-buttons" id="authButtons">
+
+        <button id="notifBellBtn"
+                class="notif-bell-btn"
+                title="Notificaciones"
+                style="display:none">
+
+            <img src="/img/notification.png"
+                 width="24"
+                 height="24"
+                 alt="Notificaciones">
+
+            <span id="notifBadge"
+                  class="notif-badge"
+                  style="display:none">
+        </span>
+
+        </button>
 
         <a href="/login.html" class="btn-login">
             Iniciar sesión
@@ -129,12 +135,12 @@
 
         <div class="crear-post">
 
-            <h3>Nueva publicación</h3>
+            <h3>Nuevo foro</h3>
 
             <input
                     id="tituloForum"
                     type="text"
-                    placeholder="Título de tu publicación">
+                    placeholder="Título de tu foro">
 
             <textarea
                     id="contenidoForum"
@@ -265,26 +271,58 @@
             const rol =
                 profile.role === "DOCTOR"
                     ? "Médico"
-                    : "Paciente";
+                    : profile.role === "ADMIN"
+                        ? "Administrador"
+                        : "Paciente";
 
-            authButtons.innerHTML = `
-<div class="user-menu">
+const notifBtn = document.getElementById("notifBellBtn");
+const notifBadge = document.getElementById("notifBadge");
+
+authButtons.querySelector(".btn-login")?.remove();
+authButtons.querySelector(".btn-register")?.remove();
+
+notifBtn.style.display = "flex";
+
+// Show admin pending doctors badge
+if (profile.role === "ADMIN") {
+    loadAdminPendingBadge();
+}
+
+// Show doctor pending follow requests badge
+if (profile.role === "DOCTOR") {
+    loadDoctorPendingBadge();
+}
+
+const adminPanelLink = profile.role === "ADMIN"
+    ? `<a href="/admin.html"><span>&#128188;</span><span>Panel Admin</span></a><hr>`
+    : "";
+
+const doctorPanelLink = profile.role === "DOCTOR"
+    ? `<a href="/doctor-panel.html"><span>&#128188;</span><span>Solicitudes de Pacientes</span></a><hr>`
+    : "";
+
+authButtons.insertAdjacentHTML(
+    "beforeend",
+    `
+<div class="user-menu" id="userMenu">
 
     <div class="user-button" id="userButton">
 
-       <div class="user-avatar">
-    ${iniciales}
-    </div>
+        <div class="user-avatar">
+            ${iniciales}
+        </div>
 
-    <div class="user-info">
-        <span class="user-name">
-           ${profile.firstName} ${profile.lastName}
-        </span>
+        <div class="user-info">
 
-     <span class="user-role">
-          ${rol}
-        </span>
-    </div>
+            <span class="user-name">
+                ${profile.firstName} ${profile.lastName}
+            </span>
+
+            <span class="user-role">
+                ${rol}
+            </span>
+
+        </div>
 
         <span class="user-arrow">
             ▼
@@ -293,6 +331,9 @@
     </div>
 
     <div class="user-dropdown" id="userDropdown">
+
+        ${adminPanelLink}
+        ${doctorPanelLink}
 
         <a href="/perfil.html">
             <span>👤</span>
@@ -306,19 +347,16 @@
 
         <hr>
 
-        <button
-            id="logoutBtn"
-            class="logout-btn">
-
+        <button id="logoutBtn" class="logout-btn">
             <span>🚪</span>
             <span>Cerrar sesión</span>
-
         </button>
 
     </div>
 
 </div>
-´;
+`
+);
 
             const userButton =
                 document.getElementById("userButton");
@@ -490,6 +528,46 @@
 
         });
 
+        async function loadAdminPendingBadge() {
+            try {
+                const response = await fetch("/admin/pending-doctors", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const pendingDoctors = await response.json();
+                    if (pendingDoctors.length > 0) {
+                        const notifBadge = document.getElementById("notifBadge");
+                        const currentCount = notifBadge.textContent ? parseInt(notifBadge.textContent) || 0 : 0;
+                        const totalCount = currentCount + pendingDoctors.length;
+                        notifBadge.textContent = totalCount > 9 ? "9+" : String(totalCount);
+                        notifBadge.style.display = "";
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading admin pending badge:", error);
+            }
+        }
+
+        async function loadDoctorPendingBadge() {
+            try {
+                const response = await fetch("/follow-requests/pending", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const pendingRequests = await response.json();
+                    if (pendingRequests.length > 0) {
+                        const notifBadge = document.getElementById("notifBadge");
+                        const currentCount = notifBadge.textContent ? parseInt(notifBadge.textContent) || 0 : 0;
+                        const totalCount = currentCount + pendingRequests.length;
+                        notifBadge.textContent = totalCount > 9 ? "9+" : String(totalCount);
+                        notifBadge.style.display = "";
+                    }
+                }
+            } catch (error) {
+                console.error("Error loading doctor pending badge:", error);
+            }
+        }
+
     });
 
 </script>
@@ -497,5 +575,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="/js/doctor-search.js"></script>
 <script src="/js/chat.js"></script>
+<script src="/js/notifications.js"></script>
 </body>
 </html>

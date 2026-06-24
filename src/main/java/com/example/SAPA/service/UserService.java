@@ -11,6 +11,7 @@ import com.example.SAPA.Repositories.PatientRepository;
 import com.example.SAPA.Repositories.SpecialityRepository;
 import com.example.SAPA.Repositories.UserRepository;
 import com.example.SAPA.enums.AccountStatus;
+import com.example.SAPA.enums.NotificationType;
 import com.example.SAPA.enums.UserCategory;
 import com.example.SAPA.mappers.UserMapper;
 import com.example.SAPA.security.DTO.AuthResponse;
@@ -44,6 +45,7 @@ public class UserService {
     private final JWTService jwtService;
     private final UserMapper userMapper;
     private final SpecialityRepository specialityRepository;
+    private final NotificationService notificationService;
 
 
     @Transactional
@@ -53,7 +55,6 @@ public class UserService {
             if (request.licenseNumber() == null || request.licenseNumber().isBlank()) {
                 throw new IllegalArgumentException("La matrícula es obligatoria para los médicos.");
             }
-
             if (request.specialities() == null || request.specialities().isEmpty()) {
                 throw new IllegalArgumentException("El médico debe tener al menos una especialidad.");
             }
@@ -61,21 +62,20 @@ public class UserService {
 
         String encryptedPassword = passwordEncoder.encode(request.password());
 
+        AccountStatus initialStatus = (request.role() == Role.ROLE_DOCTOR)
+                ? AccountStatus.PENDING
+                : AccountStatus.ACTIVE;
+
         UserEntity userConnector = UserEntity.builder()
                 .email(request.email())
                 .password(encryptedPassword)
-                .status(AccountStatus.ACTIVE)
+                .status(initialStatus)
                 .role(UserCategory.valueOf(request.role().name().replace("ROLE_", "")))
                 .build();
 
-
-        if (userRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException("Ya existe una cuenta con ese email.");
-        }
         userConnector = userRepository.save(userConnector);
 
         if (request.role() == Role.ROLE_DOCTOR) {
-
             DoctorEntity doctor = DoctorEntity.builder()
                     .user(userConnector)
                     .firstName(request.firstName())
@@ -88,7 +88,6 @@ public class UserService {
             doctorRepository.save(doctor);
 
         } else if (request.role() == Role.ROLE_PATIENT) {
-
             PatientEntity patient = PatientEntity.builder()
                     .user(userConnector)
                     .firstName(request.firstName())
@@ -110,6 +109,12 @@ public class UserService {
                 .roles(Set.of(assignedRole))
                 .refreshToken("")
                 .build();
+
+        if (request.role() == Role.ROLE_DOCTOR) {
+            credentialRepository.save(securityCredentials);
+            return null;
+        }
+
         String accessToken = jwtService.generateToken(securityCredentials);
         String refreshToken = jwtService.generateRefreshToken(securityCredentials);
 
@@ -118,6 +123,7 @@ public class UserService {
 
         return new AuthResponse(accessToken, refreshToken);
     }
+
 
     @Transactional(readOnly = true)
     public UserResponseDTO getMyProfile(String email) {
@@ -175,13 +181,27 @@ public class UserService {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
 
+        if (user.getRole() == UserCategory.ADMIN) {
+            return new ProfileResponseDTO(
+                    user.getId(),
+                    "Admin",
+                    "SAPA",
+                    user.getEmail(),
+                    user.getRole().name(),
+                    null,
+                    null,
+                    null,
+                    null
+            );
+        }
+
         if (user.getRole() == UserCategory.PATIENT) {
 
             PatientEntity patient = patientRepository.findByUser(user)
                     .orElseThrow(() -> new EntityNotFoundException("Paciente no encontrado"));
 
             return new ProfileResponseDTO(
-                    null,
+                    user.getId(),
                     patient.getFirstName(),
                     patient.getLastName(),
                     user.getEmail(),
@@ -199,7 +219,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado"));
 
         return new ProfileResponseDTO(
-                null,
+                user.getId(),
                 doctor.getFirstName(),
                 doctor.getLastName(),
                 user.getEmail(),
@@ -209,5 +229,19 @@ public class UserService {
                 null,
                 doctor.getLicenseNumber()
         );
+    }
+    private void notifyAdminsOfNewDoctorRegistration(DoctorEntity doctor) {
+        List<UserEntity> admins = userRepository.findByRole(UserCategory.ADMIN);
+        String doctorFullName = doctor.getFirstName() + " " + doctor.getLastName();
+        String title = "Nuevo registro de médico";
+        String message = String.format(
+                "El médico %s (Matrícula: %s) ha solicitado registrarse. Revise su solicitud pendiente.",
+                doctorFullName,
+                doctor.getLicenseNumber()
+        );
+
+        for (UserEntity admin : admins) {
+            notificationService.createNotification(admin, title, message, NotificationType.SYSTEM);
+        }
     }
 }

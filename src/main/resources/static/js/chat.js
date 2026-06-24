@@ -265,8 +265,14 @@
     function renderMessage(message) {
         const messagesEl = document.getElementById("sapaChatMessages");
 
-        const isMine = currentUserId !== null && message.senderId === currentUserId;
-        const side = isMine ? "mine" : "theirs";
+console.log("Usuario actual:", currentUserId);
+console.log("Sender:", message.senderId);
+console.log("Receiver:", message.receiverId);
+console.log(message);
+
+    const isMine =
+        currentUserId !== null &&
+        Number(message.senderId) === Number(currentUserId);        const side = isMine ? "mine" : "theirs";
 
         let contentHtml = "";
         if (message.type !== "FILE") {

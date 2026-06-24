@@ -11,7 +11,6 @@ import com.example.SAPA.security.DTO.ResetPasswordRequest;
 import com.example.SAPA.security.entities.CredentialEntity;
 import com.example.SAPA.security.repositories.CredentialRepository;
 import com.example.SAPA.service.EmailService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,21 +36,25 @@ public class AuthService {
 
     public UserDetails authenticate(AuthRequest input) {
 
-        CredentialEntity credentialEntity = credentialRepository.findByEmail(input.email())
-                .orElseThrow(() -> new BadCredentialsException("Email o contraseña incorrectos"));
-
-        UserEntity userEntity = credentialEntity.getUser();
-
-        if(userEntity.getStatus() == AccountStatus.INACTIVE){
-            throw new DisabledException("No puede iniciar sesión. Cuenta dada de baja");
-        }
-
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.email(),
                         input.password()
                 )
         );
+
+        CredentialEntity credentialEntity = credentialRepository.findByEmail(input.email())
+                .orElseThrow(() -> new BadCredentialsException("Email o contraseña incorrectos"));
+
+        UserEntity userEntity = credentialEntity.getUser();
+
+        if (userEntity.getStatus() == AccountStatus.PENDING) {
+            throw new DisabledException("Tu perfil de médico está siendo revisado por la administración. Te notificaremos por correo.");
+        }
+
+        if (userEntity.getStatus() == AccountStatus.REJECTED) {
+            throw new DisabledException("Tu solicitud de registro como médico ha sido rechazada por la administración.");
+        }
 
         return credentialEntity;
     }
